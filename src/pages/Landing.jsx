@@ -4,26 +4,35 @@ import styled, { keyframes } from 'styled-components';
 import Navbar from '../components/Navbar';
 
 const CountdownTimer = () => {
-  const [timeLeft, setTimeLeft] = useState({
-    days: 16,
-    hours: 24,
-    minutes: 60,
-    seconds: 60
+  // Set target date to 16 days from now
+  const [targetDate] = useState(() => {
+    const date = new Date();
+    date.setDate(date.getDate() + 16);
+    date.setHours(0, 0, 0, 0); // Set to midnight
+    return date;
   });
+
+  const calculateTimeLeft = () => {
+    const now = new Date();
+    const difference = targetDate - now;
+    
+    if (difference <= 0) {
+      return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+    }
+    
+    return {
+      days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+      minutes: Math.floor((difference / 1000 / 60) % 60),
+      seconds: Math.floor((difference / 1000) % 60)
+    };
+  };
+
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft(prev => {
-        const { days, hours, minutes, seconds } = prev;
-        
-        if (seconds > 0) return { ...prev, seconds: seconds - 1 };
-        if (minutes > 0) return { days, hours, minutes: minutes - 1, seconds: 59 };
-        if (hours > 0) return { days, hours: hours - 1, minutes: 59, seconds: 59 };
-        if (days > 0) return { days: days - 1, hours: 23, minutes: 59, seconds: 59 };
-        
-        clearInterval(timer);
-        return { days: 0, hours: 0, minutes: 0, seconds: 0 };
-      });
+      setTimeLeft(calculateTimeLeft());
     }, 1000);
 
     return () => clearInterval(timer);
