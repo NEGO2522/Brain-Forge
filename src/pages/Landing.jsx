@@ -143,9 +143,9 @@ const Landing = () => {
               <span className="text-[10px] mt-0.5 text-amber-200/80 opacity-100 transition-opacity">Connect</span>
             </Link>
           </div>
-          <button className="absolute right-0 px-4 py-2 text-sm font-medium text-amber-100 bg-amber-600/80 hover:bg-amber-500/90 rounded-lg transition-colors duration-300 border border-amber-500/50">
+          <Link to="/login" className="absolute right-0 px-4 py-2 text-sm font-medium text-amber-100 bg-amber-600/80 hover:bg-amber-500/90 rounded-lg transition-colors duration-300 border border-amber-500/50">
             Sign In
-          </button>
+          </Link>
         </div>
       </nav>
 

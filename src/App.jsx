@@ -3,6 +3,7 @@ import Landing from './pages/Landing';
 import Community from './pages/Community';
 import Connect from './pages/Connect';
 import About from './pages/About';
+import Login from './auth/Login';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route path="/community" element={<Community />} />
           <Route path="/connect" element={<Connect />} />
           <Route path="/about" element={<About />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </div>
     </Router>
