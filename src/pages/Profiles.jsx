@@ -5,7 +5,7 @@ const About = () => {
     <div 
       className="min-h-screen flex flex-col items-center justify-center text-center px-4 py-20 relative overflow-hidden"
       style={{
-        backgroundImage: 'url(/About.jpg)',
+        backgroundImage: 'url(/Profile.jpg)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',

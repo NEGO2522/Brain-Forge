@@ -2,8 +2,18 @@ import React from 'react';
 
 const About = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex flex-col items-center justify-center text-center px-4 py-20">
-      <div className="max-w-2xl mx-auto">
+    <div 
+      className="min-h-screen flex flex-col items-center justify-center text-center px-4 py-20 relative overflow-hidden"
+      style={{
+        backgroundImage: 'url(/Bg.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+      }}
+    >
+      {/* Overlay with blur effect */}
+      <div className="absolute inset-0 backdrop-blur-sm"></div>
+      <div className="max-w-2xl mx-auto relative z-10">
         <h1 className="text-4xl md:text-6xl font-bold text-amber-400 mb-6 font-['redHatDisplay']">
           Deploying Soon
         </h1>
