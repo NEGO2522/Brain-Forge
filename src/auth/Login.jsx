@@ -1,11 +1,29 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaGithub, FaGoogle } from 'react-icons/fa';
+import { FaGoogle } from 'react-icons/fa';
+import { FiMail, FiSend } from 'react-icons/fi';
+import styled, { keyframes } from 'styled-components';
+
+// CSS for the rotating fan animation
+const rotate = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`;
+
+const RotatingFanIcon = styled.div`
+  animation: ${rotate} 4s linear infinite;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: ''
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -33,9 +51,6 @@ const Login = () => {
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email';
     }
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -46,136 +61,172 @@ const Login = () => {
 
     setIsLoading(true);
     try {
-      // TODO: Replace with actual authentication logic
-      console.log('Login attempt with:', formData);
+      // TODO: Replace with actual magic link sending logic
+      console.log('Sending magic link to:', formData.email);
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      // Redirect to dashboard or home after successful login
-      navigate('/');
+      // Show success message
+      setErrors({ 
+        success: `Magic link sent to ${formData.email}. Please check your inbox.` 
+      });
     } catch (error) {
-      console.error('Login error:', error);
-      setErrors({ submit: error.message || 'Login failed. Please try again.' });
+      console.error('Error sending magic link:', error);
+      setErrors({ 
+        submit: 'Failed to send magic link. Please try again.' 
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleSocialLogin = (provider) => {
-    // TODO: Implement social login
-    console.log(`Logging in with ${provider}`);
+  const handleGoogleLogin = () => {
+    // TODO: Implement Google login
+    console.log('Initiating Google login');
+    window.location.href = '/api/auth/google'; // Replace with your actual Google auth endpoint
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to your account
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
-            <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
-              create a new account
-            </Link>
-          </p>
-        </div>
-        
-        {errors.submit && (
-          <div className="rounded-md bg-red-50 p-4 mb-4">
-            <div className="text-sm text-red-700">{errors.submit}</div>
+    <div className="relative min-h-screen w-full overflow-hidden bg-gray-900">
+      {/* Video Background */}
+      <div className="absolute inset-0 z-0">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover opacity-80"
+          style={{ backgroundColor: '#1a202c' }}
+        >
+          <source
+            src="/videos/background-video.mp4"
+            type="video/mp4"
+          />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+
+      {/* Rotating Fan Icons in all four corners */}
+      <div className="absolute top-8 left-8 z-30">
+        <RotatingFanIcon>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-400">
+            <path d="M10.827 16.379a6.082 6.082 0 0 1-8.618-7.002l5.412 1.45a6.082 6.082 0 0 1 7.002-8.618l-1.45 5.412a6.082 6.082 0 0 1 8.618 7.002l-5.412-1.45a6.082 6.082 0 0 1-7.002 8.618l1.45-5.412Z"/>
+            <path d="M12 12v.01"/>
+          </svg>
+        </RotatingFanIcon>
+      </div>
+      
+      <div className="absolute top-8 right-8 z-30">
+        <RotatingFanIcon>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-400">
+            <path d="M10.827 16.379a6.082 6.082 0 0 1-8.618-7.002l5.412 1.45a6.082 6.082 0 0 1 7.002-8.618l-1.45 5.412a6.082 6.082 0 0 1 8.618 7.002l-5.412-1.45a6.082 6.082 0 0 1-7.002 8.618l1.45-5.412Z"/>
+            <path d="M12 12v.01"/>
+          </svg>
+        </RotatingFanIcon>
+      </div>
+      
+      <div className="absolute bottom-8 left-8 z-30">
+        <RotatingFanIcon>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-400">
+            <path d="M10.827 16.379a6.082 6.082 0 0 1-8.618-7.002l5.412 1.45a6.082 6.082 0 0 1 7.002-8.618l-1.45 5.412a6.082 6.082 0 0 1 8.618 7.002l-5.412-1.45a6.082 6.082 0 0 1-7.002 8.618l1.45-5.412Z"/>
+            <path d="M12 12v.01"/>
+          </svg>
+        </RotatingFanIcon>
+      </div>
+      
+      <div className="absolute bottom-8 right-8 z-30">
+        <RotatingFanIcon>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-400">
+            <path d="M10.827 16.379a6.082 6.082 0 0 1-8.618-7.002l5.412 1.45a6.082 6.082 0 0 1 7.002-8.618l-1.45 5.412a6.082 6.082 0 0 1 8.618 7.002l-5.412-1.45a6.082 6.082 0 0 1-7.002 8.618l1.45-5.412Z"/>
+            <path d="M12 12v.01"/>
+          </svg>
+        </RotatingFanIcon>
+      </div>
+
+      {/* Main Content */}
+      <div className="relative z-10 flex items-center justify-center min-h-screen px-4 py-12 sm:px-6 lg:px-8">
+        <div className="w-full max-w-md p-8 space-y-8 bg-black/60 backdrop-blur-sm rounded-xl border border-amber-500/30 shadow-2xl">
+          <div className="text-center">
+            <h2 className="mt-6 text-3xl font-['redHatDisplay'] font-bold text-amber-200/90">
+              Welcome to Brain Forge
+            </h2>
+            <p className="mt-2 text-sm text-amber-100/70">
+              Sign in to continue to Brain Forge
+            </p>
           </div>
-        )}
-
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm space-y-4">
-            <div>
-              <label htmlFor="email" className="sr-only">Email address</label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={formData.email}
-                onChange={handleChange}
-                className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${errors.email ? 'border-red-300' : 'border-gray-300'} placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
-                placeholder="Email address"
-              />
-              {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
+          
+          {errors.submit && (
+            <div className="p-3 rounded-lg bg-red-900/50 border border-red-700/50 text-red-100 text-sm">
+              {errors.submit}
             </div>
-            <div>
-              <label htmlFor="password" className="sr-only">Password</label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                value={formData.password}
-                onChange={handleChange}
-                className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${errors.password ? 'border-red-300' : 'border-gray-300'} placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
-                placeholder="Password"
-              />
-              {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password}</p>}
-            </div>
-          </div>
+          )}
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember-me"
-                name="remember-me"
-                type="checkbox"
-                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-              />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                Remember me
-              </label>
+          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+            <div className="space-y-6">
+              <div>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <FiMail className="h-5 w-5 text-amber-400/80" />
+                  </div>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="appearance-none block w-full pl-10 pr-3 py-4 bg-black/30 border border-amber-500/30 rounded-lg text-amber-100 placeholder-amber-200/40 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-transparent transition-all duration-200 text-center text-lg"
+                    placeholder="Enter your email"
+                  />
+                </div>
+                {errors.email && <p className="mt-1.5 text-sm text-red-300">{errors.email}</p>}
+                {errors.success && <p className="mt-3 text-sm text-green-300">{errors.success}</p>}
+              </div>
             </div>
 
-            <div className="text-sm">
-              <Link to="/forgot-password" className="font-medium text-indigo-600 hover:text-indigo-500">
-                Forgot your password?
-              </Link>
+            <div className="space-y-6">
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-base font-medium rounded-lg text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500/50 shadow-lg hover:shadow-amber-500/20 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoading ? (
+                  <span className="flex items-center">
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Sending...
+                  </span>
+                ) : (
+                  <span className="flex items-center">
+                    <FiSend className="mr-2" />
+                    Send Email Link
+                  </span>
+                )}
+              </button>
             </div>
-          </div>
+          </form>
 
-          <div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isLoading ? 'Signing in...' : 'Sign in'}
-            </button>
-          </div>
-        </form>
-
-        <div className="mt-6">
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300"></div>
+          <div className="mt-8">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-amber-500/20"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-3 bg-transparent text-amber-100/50 text-xs font-medium">OR CONTINUE WITH</span>
+              </div>
             </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Or continue with</span>
-            </div>
-          </div>
 
-          <div className="mt-6 grid grid-cols-2 gap-3">
-            <button
-              onClick={() => handleSocialLogin('google')}
-              className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-            >
-              <FaGoogle className="h-5 w-5" />
-              <span className="ml-2">Google</span>
-            </button>
-            <button
-              onClick={() => handleSocialLogin('github')}
-              className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-            >
-              <FaGithub className="h-5 w-5" />
-              <span className="ml-2">GitHub</span>
-            </button>
+            <div className="mt-6">
+              <button
+                onClick={handleGoogleLogin}
+                className="w-full inline-flex justify-center items-center py-3 px-4 border border-amber-500/30 rounded-lg bg-black/30 text-amber-100 hover:bg-amber-500/10 transition-colors duration-200 text-base"
+              >
+                <FaGoogle className="h-5 w-5 mr-2" />
+                Continue with Google
+              </button>
+            </div>
           </div>
         </div>
       </div>
