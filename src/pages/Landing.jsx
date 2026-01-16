@@ -154,7 +154,7 @@ const Landing = () => {
         <CountdownTimer />
       </div>
       {/* Video Background with fallback */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-br from-blue-900 to-purple-900">
+      <div className="absolute inset-0 z-0">
         <video
           ref={videoRef}
           autoPlay
