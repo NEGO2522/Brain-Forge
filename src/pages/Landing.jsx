@@ -47,16 +47,16 @@ const CountdownTimer = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <span className="text-sm uppercase tracking-[0.3em] text-white/90 font-light mb-3 font-sans">
+      <span className="text-xs sm:text-sm uppercase tracking-[0.2em] sm:tracking-[0.3em] text-white/90 font-light mb-2 sm:mb-3 font-sans">
         TIME TO DEPLOYMENT
       </span>
-      <div className="flex items-baseline gap-6">
+      <div className="flex items-baseline gap-3 sm:gap-6">
         {Object.entries(timeLeft).map(([unit, value]) => (
           <div key={unit} className="flex items-baseline">
-            <span className="text-5xl font-serif font-normal text-white">
+            <span className="text-3xl sm:text-5xl font-serif font-normal text-white">
               {value.toString().padStart(2, '0')}
             </span>
-            <span className="text-2xl font-sans font-light text-white/80 ml-1">
+            <span className="text-xl sm:text-2xl font-sans font-light text-white/80 ml-1">
               {unitMap[unit]}
             </span>
           </div>
@@ -118,7 +118,7 @@ const Landing = () => {
       {/* Hero Section with Video Background */}
       <section className="relative h-screen w-full flex-shrink-0 snap-start">
         {/* Fixed Background Elements */}
-        <div className="fixed top-8 left-8 z-30">
+        <div className="fixed top-4 left-4 sm:top-8 sm:left-8 z-30">
           <RotatingFanIcon>
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-300">
               <path d="M10.827 16.379a6.082 6.082 0 0 1-8.618-7.002l5.412 1.45a6.082 6.082 0 0 1 7.002-8.618l-1.45 5.412a6.082 6.082 0 0 1 8.618 7.002l-5.412-1.45a6.082 6.082 0 0 1-7.002 8.618l1.45-5.412Z"/>
@@ -133,7 +133,7 @@ const Landing = () => {
         </div>
 
         {/* Fixed Countdown Timer */}
-        <div className="fixed right-10 bottom-10 z-10">
+        <div className="fixed right-4 bottom-20 sm:right-10 sm:bottom-10 z-10 bg-black/40 backdrop-blur-sm rounded-lg p-2 sm:bg-transparent sm:backdrop-blur-0 sm:p-0">
           <CountdownTimer />
         </div>
 
@@ -155,19 +155,19 @@ const Landing = () => {
 
         {/* Main Content */}
         <div className="relative z-10 h-full flex flex-col items-center justify-center px-4">
-          <div className="max-w-4xl w-full flex flex-col items-center">
-            <h1 className="text-3xl sm:text-5xl font-['redHatDisplay'] mb-6 text-amber-200/80 text-center">
+          <div className="w-full max-w-4xl flex flex-col items-center px-2 sm:px-0">
+            <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-['redHatDisplay'] mb-4 sm:mb-6 text-amber-200/80 text-center">
               Begin Your 
               <br className="hidden sm:block" />
               Open Source Journey
             </h1>
-            <p className="text-base md:text-lg mb-8 max-w-2xl text-gray-100 leading-normal font-['Inter',sans-serif] font-light tracking-normal text-center px-4">
+            <p className="text-sm xs:text-base md:text-lg mb-6 sm:mb-8 max-w-2xl text-gray-100 leading-relaxed font-['Inter',sans-serif] font-light tracking-normal text-center px-2 sm:px-4">
               This season, join an ambitious journey across new frontiers—where your code fuels discovery, 
               shapes communities, and leaves a mark on the digital cosmos.
             </p>
             
             {/* Buttons - Centered */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center w-full max-w-md">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center w-full max-w-md px-2 sm:px-0">
               <button className="relative group bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-medium py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-amber-500/20 w-full sm:w-auto">
                 <span className="relative z-10 flex items-center justify-center gap-2">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -187,23 +187,23 @@ const Landing = () => {
             </div>
             
             {/* Organized By Text - Bottom Left Corner */}
-            <div className="absolute left-10 bottom-10 group">
-              <div className="flex items-start gap-4">
+            <div className="absolute left-2 bottom-4 sm:left-10 sm:bottom-10 group">
+              <div className="flex items-start gap-2 sm:gap-4">
                 {/* Large K initial */}
                 <div className="flex flex-col items-center">
-                  <span className="text-6xl font-bold text-amber-400/90 font-serif -mb-3">K</span>
-                  <div className="h-1 w-10 bg-gradient-to-r from-amber-400/70 to-transparent"></div>
+                  <span className="text-4xl sm:text-5xl md:text-6xl font-bold text-amber-400/90 font-serif -mb-2 sm:-mb-3">K</span>
+                  <div className="h-0.5 w-8 sm:w-10 bg-gradient-to-r from-amber-400/70 to-transparent"></div>
                 </div>
                 
                 {/* Name */}
-                <div className="flex flex-col font-serif pt-1">
-                  <span className="text-[11px] uppercase tracking-[0.3em] text-amber-200/80 font-light">
+                <div className="flex flex-col font-serif pt-0 sm:pt-1">
+                  <span className="text-[9px] xs:text-[10px] sm:text-[11px] uppercase tracking-[0.2em] sm:tracking-[0.3em] text-amber-200/80 font-light">
                     Organized By
                   </span>
-                  <span className="text-2xl font-medium text-white tracking-wide mt-1">
+                  <span className="text-lg xs:text-xl sm:text-2xl font-medium text-white tracking-wide mt-0.5 sm:mt-1">
                    Kshitij Jain
                   </span>
-                  <div className="h-0.5 w-16 bg-gradient-to-r from-amber-400/70 to-transparent mt-2 transition-all duration-300 group-hover:w-24"></div>
+                  <div className="h-0.5 w-12 sm:w-16 bg-gradient-to-r from-amber-400/70 to-transparent mt-1.5 sm:mt-2 transition-all duration-300 group-hover:w-16 sm:group-hover:w-24"></div>
                 </div>
               </div>
             </div>
@@ -212,34 +212,34 @@ const Landing = () => {
       </section>
 
       {/* Footer Section */}
-      <footer className="relative w-full h-screen flex-shrink-0 snap-start bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/Image.jpg)' }}>
+      <footer className="relative w-full min-h-screen h-auto flex-shrink-0 snap-start bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/Image.jpg)' }}>
         <div className="absolute inset-0 bg-black/70"></div>
-        <div className="relative z-10 h-full max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
-          <div className="w-full pt-20">
+        <div className="relative z-10 h-full max-w-7xl mx-auto px-4 py-12 sm:py-16 sm:px-6 lg:px-8">
+          <div className="w-full pt-16 sm:pt-20">
             {/* Navigation Links */}
-            <div className="flex justify-center mb-20">
-              <div className="space-y-6">
-                <div className="grid grid-cols-2 gap-x-8 gap-y-2">
-                  <div className="space-y-2">
-                    <a href="#" className="hover:text-white text-white/70 tracking-[0.12em] sm:tracking-[0.15em] md:tracking-[0.18em] uppercase whitespace-nowrap transition-colors block">Rules & Guidelines</a>
-                    <a href="#" className="hover:text-white text-white/70 tracking-[0.12em] sm:tracking-[0.15em] md:tracking-[0.18em] uppercase whitespace-nowrap transition-colors block">Privacy Policy</a>
+            <div className="flex justify-center mb-10 sm:mb-20 px-2">
+              <div className="space-y-4 sm:space-y-6 w-full max-w-xs">
+                <div className="grid grid-cols-2 gap-x-4 sm:gap-x-8 gap-y-2">
+                  <div className="space-y-1 sm:space-y-2">
+                    <a href="#" className="hover:text-white text-white/70 text-xs xs:text-sm tracking-[0.12em] sm:tracking-[0.15em] md:tracking-[0.18em] uppercase whitespace-nowrap transition-colors block">Rules & Guidelines</a>
+                    <a href="#" className="hover:text-white text-white/70 text-xs xs:text-sm tracking-[0.12em] sm:tracking-[0.15em] md:tracking-[0.18em] uppercase whitespace-nowrap transition-colors block">Privacy Policy</a>
                   </div>
-                  <div className="space-y-2">
-                    <a href="#" className="hover:text-white text-white/70 tracking-[0.12em] sm:tracking-[0.15em] md:tracking-[0.18em] uppercase whitespace-nowrap transition-colors block">Code of Conduct</a>
-                    <a href="#" className="hover:text-white text-white/70 tracking-[0.12em] sm:tracking-[0.15em] md:tracking-[0.18em] uppercase whitespace-nowrap transition-colors block">Terms of Use</a>
+                  <div className="space-y-1 sm:space-y-2">
+                    <a href="#" className="hover:text-white text-white/70 text-xs xs:text-sm tracking-[0.12em] sm:tracking-[0.15em] md:tracking-[0.18em] uppercase whitespace-nowrap transition-colors block">Code of Conduct</a>
+                    <a href="#" className="hover:text-white text-white/70 text-xs xs:text-sm tracking-[0.12em] sm:tracking-[0.15em] md:tracking-[0.18em] uppercase whitespace-nowrap transition-colors block">Terms of Use</a>
                   </div>
                 </div>
-                <a href="#" className="hover:text-white text-white/90 tracking-[0.12em] sm:tracking-[0.15em] md:tracking-[0.18em] uppercase whitespace-nowrap transition-colors block text-center text-lg font-medium">
+                <a href="#" className="hover:text-white text-white/90 text-sm sm:text-base tracking-[0.12em] sm:tracking-[0.15em] md:tracking-[0.18em] uppercase whitespace-nowrap transition-colors block text-center font-medium">
                   Contact Us
                 </a>
               </div>
             </div>
 
             {/* Organized By Section - Left Aligned */}
-            <div className="flex items-start justify-between pl-8 pr-8">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between px-4 sm:pl-8 sm:pr-8 pt-8 sm:pt-2">
               {/* Social Links */}
-              <div className="flex flex-col space-y-4 pt-2">
-                <span className="text-xs uppercase tracking-widest text-amber-200/60 font-light mb-2">Connect</span>
+              <div className="flex flex-col items-center sm:items-start space-y-3 sm:space-y-4 pt-2 order-2 sm:order-1 mt-6 sm:mt-0">
+                <span className="text-xs uppercase tracking-widest text-amber-200/60 font-light">Connect</span>
                 <div className="flex space-x-4">
                   <a href="https://github.com/kshitijjain" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-amber-400 transition-colors">
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -265,19 +265,19 @@ const Landing = () => {
               </div>
 
               {/* Organized By Content */}
-              <div className="flex items-start gap-4">
+              <div className="flex items-start gap-3 sm:gap-4 order-1 sm:order-2">
                 <div className="flex flex-col items-center">
-                  <span className="text-8xl font-bold text-amber-400/90 font-serif -mb-3">K</span>
-                  <div className="h-1 w-14 bg-gradient-to-r from-amber-400/70 to-transparent"></div>
+                  <span className="text-6xl sm:text-7xl md:text-8xl font-bold text-amber-400/90 font-serif -mb-2 sm:-mb-3">K</span>
+                  <div className="h-0.5 w-10 sm:w-14 bg-gradient-to-r from-amber-400/70 to-transparent"></div>
                 </div>
-                <div className="flex flex-col font-serif pt-2">
-                  <span className="text-sm uppercase tracking-[0.3em] text-amber-200/80 font-light">
+                <div className="flex flex-col font-serif pt-1 sm:pt-2">
+                  <span className="text-xs sm:text-sm uppercase tracking-[0.2em] sm:tracking-[0.3em] text-amber-200/80 font-light">
                     Organized By
                   </span>
-                  <span className="text-3xl font-medium text-white tracking-wide mt-2">
+                  <span className="text-2xl sm:text-3xl font-medium text-white tracking-wide mt-1 sm:mt-2">
                     Kshitij Jain
                   </span>
-                  <div className="h-0.5 w-20 bg-gradient-to-r from-amber-400/70 to-transparent mt-3"></div>
+                  <div className="h-0.5 w-16 sm:w-20 bg-gradient-to-r from-amber-400/70 to-transparent mt-2 sm:mt-3"></div>
                 </div>
               </div>
             </div>
