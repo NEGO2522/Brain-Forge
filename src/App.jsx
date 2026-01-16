@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { Fragment } from 'react';
-import Navbar from './components/Navbar';
+import { Fragment, useContext } from 'react';
+import Navbar, { MenuProvider, MenuContext } from './components/Navbar';
 import Landing from './pages/Landing';
 import Community from './pages/Community';
 import Connect from './pages/Connect';
@@ -9,18 +9,23 @@ import Login from './auth/Login';
 import Profiles from './pages/Profiles';
 
 // Layout component that includes the Navbar
-const Layout = ({ children }) => (
-  <div className="min-h-screen">
-    <Navbar />
-    <main >
-      {children}
-    </main>
-  </div>
-);
+const Layout = ({ children }) => {
+  const { isMenuOpen } = useContext(MenuContext);
+  
+  return (
+    <div className="min-h-screen">
+      <Navbar />
+      <main className={`transition-all duration-300 ${isMenuOpen ? 'blur-sm' : ''}`}>
+        {children}
+      </main>
+    </div>
+  );
+};
 
 function App() {
   return (
     <div className="App">
+      <MenuProvider>
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/community" element={
@@ -46,6 +51,7 @@ function App() {
           </Layout>
         } />
       </Routes>
+      </MenuProvider>
     </div>
   );
 }

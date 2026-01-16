@@ -1,32 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, createContext, useContext } from 'react';
+
+export const MenuContext = createContext({
+  isMenuOpen: false,
+  setIsMenuOpen: () => {}
+});
+
 import { Link } from 'react-router-dom';
 import { RotatingFanIcon } from './RotatingFanIcon';
 
-const Navbar = () => {
+export const MenuProvider = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  
+  return (
+    <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
+      {children}
+    </MenuContext.Provider>
+  );
+};
+
+const Navbar = () => {
+  const { isMenuOpen, setIsMenuOpen } = useContext(MenuContext);
 
   return (
-    <nav className="absolute top-0 left-0 right-0 z-50 py-4 px-4 sm:px-6 bg-transparent">
+    <nav className="fixed top-0 left-0 right-0 z-50 py-4 px-4 sm:px-6 bg-transparent">
       <div className="flex flex-col sm:flex-row sm:justify-center sm:items-center relative">
+        {/* Desktop Title with Fan Icon - Only visible on desktop */}
+        <div className="hidden sm:flex items-center gap-2 ml-4 absolute left-0">
+          <RotatingFanIcon>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-300">
+              <path d="M10.827 16.379a6.082 6.082 0 0 1-8.618-7.002l5.412 1.45a6.082 6.082 0 0 1 7.002-8.618l-1.45 5.412a6.082 6.082 0 0 1 8.618 7.002l-5.412-1.45a6.082 6.082 0 0 1-7.002 8.618l1.45-5.412Z"/>
+              <path d="M12 12v.01"/>
+            </svg>
+          </RotatingFanIcon>
+          <span className="text-xl font-bold text-amber-300">Brain Forge</span>
+        </div>
+        
         {/* Mobile menu button and title */}
-        <div className="flex justify-between items-center w-full sm:w-auto sm:absolute sm:left-0">
-          {/* Desktop Title with Fan Icon - Only visible on desktop */}
-          <div className="hidden sm:flex items-center gap-2 ml-4">
-            <RotatingFanIcon>
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-300">
-                <path d="M10.827 16.379a6.082 6.082 0 0 1-8.618-7.002l5.412 1.45a6.082 6.082 0 0 1 7.002-8.618l-1.45 5.412a6.082 6.082 0 0 1 8.618 7.002l-5.412-1.45a6.082 6.082 0 0 1-7.002 8.618l1.45-5.412Z"/>
-                <path d="M12 12v.01"/>
-              </svg>
-            </RotatingFanIcon>
-            <span className="text-xl font-bold text-amber-300">Brain Forge</span>
-          </div>
-          
+        <div className="flex justify-between items-center w-full sm:w-auto">
           {/* Mobile Title - Centered, only visible on mobile */}
-          <h1 className="text-xl font-bold text-amber-300 sm:hidden absolute left-1/2 transform -translate-x-1/2">Brain Forge</h1>
+          <div className="flex-1 flex justify-center">
+            <h1 className="text-xl font-bold text-amber-300 sm:hidden">Brain Forge</h1>
+          </div>
           
           {/* Mobile menu button */}
           <button 
-            className="sm:hidden p-2 rounded-md text-amber-300 hover:bg-amber-500/10 focus:outline-none focus:ring-2 focus:ring-amber-400/50"
+            className="sm:hidden p-2 rounded-md text-amber-300 hover:bg-amber-500/10 focus:outline-none focus:ring-2 focus:ring-amber-400/50 absolute right-0"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle menu"
           >
@@ -77,20 +95,32 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Menu */}
-        <div className={`sm:hidden absolute top-full left-0 right-0 transition-all duration-300 ease-in-out transform ${isMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-4 opacity-0 pointer-events-none'}`}>
-          <div className="flex flex-col p-4 space-y-2">
-            <NavLink to="/" icon="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" text="Home" />
-            <NavLink to="/community" icon="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" text="Community" />
-            <NavLink to="/profiles" icon="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" text="Profiles" />
-            <NavLink to="/about" icon="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" text="About" />
-            <NavLink to="/connect" icon="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" text="Connect" />
-            <Link 
-              to="/login" 
-              className="flex items-center justify-center w-full mt-2 px-4 py-3 text-base font-medium text-amber-100 hover:bg-amber-500/10 rounded-lg transition-colors duration-300 border border-amber-500/30"
+        <div className={`sm:hidden fixed top-0 left-0 right-0 bottom-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${isMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+          <div className={`absolute top-20 left-4 right-4 bg-gray-900/95 backdrop-blur-lg rounded-xl p-4 shadow-2xl transition-all duration-300 transform ${isMenuOpen ? 'translate-y-0' : '-translate-y-4'}`}>
+            {/* Close Button */}
+            <button 
               onClick={() => setIsMenuOpen(false)}
+              className="absolute top-2 right-2 p-1 rounded-full text-amber-300 hover:bg-amber-500/10 focus:outline-none focus:ring-2 focus:ring-amber-400/50"
+              aria-label="Close menu"
             >
-              Sign In
-            </Link>
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <div className="flex flex-col p-4 space-y-2">
+              <NavLink to="/" icon="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" text="Home" />
+              <NavLink to="/community" icon="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" text="Community" />
+              <NavLink to="/profiles" icon="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" text="Profiles" />
+              <NavLink to="/about" icon="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" text="About" />
+              <NavLink to="/connect" icon="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" text="Connect" />
+              <Link 
+                to="/login" 
+                className="flex items-center justify-center w-full mt-2 px-4 py-3 text-base font-medium text-amber-100 hover:bg-amber-500/10 rounded-lg transition-colors duration-300 border border-amber-500/30"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Sign In
+              </Link>
+            </div>
           </div>
         </div>
 
