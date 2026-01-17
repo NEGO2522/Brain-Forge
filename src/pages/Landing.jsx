@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import Navbar from '../components/Navbar';
+import { optimizeImage, preloadImage } from '../utils/imageOptimizer';
 
 const CountdownTimer = () => {
   // Set target date to 16 days from now
@@ -88,17 +89,33 @@ const Landing = () => {
   const videoRef = useRef(null);
 
   useEffect(() => {
+    // Preload the background image
+    const cleanupImagePreload = preloadImage(optimizeImage('/Image.jpg', { quality: 30 }));
+    
     // Only autoplay video on non-mobile devices
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     
     if (videoRef.current && !isMobile) {
       const video = videoRef.current;
       
-      const handleLoadedData = () => {
-        console.log('Video loaded successfully');
+      // Set loading strategy for video
+      video.preload = 'metadata';
+      
+      const handleCanPlay = () => {
+        console.log('Video can play');
         video.play().catch(error => {
           console.error('Error playing video:', error);
         });
+      };
+      
+      const handleLoadedData = () => {
+        console.log('Video loaded successfully');
+        // Add a small delay to ensure smooth playback
+        setTimeout(() => {
+          video.play().catch(error => {
+            console.error('Error playing video after load:', error);
+          });
+        }, 100);
       };
       
       const handleError = (e) => {
@@ -106,13 +123,18 @@ const Landing = () => {
         console.log('Video source:', video.currentSrc);
       };
 
+      video.addEventListener('canplay', handleCanPlay);
       video.addEventListener('loadeddata', handleLoadedData);
       video.addEventListener('error', handleError);
 
       return () => {
+        video.removeEventListener('canplay', handleCanPlay);
         video.removeEventListener('loadeddata', handleLoadedData);
         video.removeEventListener('error', handleError);
+        cleanupImagePreload?.();
       };
+    } else {
+      return cleanupImagePreload;
     }
   }, []);
 
@@ -140,20 +162,43 @@ const Landing = () => {
           <CountdownTimer />
         </div>
 
-        {/* Video Background */}
+        {/* Background Image with Blur-up Placeholder */}
         <div className="absolute inset-0 z-0">
-          <video
-            ref={videoRef}
-            className="absolute inset-0 w-full h-full object-cover z-0"
-            autoPlay={!isMobile}
-            loop={!isMobile}
-            muted
-            playsInline
-            poster="/Image.jpg"
-          >
-            <source src="/videos/background-video.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+          <div className="absolute inset-0 w-full h-full">
+            <img
+              src={optimizeImage('/Image.jpg', { quality: 90 })}
+              alt="Background"
+              className="w-full h-full object-cover opacity-0 transition-opacity duration-500"
+              onLoad={(e) => {
+                e.target.style.opacity = 1;
+              }}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover'
+              }}
+            />
+          </div>
+          
+          {/* Video Background - Only load on non-mobile */}
+          {!isMobile && (
+            <video
+              ref={videoRef}
+              className="absolute inset-0 w-full h-full object-cover z-0"
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="none"
+              poster={optimizeImage('/Image.jpg', { quality: 30 })}
+            >
+              <source src="/videos/background-video.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          )}
         </div>
 
         {/* Main Content */}
@@ -179,8 +224,8 @@ const Landing = () => {
                 </span>
                 <span className="absolute inset-0 bg-white/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
               </button>
-              <a href="https://www.linkedin.com/in/kshitij-kj-jain-422025342/" target="_blank" rel="noopener noreferrer" className="relative group bg-transparent border-2 border-amber-400/50 hover:border-amber-400/80 text-white font-medium py-3 px-8 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 hover:bg-amber-500/10 w-full sm:w-auto">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <a href="https://www.linkedin.com/company/brainforge16/ " target="_blank" rel="noopener noreferrer" className="relative group bg-transparent border-2 border-amber-400/50 hover:border-amber-400/80 text-white font-medium py-3 px-8 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 hover:bg-amber-500/10 w-full sm:w-auto">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
                 </svg>
                 Join LinkedIn
@@ -214,7 +259,12 @@ const Landing = () => {
       </section>
 
       {/* Footer Section */}
-      <footer className="relative w-full min-h-screen h-auto flex-shrink-0 snap-start bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/Image.jpg)' }}>
+      <footer className="relative w-full min-h-screen h-auto flex-shrink-0 snap-start bg-cover bg-center bg-no-repeat" style={{ 
+        backgroundImage: `url(${optimizeImage('/Image.jpg', { quality: 60 })})`,
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat'
+      }}>
         <div className="absolute inset-0 bg-black/70"></div>
         <div className="relative z-10 h-full max-w-7xl mx-auto px-4 py-12 sm:py-16 sm:px-6 lg:px-8">
           <div className="w-full pt-16 sm:pt-20">
