@@ -36,7 +36,7 @@ const Login = () => {
         try {
           setIsLoading(true);
           await completeSignInWithEmailLink();
-          navigate('/'); // Redirect to landing page after successful sign-in
+          navigate('/user'); // Redirect to user profile page after successful sign-in
         } catch (error) {
           setAuthError(error.message);
           console.error('Error completing email sign in:', error);
@@ -102,7 +102,7 @@ const Login = () => {
       setIsLoading(true);
       setAuthError('');
       await signInWithGoogle();
-      navigate('/'); // Redirect to landing page after successful sign-in
+      navigate('/user'); // Redirect to user profile page after successful sign-in
     } catch (error) {
       console.error('Google sign in error:', error);
       setAuthError(error.message || 'Failed to sign in with Google. Please try again.');
