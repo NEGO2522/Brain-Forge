@@ -5,12 +5,13 @@ import { RotatingFanIcon } from '../components/RotatingFanIcon';
 const Connect = () => {
   return (
     <div 
-      className="min-h-screen py-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
+      className="h-screen py-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
       style={{
         backgroundImage: 'url(/Connect.jpg)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
+        overflow: 'hidden'
       }}
     >
       {/* Overlay with blur effect */}
@@ -164,6 +165,23 @@ const Connect = () => {
                   Join Now
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* FAQ Section */}
+      <div className="max-w-7xl mx-auto relative z-10 mt-16">
+        <div className="bg-transparent backdrop-blur-sm rounded-xl p-8 shadow-2xl border border-amber-500/20">
+          <h2 className="text-2xl font-semibold text-white mb-8 text-center">Frequently Asked Questions</h2>
+          
+          <div className="space-y-6 max-w-3xl mx-auto">
+            {/* FAQ Item */}
+            <div className="bg-gray-900/50 rounded-lg p-6 border border-gray-700">
+              <h3 className="text-lg font-medium text-amber-400 mb-2">Is Brain Forge free?</h3>
+              <p className="text-gray-300">
+                Yes, joining Brain Forge and its communities is completely free.
+              </p>
             </div>
           </div>
         </div>
