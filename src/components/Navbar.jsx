@@ -1,12 +1,14 @@
-import React, { useState, createContext, useContext } from 'react';
+import React, { useState, createContext, useContext, useEffect } from 'react';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 export const MenuContext = createContext({
   isMenuOpen: false,
   setIsMenuOpen: () => {}
 });
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { RotatingFanIcon } from './RotatingFanIcon';
+import { FaUserCircle } from 'react-icons/fa';
 
 export const MenuProvider = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -20,6 +22,20 @@ export const MenuProvider = ({ children }) => {
 
 const Navbar = () => {
   const { isMenuOpen, setIsMenuOpen } = useContext(MenuContext);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsLoggedIn(!!user);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleProfileClick = () => {
+    navigate('/user');
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 py-4 px-4 sm:px-6 bg-transparent">
@@ -113,22 +129,45 @@ const Navbar = () => {
               <NavLink to="/profiles" icon="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" text="Profiles" />
               <NavLink to="/about" icon="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" text="About" />
               <NavLink to="/connect" icon="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" text="Connect" />
-              <Link 
-                to="/login" 
-                className="flex items-center justify-center w-full mt-2 px-4 py-3 text-base font-medium text-amber-100 hover:bg-amber-500/10 rounded-lg transition-colors duration-300 border border-amber-500/30"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Sign In
-              </Link>
+              {isLoggedIn ? (
+                <button 
+                  onClick={() => {
+                    handleProfileClick();
+                    setIsMenuOpen(false);
+                  }}
+                  className="flex items-center justify-center w-full mt-2 px-4 py-3 text-base font-medium text-amber-100 hover:bg-amber-500/10 rounded-lg transition-colors duration-300 border border-amber-500/30"
+                >
+                  <FaUserCircle className="w-5 h-5 mr-2" />
+                  Profile
+                </button>
+              ) : (
+                <Link 
+                  to="/login" 
+                  className="flex items-center justify-center w-full mt-2 px-4 py-3 text-base font-medium text-amber-100 hover:bg-amber-500/10 rounded-lg transition-colors duration-300 border border-amber-500/30"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Sign In
+                </Link>
+              )}
             </div>
           </div>
         </div>
 
-        {/* Sign In Button - Desktop */}
+        {/* Sign In / Profile Button - Desktop */}
         <div className="hidden sm:block absolute right-0">
-          <Link to="/login" className="px-4 py-2 text-sm font-medium text-amber-100 bg-amber-600/50 hover:bg-amber-500/70 rounded-lg transition-colors duration-300 border border-amber-500/30">
-            Sign In
-          </Link>
+          {isLoggedIn ? (
+            <button 
+              onClick={handleProfileClick}
+              className="p-2 text-amber-100 hover:bg-amber-500/10 rounded-full transition-colors duration-300"
+              aria-label="Profile"
+            >
+              <FaUserCircle className="w-6 h-6" />
+            </button>
+          ) : (
+            <Link to="/login" className="px-4 py-2 text-sm font-medium text-amber-100 bg-amber-600/50 hover:bg-amber-500/70 rounded-lg transition-colors duration-300 border border-amber-500/30">
+              Sign In
+            </Link>
+          )}
         </div>
         
         {/* Spacer to balance the layout on mobile */}

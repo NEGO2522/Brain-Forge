@@ -7,6 +7,7 @@ import Connect from './pages/Connect';
 import About from './pages/About';
 import Login from './auth/Login';
 import Profiles from './pages/Profiles';
+import User from './pages/User';
 
 // Layout component that includes the Navbar
 const Layout = ({ children }) => {
@@ -44,7 +45,12 @@ function App() {
           </Layout>
         } />
         <Route path="/login" element={<Login />} />
-        <Route path="/profile" element={<Navigate to="/profiles" replace />} />
+        <Route path="/user" element={
+          <Layout>
+            <User />
+          </Layout>
+        } />
+        <Route path="/profile" element={<Navigate to="/user" replace />} />
         <Route path="/profiles" element={
           <Layout>
             <Profiles />
