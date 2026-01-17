@@ -84,11 +84,14 @@ const RotatingFanIcon = styled.div`
 `;
 
 const Landing = () => {
+  const isMobile = typeof window !== 'undefined' ? /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) : false;
   const videoRef = useRef(null);
 
   useEffect(() => {
-    // Log video loading status
-    if (videoRef.current) {
+    // Only autoplay video on non-mobile devices
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    
+    if (videoRef.current && !isMobile) {
       const video = videoRef.current;
       
       const handleLoadedData = () => {
@@ -142,8 +145,8 @@ const Landing = () => {
           <video
             ref={videoRef}
             className="absolute inset-0 w-full h-full object-cover z-0"
-            autoPlay
-            loop
+            autoPlay={!isMobile}
+            loop={!isMobile}
             muted
             playsInline
             poster="/Image.jpg"
