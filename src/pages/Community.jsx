@@ -1,8 +1,9 @@
 import React from 'react';
-import { FaDiscord, FaUsers, FaArrowRight } from 'react-icons/fa';
+import { FaWhatsapp, FaArrowRight } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import Navbar from '../components/Navbar';
 
-const CommunityCard = ({ name, description, category, memberCount, discordLink, index }) => {
+const CommunityCard = ({ name, description, category, whatsappLink, index }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -26,7 +27,8 @@ const CommunityCard = ({ name, description, category, memberCount, discordLink, 
             </h3>
           </div>
           <div className="p-2 bg-white/5 rounded-lg group-hover:bg-amber-500/20 transition-colors">
-             <FaDiscord className="text-xl text-white/50 group-hover:text-amber-500" />
+             {/* Swapped Discord for WhatsApp */}
+             <FaWhatsapp className="text-xl text-white/50 group-hover:text-amber-500" />
           </div>
         </div>
 
@@ -34,20 +36,10 @@ const CommunityCard = ({ name, description, category, memberCount, discordLink, 
           {description}
         </p>
 
-        <div className="mt-auto pt-6 border-t border-white/5 flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <div className="flex -space-x-2">
-               {[1,2,3].map(i => (
-                 <div key={i} className="w-6 h-6 rounded-full border border-black bg-gray-800 flex items-center justify-center text-[8px] text-white">
-                    {i === 3 ? '+' : ''}
-                 </div>
-               ))}
-            </div>
-            <span className="text-[10px] text-gray-500 uppercase tracking-widest">{memberCount} members</span>
-          </div>
-
+        <div className="mt-auto pt-6 border-t border-white/5 flex justify-end items-center">
+          {/* Removed member counts and avatars, kept only the Join link */}
           <a 
-            href={discordLink} 
+            href={whatsappLink} 
             target="_blank" 
             rel="noopener noreferrer"
             className="flex items-center gap-2 text-xs font-bold text-amber-500 uppercase tracking-widest hover:gap-4 transition-all"
@@ -62,22 +54,23 @@ const CommunityCard = ({ name, description, category, memberCount, discordLink, 
 
 const Community = () => {
   const communities = [
-    { id: 1, name: 'LinkedIn', description: 'Enhance your professional profile and network with industry leaders.', category: 'Networking', memberCount: '2.1k+', discordLink: '#' },
-    { id: 2, name: 'Job Opportunities', description: 'Find and share job openings and career advancement opportunities.', category: 'Career', memberCount: '1.8k+', discordLink: '#' },
-    { id: 3, name: 'Startup', description: 'Connect with founders, investors, and startup enthusiasts in the ecosystem.', category: 'Entrepreneurship', memberCount: '1.5k+', discordLink: '#' },
-    { id: 4, name: 'App Development', description: 'Master mobile and desktop application development across platforms.', category: 'Tech', memberCount: '980+', discordLink: '#' },
-    { id: 5, name: 'Gen AI', description: 'Explore the world of Generative AI models and their applications.', category: 'AI', memberCount: '1.1k+', discordLink: '#' },
-    { id: 6, name: 'Agentic AI', description: 'Build and understand autonomous AI agents and their ecosystems.', category: 'AI', memberCount: '750+', discordLink: '#' },
-    { id: 7, name: 'Deep Learning', description: 'Dive into neural networks and advanced machine learning techniques.', category: 'AI', memberCount: '1.3k+', discordLink: '#' },
-    { id: 8, name: 'Web Development', description: 'Build modern web applications and learn from industry experts.', category: 'Tech', memberCount: '1.2k+', discordLink: '#' },
-    { id: 9, name: 'Data Science', description: 'Explore data analysis and machine learning with data enthusiasts.', category: 'Learning', memberCount: '850+', discordLink: '#' },
-    { id: 10, name: 'Cybersecurity', description: 'Learn security best practices and ethical hacking techniques.', category: 'Tech', memberCount: '720+', discordLink: '#' },
-    { id: 11, name: 'Blockchain', description: 'Dive into blockchain technology, Web3, and decentralized applications.', category: 'Tech', memberCount: '950+', discordLink: '#' },
-    { id: 12, name: 'Hackathons', description: 'Find hackathons, form teams, and build amazing projects together.', category: 'Events', memberCount: '1.5k+', discordLink: '#' },
+    { id: 1, name: 'LinkedIn', description: 'Enhance your professional profile and network with industry leaders.', category: 'Networking', whatsappLink: '#' },
+    { id: 2, name: 'Job Opportunities', description: 'Find and share job openings and career advancement opportunities.', category: 'Career', whatsappLink: '#' },
+    { id: 3, name: 'Startup', description: 'Connect with founders, investors, and startup enthusiasts in the ecosystem.', category: 'Entrepreneurship', whatsappLink: '#' },
+    { id: 4, name: 'App Development', description: 'Master mobile and desktop application development across platforms.', category: 'Tech', whatsappLink: '#' },
+    { id: 5, name: 'Gen AI', description: 'Explore the world of Generative AI models and their applications.', category: 'AI', whatsappLink: '#' },
+    { id: 6, name: 'Agentic AI', description: 'Build and understand autonomous AI agents and their ecosystems.', category: 'AI', whatsappLink: '#' },
+    { id: 7, name: 'Deep Learning', description: 'Dive into neural networks and advanced machine learning techniques.', category: 'AI', whatsappLink: '#' },
+    { id: 8, name: 'Web Development', description: 'Build modern web applications and learn from industry experts.', category: 'Tech', whatsappLink: '#' },
+    { id: 9, name: 'Data Science', description: 'Explore data analysis and machine learning with data enthusiasts.', category: 'Learning', whatsappLink: '#' },
+    { id: 10, name: 'Cybersecurity', description: 'Learn security best practices and ethical hacking techniques.', category: 'Tech', whatsappLink: '#' },
+    { id: 11, name: 'Blockchain', description: 'Dive into blockchain technology, Web3, and decentralized applications.', category: 'Tech', whatsappLink: '#' },
+    { id: 12, name: 'Hackathons', description: 'Find hackathons, form teams, and build amazing projects together.', category: 'Events', whatsappLink: '#' },
   ];
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
+      <Navbar />
       
       {/* Decorative Background Elements */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
