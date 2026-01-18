@@ -38,13 +38,6 @@ const Connect = () => {
         
         {/* Header Area - Compact */}
         <div className="mb-8 flex-shrink-0">
-          <motion.span 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-amber-500 font-bold tracking-[0.5em] text-[10px] uppercase block mb-2"
-          >
-            Terminal / Connect
-          </motion.span>
           <motion.h1 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
