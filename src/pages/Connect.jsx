@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { FaDiscord, FaLinkedin, FaEnvelope, FaMapMarkerAlt, FaPhone, FaChevronRight } from 'react-icons/fa';
 import { RotatingFanIcon } from '../components/RotatingFanIcon';
+import Navbar from '../components/Navbar';
 
 const ContactItem = ({ icon: Icon, title, content, link }) => (
   <motion.div 
@@ -25,8 +26,12 @@ const ContactItem = ({ icon: Icon, title, content, link }) => (
 );
 
 const Connect = () => {
+  const DISCORD_LINK = "https://discord.com/invite/7CSFqfaxMp";
+  const LINKEDIN_LINK = "https://www.linkedin.com/company/brainforge16";
+
   return (
     <div className="h-screen w-full bg-black text-white relative overflow-hidden flex flex-col pt-20 pb-4 px-6">
+      <Navbar />
       
       {/* Background Ambience */}
       <div className="absolute inset-0 z-0 pointer-events-none">
@@ -37,7 +42,7 @@ const Connect = () => {
       <div className="max-w-7xl mx-auto w-full h-full flex flex-col relative z-10 overflow-hidden">
         
         {/* Header Area */}
-        <div className="mb-6 flex-shrink-0 text-center lg:text-left">
+        <div className="mb-6 flex-shrink-0 text-center lg:text-left pt-4">
           <motion.h1 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -72,8 +77,8 @@ const Connect = () => {
                     <h3 className="text-[9px] uppercase tracking-[0.4em] text-gray-500 font-bold mb-3">Social Uplink</h3>
                     <div className="flex space-x-2">
                       {[
-                        { icon: FaDiscord, link: "#", color: "hover:border-[#5865F2] hover:text-[#5865F2]" },
-                        { icon: FaLinkedin, link: "https://www.linkedin.com/company/brainforge16", color: "hover:border-[#0077b5] hover:text-[#0077b5]" }
+                        { icon: FaDiscord, link: DISCORD_LINK, color: "hover:border-[#5865F2] hover:text-[#5865F2]" },
+                        { icon: FaLinkedin, link: LINKEDIN_LINK, color: "hover:border-[#0077b5] hover:text-[#0077b5]" }
                       ].map((social, i) => (
                         <a 
                           key={i} 
@@ -92,7 +97,7 @@ const Connect = () => {
                 {/* Map Section */}
                 <div className="relative rounded-[1.5rem] overflow-hidden border border-white/10 flex-grow h-full bg-black/40">
                   <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d227748.38256243203!2d75.65046927376363!3d26.88544791816565!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396c4adb4feed511%3A0x81718a2e4862a028!2sJaipur%2C%20Rajasthan!5e0!3m2!1sen!2sin!4v1709123456789!5m2!1sen!2sin" 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d227748.3825624328!2d75.650472!3d26.8851417!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396c4adb4feed511%3A0xd132170c46979958!2sJaipur%2C%20Rajasthan!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" 
                     width="100%" height="100%" style={{ border: 0, filter: 'grayscale(1) invert(0.9) contrast(1.2) brightness(0.8)' }} 
                     allowFullScreen="" loading="lazy" title="Jaipur Map"
                   />
@@ -136,7 +141,7 @@ const Connect = () => {
               </div>
 
               <a 
-                href="https://www.linkedin.com/company/brainforge16" 
+                href={DISCORD_LINK} 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="w-full"
@@ -144,7 +149,7 @@ const Connect = () => {
                 <motion.button 
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full py-3.5 bg-amber-500 text-black font-bold text-[10px] rounded-xl flex items-center justify-center space-x-2 shadow-[0_10px_30px_rgba(251,191,36,0.2)]"
+                  className="w-full py-3.5 bg-amber-500 text-black font-bold text-[10px] rounded-xl flex items-center justify-center space-x-2 shadow-[0_10px_30px_rgba(251,191,36,0.2)] hover:bg-amber-400 transition-colors"
                 >
                   <span>JOIN THE FORGE</span>
                   <FaChevronRight className="text-[8px]" />
