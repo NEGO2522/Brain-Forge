@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FaGithub, FaDiscord, FaLinkedin, FaEnvelope, FaMapMarkerAlt, FaPhone, FaChevronRight } from 'react-icons/fa';
+import { FaDiscord, FaLinkedin, FaEnvelope, FaMapMarkerAlt, FaPhone, FaChevronRight } from 'react-icons/fa';
 import { RotatingFanIcon } from '../components/RotatingFanIcon';
 
 const ContactItem = ({ icon: Icon, title, content, link }) => (
@@ -26,7 +26,6 @@ const ContactItem = ({ icon: Icon, title, content, link }) => (
 
 const Connect = () => {
   return (
-    // Changed to h-screen and overflow-hidden to strictly prevent scrolling
     <div className="h-screen w-full bg-black text-white relative overflow-hidden flex flex-col pt-20 pb-4 px-6">
       
       {/* Background Ambience */}
@@ -48,7 +47,7 @@ const Connect = () => {
           </motion.h1>
         </div>
 
-        {/* Main Layout - flex-grow and min-h-0 are key to prevent container expansion */}
+        {/* Main Layout */}
         <div className="flex-grow flex flex-col lg:grid lg:grid-cols-12 gap-4 min-h-0 mb-2">
           
           {/* LEFT: Main Contact & Map */}
@@ -73,13 +72,14 @@ const Connect = () => {
                     <h3 className="text-[9px] uppercase tracking-[0.4em] text-gray-500 font-bold mb-3">Social Uplink</h3>
                     <div className="flex space-x-2">
                       {[
-                        { icon: FaGithub, link: "https://github.com/NEGO2522/Brain-Forge", color: "hover:border-white hover:text-white" },
                         { icon: FaDiscord, link: "#", color: "hover:border-[#5865F2] hover:text-[#5865F2]" },
                         { icon: FaLinkedin, link: "https://www.linkedin.com/company/brainforge16", color: "hover:border-[#0077b5] hover:text-[#0077b5]" }
                       ].map((social, i) => (
                         <a 
                           key={i} 
                           href={social.link} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
                           className={`w-9 h-9 rounded-lg border border-white/10 flex items-center justify-center text-gray-400 transition-all duration-300 bg-white/5 ${social.color}`}
                         >
                           <social.icon className="text-base" />
@@ -92,7 +92,7 @@ const Connect = () => {
                 {/* Map Section */}
                 <div className="relative rounded-[1.5rem] overflow-hidden border border-white/10 flex-grow h-full bg-black/40">
                   <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d227748.38256243235!2d75.65047209121518!3d26.88544791796718!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396c4adb4ad85f21%3A0xad03421ad3959b13!2sJaipur%2C%20Rajasthan!5e0!3m2!1sen!2sin!4v1710340000000!5m2!1sen!2sin" 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d227748.38256243203!2d75.65046927376363!3d26.88544791816565!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396c4adb4feed511%3A0x81718a2e4862a028!2sJaipur%2C%20Rajasthan!5e0!3m2!1sen!2sin!4v1709123456789!5m2!1sen!2sin" 
                     width="100%" height="100%" style={{ border: 0, filter: 'grayscale(1) invert(0.9) contrast(1.2) brightness(0.8)' }} 
                     allowFullScreen="" loading="lazy" title="Jaipur Map"
                   />
@@ -135,14 +135,21 @@ const Connect = () => {
                 ))}
               </div>
 
-              <motion.button 
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full py-3.5 bg-amber-500 text-black font-bold text-[10px] rounded-xl flex items-center justify-center space-x-2 shadow-[0_10px_30px_rgba(251,191,36,0.2)]"
+              <a 
+                href="https://www.linkedin.com/company/brainforge16" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-full"
               >
-                <span>JOIN THE FORGE</span>
-                <FaChevronRight className="text-[8px]" />
-              </motion.button>
+                <motion.button 
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full py-3.5 bg-amber-500 text-black font-bold text-[10px] rounded-xl flex items-center justify-center space-x-2 shadow-[0_10px_30px_rgba(251,191,36,0.2)]"
+                >
+                  <span>JOIN THE FORGE</span>
+                  <FaChevronRight className="text-[8px]" />
+                </motion.button>
+              </a>
             </div>
           </motion.div>
 
@@ -157,4 +164,4 @@ const Connect = () => {
   );
 };
 
-export default Connect; 
+export default Connect;

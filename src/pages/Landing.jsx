@@ -140,7 +140,7 @@ const PhilosophySection = () => {
         animate={isInView ? { opacity: 0.03 } : { opacity: 0 }} 
         className="absolute inset-0 flex items-center justify-center pointer-events-none"
       >
-        <h2 className="text-[15vw] font-black text-white uppercase tracking-tighter select-none">VISION</h2>
+        <h2 className="text-[15vw] font-black text-white uppercase tracking-tighter select-none">KSHITIJ</h2>
       </motion.div>
       
       <div className="relative z-30 max-w-5xl w-full text-center">
@@ -200,7 +200,7 @@ const PhilosophySection = () => {
           </a>
 
           <a 
-            href="https://linkedin.com" 
+            href="https://www.linkedin.com/company/brainforge16" 
             target="_blank" 
             rel="noreferrer"
             className="flex items-center gap-4 px-8 py-4 bg-amber-500 text-black border border-amber-500 rounded-full shadow-[0_0_25px_rgba(245,158,11,0.4)] font-black transition-none"
@@ -281,9 +281,9 @@ const Landing = () => {
             </div>
             <div className="grid grid-cols-1 gap-6 text-white">
                {[
-                 { val: "25+", label: "Communities" },
-                 { val: "5,400+", label: "Enrolled" },
-                 { val: "1,200+", label: "Connections" }  
+                 { val: "10+", label: "Communities" },
+                 { val: "0+", label: "Enrolled" },
+                 { val: "0+", label: "Connections" }  
                ].map((stat, idx) => (
                  <div key={idx} className="flex items-center justify-between border-b border-white/5 pb-4 last:border-0">
                     <p className="text-2xl font-serif">{stat.val}</p>
