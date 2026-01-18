@@ -2,39 +2,11 @@ import React, { useRef, useState, Suspense, useMemo, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import * as THREE from 'three';
-import { useNavigate } from 'react-router-dom'; // 1. Import useNavigate
+import { useNavigate } from 'react-router-dom';
+import { FaLinkedinIn, FaDiscord } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
 
-// --- 1. FIXED REAL-TIME COUNTDOWN HOOK ---
-const useCountdown = (targetDate) => {
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      const now = new Date().getTime();
-      const distance = targetDate - now;
-
-      if (distance <= 0) {
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-        clearInterval(timer);
-        return;
-      }
-
-      setTimeLeft({
-        days: Math.floor(distance / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-        minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
-        seconds: Math.floor((distance % (1000 * 60)) / 1000),
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [targetDate]);
-
-  return timeLeft;
-};
-
-// --- 2. ENLARGED ANIMATED ROBOT ---
+// --- 1. 3D ROBOT MODEL ---
 const RobotModel = ({ isMobile }) => {
   const groupRef = useRef();
   const headTop = useRef();
@@ -122,45 +94,121 @@ const MovingStars = () => {
   );
 };
 
-// --- 3. ORGANIZED BY SECTION ---
-const OrganizedBySection = () => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: false, amount: 0.3 });
+// --- 2. NEW COMPONENT: COMMUNITY TAG SCROLLER ---
+const CommunityScroller = () => {
+  const tags = ["Web3 Developers", "AI Researchers", "UI/UX Designers", "SaaS Founders", "Creative Directors", "Data Scientists"];
+  
+  return (
+    <div className="w-full max-w-sm overflow-hidden">
+      <p className="text-[10px] uppercase tracking-[0.4em] text-amber-500 font-bold mb-6 text-center lg:text-left">Trending Hubs</p>
+      <div className="flex flex-wrap justify-center lg:justify-start gap-3">
+        {tags.map((tag, idx) => (
+          <motion.span 
+            key={idx}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.1 * idx }}
+            className="px-4 py-2 bg-white/5 border border-white/10 rounded-full text-[10px] text-white/70 uppercase tracking-widest hover:border-amber-500/50 hover:text-white transition-all cursor-default"
+          >
+            {tag}
+          </motion.span>
+        ))}
+      </div>
+      <div className="mt-6 flex items-center gap-2 text-[9px] text-gray-500 font-mono italic">
+        <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+        Live Activity Detected
+      </div>
+    </div>
+  );
+};
 
-  const links = [
-    { name: "About Us", url: "#about" },
-    { name: "Join LinkedIn", url: "https://linkedin.com" },
-    { name: "Join Discord", url: "https://discord.com" }
+// --- 3. PHILOSOPHY SECTION ---
+const PhilosophySection = () => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: false, amount: 0.2 });
+
+  const pillars = [
+    { title: "Innovate", desc: "Pushing the boundaries of digital collaboration." },
+    { title: "Connect", desc: "Linking ambitious minds with global opportunities." },
+    { title: "Evolve", desc: "Growing through community-driven knowledge." }
   ];
 
   return (
-    <section ref={ref} className="relative min-h-screen w-full flex-shrink-0 snap-start flex flex-col items-center justify-center bg-black z-20 py-20 px-6">
-      <motion.div initial={{ opacity: 0 }} animate={isInView ? { opacity: 0.05 } : { opacity: 0 }} className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <h2 className="text-[18vw] font-black text-white uppercase tracking-tighter select-none">KSHITIJ</h2>
+    <section ref={ref} className="relative min-h-screen w-full flex-shrink-0 snap-start flex flex-col items-center justify-center bg-black z-20 py-24 px-6 overflow-hidden">
+      <motion.div 
+        initial={{ opacity: 0 }} 
+        animate={isInView ? { opacity: 0.03 } : { opacity: 0 }} 
+        className="absolute inset-0 flex items-center justify-center pointer-events-none"
+      >
+        <h2 className="text-[15vw] font-black text-white uppercase tracking-tighter select-none">VISION</h2>
       </motion.div>
       
-      <div className="relative z-30 flex flex-col items-center text-center">
-        <span className="text-amber-500 tracking-[0.5em] text-[10px] md:text-xs font-bold mb-4 uppercase">Lead Organizer</span>
-        <h2 className="text-5xl md:text-8xl font-serif text-white uppercase tracking-widest mb-12">Kshitij Jain</h2>
+      <div className="relative z-30 max-w-5xl w-full text-center">
+        <motion.span 
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          className="text-amber-500 tracking-[0.5em] text-[10px] md:text-xs font-bold mb-4 uppercase block"
+        >
+          Our Core Philosophy
+        </motion.span>
         
-        <div className="flex flex-col md:flex-row items-center gap-6 md:gap-12 mt-4">
-          <span className="text-white/30 text-[10px] uppercase tracking-[0.4em] mb-2 md:mb-0">Connect Us:</span>
-          {links.map((link, index) => (
-            <motion.a
-              key={link.name}
-              href={link.url}
-              initial={{ opacity: 0, y: 10 }}
+        <motion.h2 
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.1 }}
+          className="text-4xl md:text-7xl font-serif text-white uppercase tracking-tight mb-16"
+        >
+          The Future is <br/> <span className="text-amber-500 italic">Collaborative</span>
+        </motion.h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-left mb-20">
+          {pillars.map((pillar, index) => (
+            <motion.div
+              key={pillar.title}
+              initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.2 + index * 0.1 }}
-              className="group relative flex flex-col items-center"
+              transition={{ delay: 0.3 + index * 0.1 }}
             >
-              <span className="text-white/70 group-hover:text-amber-500 text-xs md:text-sm uppercase tracking-[0.2em] font-medium transition-colors duration-300">
-                {link.name}
-              </span>
-              <div className="h-[1px] w-0 group-hover:w-full bg-amber-500 transition-all duration-300 mt-1 shadow-[0_0_8px_#fbbf24]" />
-            </motion.a>
+              <div className="flex items-center gap-4 mb-4">
+                <span className="text-amber-500 font-mono text-sm">0{index + 1}</span>
+                <div className="h-[1px] flex-grow bg-white/10" />
+              </div>
+              <h3 className="text-white text-2xl font-serif mb-3 uppercase tracking-widest">
+                {pillar.title}
+              </h3>
+              <p className="text-gray-500 text-sm leading-relaxed">
+                {pillar.desc}
+              </p>
+            </motion.div>
           ))}
         </div>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.6 }}
+          className="flex flex-col md:flex-row items-center justify-center gap-6 pt-12 border-t border-white/5"
+        >
+          <a 
+            href="https://discord.com" 
+            target="_blank" 
+            rel="noreferrer"
+            className="flex items-center gap-4 px-8 py-4 bg-amber-500 text-black border border-amber-500 rounded-full shadow-[0_0_25px_rgba(245,158,11,0.4)] font-black transition-none"
+          >
+            <FaDiscord className="text-xl" />
+            <span className="text-[10px] uppercase tracking-[0.2em]">Join Discord</span>
+          </a>
+
+          <a 
+            href="https://linkedin.com" 
+            target="_blank" 
+            rel="noreferrer"
+            className="flex items-center gap-4 px-8 py-4 bg-amber-500 text-black border border-amber-500 rounded-full shadow-[0_0_25px_rgba(245,158,11,0.4)] font-black transition-none"
+          >
+            <FaLinkedinIn className="text-xl" />
+            <span className="text-[10px] uppercase tracking-[0.2em]">Join LinkedIn</span>
+          </a>
+        </motion.div>
       </div>
     </section>
   );
@@ -169,12 +217,8 @@ const OrganizedBySection = () => {
 // --- 4. MAIN LANDING ---
 const Landing = () => {
   const [isMobile, setIsMobile] = useState(false);
-  const navigate = useNavigate(); // 2. Initialize navigate
+  const navigate = useNavigate(); 
   
-  // Fixed Target Date (14 days from now)
-  const targetDate = useMemo(() => new Date().getTime() + 14 * 24 * 60 * 60 * 1000, []);
-  const timeLeft = useCountdown(targetDate);
-
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 1024);
     checkMobile();
@@ -187,10 +231,8 @@ const Landing = () => {
       
       <div className="fixed top-0 left-0 right-0 z-50"><Navbar /></div>
 
-      {/* SECTION 1: HERO */}
       <section className="relative min-h-[100dvh] lg:h-screen w-full flex-shrink-0 snap-start flex flex-col lg:flex-row items-center justify-center lg:justify-between px-6 lg:px-24 pt-24 lg:pt-0 overflow-hidden z-10">
         
-        {/* Background 3D Layer */}
         <div className="absolute inset-0 z-0 pointer-events-none opacity-70 lg:opacity-90">
           <Canvas camera={{ position: [0, 0, isMobile ? 12 : 8], fov: 45 }}>
             <Suspense fallback={null}>
@@ -202,8 +244,7 @@ const Landing = () => {
           </Canvas>
         </div>
 
-        {/* LEFT CONTENT */}
-        <div className="relative z-10 w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left space-y-8">
+        <div className="relative z-10 w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left space-y-12">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif text-white leading-tight tracking-tighter">
               Begin Your <br/> 
@@ -215,7 +256,7 @@ const Landing = () => {
             </p>
             <div className="mt-10">
               <button 
-                onClick={() => navigate('/explore')} // 3. Add onClick navigation
+                onClick={() => navigate('/explore')} 
                 className="bg-amber-500 text-black px-6 py-4 rounded-full font-bold active:scale-95 transition-all shadow-[0_10px_20px_rgba(251,191,36,0.2)] uppercase tracking-widest text-xs cursor-pointer w-max"
               >
                 Explore Here
@@ -223,28 +264,10 @@ const Landing = () => {
             </div>
           </motion.div>
 
-          {/* COUNTDOWN */}
-          <div className="flex flex-col items-center lg:items-start space-y-3 bg-white/5 lg:bg-transparent p-6 rounded-3xl backdrop-blur-xl border border-white/10 lg:border-none w-full max-w-sm lg:max-w-none">
-            <span className="text-[10px] uppercase tracking-[0.3em] text-amber-500 font-bold">DEPLOYMENT STARTS IN</span>
-            <div className="flex gap-6">
-              {[
-                { label: 'D', value: timeLeft.days },
-                { label: 'H', value: timeLeft.hours },
-                { label: 'M', value: timeLeft.minutes },
-                { label: 'S', value: timeLeft.seconds }
-              ].map((item, idx) => (
-                <div key={idx} className="flex flex-col items-center">
-                  <span className="text-2xl md:text-4xl font-serif text-white w-[1.5ch] text-center">
-                    {item.value.toString().padStart(2, '0')}
-                  </span>
-                  <span className="text-[9px] text-amber-500 font-bold uppercase">{item.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+          {/* NEW COMMUNITY TAGS SECTION */}
+          <CommunityScroller />
         </div>
 
-        {/* RIGHT SIDE: HERO CREDIT + STATS CARD */}
         <div className="relative z-10 w-full lg:w-1/2 flex flex-col items-center lg:items-end mt-12 lg:mt-0 pb-10 lg:pb-0">
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 }} className="mb-8 text-center lg:text-right">
             <span className="text-amber-500 text-[10px] font-bold tracking-[0.4em] uppercase block mb-2">Organized By</span>
@@ -260,7 +283,7 @@ const Landing = () => {
                {[
                  { val: "25+", label: "Communities" },
                  { val: "5,400+", label: "Enrolled" },
-                 { val: "1,200+", label: "Connections" }
+                 { val: "1,200+", label: "Connections" }  
                ].map((stat, idx) => (
                  <div key={idx} className="flex items-center justify-between border-b border-white/5 pb-4 last:border-0">
                     <p className="text-2xl font-serif">{stat.val}</p>
@@ -272,7 +295,7 @@ const Landing = () => {
         </div>
       </section>
 
-      <OrganizedBySection />
+      <PhilosophySection />
     </div>
   );
 };
