@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'; // Added useEffect
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiTrendingUp, FiZap, FiGlobe, FiCode, FiCpu, 
@@ -7,9 +7,14 @@ import {
 } from 'react-icons/fi';
 import Navbar from '../components/Navbar';
 
+// 1. Import Firebase Database
+import { db } from '../firebase/firebase'; 
+import { ref, onValue } from "firebase/database";
+
 const Explore = () => {
   const [selectedSector, setSelectedSector] = useState("All");
-  const [broadcasts, setBroadcasts] = useState([]); // State for dynamic data
+  const [broadcasts, setBroadcasts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const categories = [
     { name: "Web3 & Crypto", count: "1.2k", icon: <FiGlobe /> },
@@ -23,20 +28,28 @@ const Explore = () => {
     { name: "Cloud Computing", count: "670", icon: <FiCode /> },
   ];
 
-  // SYNC WITH ADMIN PANEL: Load data from localStorage on mount
+  // 2. REAL-TIME DATA FETCHING
   useEffect(() => {
-    const savedData = localStorage.getItem('forge_broadcasts');
-    if (savedData) {
-      setBroadcasts(JSON.parse(savedData));
-    } else {
-      // Fallback if no data exists yet
-      const initialBroadcasts = [
-        { id: 1, tag: "Web3 & Crypto", title: "The Shift to Layer 2 Ecosystems", content: "As mainnet congestion increases, we are observing a massive migration of community nodes to ZK-Rollup frameworks.", admin: "Forge Admin" },
-        { id: 2, tag: "AI & ML", title: "Integrating LLMs into Community Workflows", content: "Neural nodes are now utilizing local-first LLMs to moderate discussions and automate resource indexing.", admin: "Forge Admin" }
-      ];
-      setBroadcasts(initialBroadcasts);
-      localStorage.setItem('forge_broadcasts', JSON.stringify(initialBroadcasts));
-    }
+    const broadcastsRef = ref(db, 'forge_broadcasts');
+    
+    // Set up the listener
+    const unsubscribe = onValue(broadcastsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        // Convert Firebase object to array and reverse for newest first
+        const list = Object.keys(data).map(key => ({
+          id: key,
+          ...data[key]
+        })).reverse();
+        setBroadcasts(list);
+      } else {
+        setBroadcasts([]);
+      }
+      setLoading(false);
+    });
+
+    // Cleanup listener on unmount
+    return () => unsubscribe();
   }, []);
 
   const filteredBroadcasts = selectedSector === "All" 
@@ -110,7 +123,11 @@ const Explore = () => {
 
             <div className="space-y-6">
               <AnimatePresence mode='popLayout'>
-                {filteredBroadcasts.length > 0 ? (
+                {loading ? (
+                  <div className="flex justify-center py-20">
+                    <div className="w-8 h-8 border-2 border-amber-500/20 border-t-amber-500 rounded-full animate-spin" />
+                  </div>
+                ) : filteredBroadcasts.length > 0 ? (
                   filteredBroadcasts.map((post) => (
                     <motion.div 
                       initial={{ opacity: 0, y: 20 }}
@@ -140,7 +157,7 @@ const Explore = () => {
                             BF
                           </div>
                           <div>
-                            <p className="text-xs font-bold text-white">{post.admin}</p>
+                            <p className="text-xs font-bold text-white">{post.admin || "Forge Admin"}</p>
                             <p className="text-[10px] text-gray-600 uppercase tracking-tighter">Verified Authority</p>
                           </div>
                         </div>

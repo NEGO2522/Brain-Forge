@@ -1,6 +1,6 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import { getDatabase } from "firebase/database"; // Added for Realtime DB
 import { 
   getAuth, 
   GoogleAuthProvider, 
@@ -10,7 +10,6 @@ import {
   signInWithEmailLink
 } from 'firebase/auth';
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -18,16 +17,19 @@ const firebaseConfig = {
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+  // Automatically constructs the DB URL based on your Project ID
+  databaseURL: `https://${import.meta.env.VITE_FIREBASE_PROJECT_ID}-default-rtdb.firebaseio.com`
 };
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
+export const db = getDatabase(app); // Exporting the database instance
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 
-// Function to sign in with Google
+// Google Sign-In
 export const signInWithGoogle = async () => {
   try {
     const result = await signInWithPopup(auth, googleProvider);
@@ -38,17 +40,14 @@ export const signInWithGoogle = async () => {
   }
 };
 
-// Function to send sign in link to email
+// Email Link Auth Functions
 export const sendLoginLink = async (email) => {
   const actionCodeSettings = {
-    // URL you want to redirect back to after email sign-in
     url: window.location.origin + '/login',
     handleCodeInApp: true,
   };
-
   try {
     await sendSignInLinkToEmail(auth, email, actionCodeSettings);
-    // Save the email locally to complete sign-in after clicking the email link
     window.localStorage.setItem('emailForSignIn', email);
     return true;
   } catch (error) {
@@ -57,18 +56,14 @@ export const sendLoginLink = async (email) => {
   }
 };
 
-// Function to complete sign in with email link
 export const completeSignInWithEmailLink = async () => {
   if (isSignInWithEmailLink(auth, window.location.href)) {
     let email = window.localStorage.getItem('emailForSignIn');
     if (!email) {
-      // User opened the link on a different device
       email = window.prompt('Please provide your email for confirmation');
     }
-    
     try {
       const result = await signInWithEmailLink(auth, email, window.location.href);
-      // Clear email from storage
       window.localStorage.removeItem('emailForSignIn');
       return result.user;
     } catch (error) {

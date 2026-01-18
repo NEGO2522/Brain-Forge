@@ -6,52 +6,70 @@ import {
 } from 'react-icons/fi';
 import Navbar from '../components/Navbar';
 
+// Corrected Import Path
+import { db } from '../firebase/firebase'; 
+import { ref, push, onValue, remove, serverTimestamp } from "firebase/database";
+
 const AdminPanel = () => {
   const [broadcasts, setBroadcasts] = useState([]);
   const [newPost, setNewPost] = useState({ title: '', tag: 'Web3 & Crypto', content: '' });
   const [status, setStatus] = useState(null);
 
   const categories = [
-    "Web3 & Crypto",
-    "AI & ML",
-    "UI/UX Design",
-    "Open Source",
-    "Cybersecurity",
-    "Backend Architecture",
-    "Mobile Dev",
-    "Robotics & Hardware",
-    "Cloud Computing",
+    "Web3 & Crypto", "AI & ML", "UI/UX Design", "Open Source",
+    "Cybersecurity", "Backend Architecture", "Mobile Dev",
+    "Robotics & Hardware", "Cloud Computing",
   ];
 
+  // Sync with Firebase Realtime Database
   useEffect(() => {
-    const saved = localStorage.getItem('forge_broadcasts');
-    if (saved) setBroadcasts(JSON.parse(saved));
+    const broadcastsRef = ref(db, 'forge_broadcasts');
+    const unsubscribe = onValue(broadcastsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const list = Object.keys(data).map(key => ({
+          id: key,
+          ...data[key]
+        })).reverse(); 
+        setBroadcasts(list);
+      } else {
+        setBroadcasts([]);
+      }
+    });
+
+    return () => unsubscribe();
   }, []);
 
-  const handleAddPost = (e) => {
+  const handleAddPost = async (e) => {
     e.preventDefault();
     if (!newPost.title || !newPost.content) {
       showStatus('error');
       return;
     }
 
-    const postToAdd = {
-      ...newPost,
-      id: Date.now(),
-      admin: "Forge Admin"
-    };
+    try {
+      const broadcastsRef = ref(db, 'forge_broadcasts');
+      await push(broadcastsRef, {
+        ...newPost,
+        admin: "Forge Admin",
+        createdAt: serverTimestamp()
+      });
 
-    const updated = [postToAdd, ...broadcasts];
-    setBroadcasts(updated);
-    localStorage.setItem('forge_broadcasts', JSON.stringify(updated));
-    setNewPost({ title: '', tag: 'Web3 & Crypto', content: '' });
-    showStatus('success');
+      setNewPost({ title: '', tag: 'Web3 & Crypto', content: '' });
+      showStatus('success');
+    } catch (error) {
+      console.error("Firebase Deploy Error:", error);
+      showStatus('error');
+    }
   };
 
-  const deletePost = (id) => {
-    const updated = broadcasts.filter(p => p.id !== id);
-    setBroadcasts(updated);
-    localStorage.setItem('forge_broadcasts', JSON.stringify(updated));
+  const deletePost = async (id) => {
+    try {
+      const postRef = ref(db, `forge_broadcasts/${id}`);
+      await remove(postRef);
+    } catch (error) {
+      console.error("Firebase Delete Error:", error);
+    }
   };
 
   const showStatus = (type) => {
@@ -65,7 +83,7 @@ const AdminPanel = () => {
       
       <main className="flex-grow max-w-7xl mx-auto w-full px-6 pt-28 pb-6 flex flex-col overflow-hidden">
         
-        {/* Header Section */}
+        {/* Header */}
         <div className="flex flex-row items-end justify-between mb-8 flex-shrink-0">
           <div>
             <motion.h1 
@@ -81,7 +99,7 @@ const AdminPanel = () => {
           </div>
           
           <div className="bg-white/5 border border-white/10 px-4 py-2 rounded-xl">
-            <p className="text-[7px] uppercase tracking-widest text-gray-500 mb-0.5">Live Insights</p>
+            <p className="text-[7px] uppercase tracking-widest text-gray-500 mb-0.5">Cloud Sync Active</p>
             <p className="text-lg font-serif text-amber-500 leading-none">{broadcasts.length}</p>
           </div>
         </div>
@@ -89,7 +107,7 @@ const AdminPanel = () => {
         {/* Main Grid Area */}
         <div className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-0 overflow-hidden mb-6">
           
-          {/* LEFT: Deployment Form */}
+          {/* Form */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -97,7 +115,6 @@ const AdminPanel = () => {
           >
             <div className="flex-grow bg-white/5 border border-white/10 rounded-[2rem] p-6 md:p-8 relative overflow-hidden flex flex-col">
               <div className="absolute -top-24 -right-24 w-48 h-48 bg-amber-500/10 blur-[80px] rounded-full pointer-events-none" />
-              
               <h2 className="text-lg font-serif mb-6 flex items-center gap-3 flex-shrink-0">
                 <FiPlusCircle className="text-amber-500" /> New Broadcast
               </h2>
@@ -145,9 +162,9 @@ const AdminPanel = () => {
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
                     type="submit"
-                    className="flex-grow bg-amber-500 text-black font-black py-4 rounded-xl flex items-center justify-center gap-2 text-[10px] tracking-[0.2em] uppercase transition-all shadow-lg"
+                    className="flex-grow bg-amber-500 text-black font-black py-4 rounded-xl flex items-center justify-center gap-2 text-[10px] tracking-[0.2em] uppercase shadow-lg"
                   >
-                    <FiSend /> Deploy
+                    <FiSend /> Deploy to Cloud
                   </motion.button>
 
                   <AnimatePresence>
@@ -163,7 +180,7 @@ const AdminPanel = () => {
             </div>
           </motion.div>
 
-          {/* RIGHT: Active Feed */}
+          {/* Feed */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -198,6 +215,7 @@ const AdminPanel = () => {
                 ) : (
                   <div className="h-full flex flex-col items-center justify-center opacity-10">
                     <FiLayers size={32} />
+                    <p className="text-[10px] mt-2 uppercase tracking-widest">Syncing...</p>
                   </div>
                 )}
               </div>
@@ -205,7 +223,6 @@ const AdminPanel = () => {
           </motion.div>
         </div>
 
-        {/* Footer Area */}
         <div className="flex justify-end items-center flex-shrink-0 pt-2 border-t border-white/5">
           <p className="text-[8px] tracking-[0.6em] text-white/30 uppercase font-bold">
             Organized By Kshitij Jain
