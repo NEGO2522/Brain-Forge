@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Added useEffect
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiTrendingUp, FiZap, FiGlobe, FiCode, FiCpu, 
@@ -9,6 +9,7 @@ import Navbar from '../components/Navbar';
 
 const Explore = () => {
   const [selectedSector, setSelectedSector] = useState("All");
+  const [broadcasts, setBroadcasts] = useState([]); // State for dynamic data
 
   const categories = [
     { name: "Web3 & Crypto", count: "1.2k", icon: <FiGlobe /> },
@@ -22,13 +23,21 @@ const Explore = () => {
     { name: "Cloud Computing", count: "670", icon: <FiCode /> },
   ];
 
-  const broadcasts = [
-    { id: 1, tag: "Web3 & Crypto", title: "The Shift to Layer 2 Ecosystems", content: "As mainnet congestion increases, we are observing a massive migration of community nodes to ZK-Rollup frameworks.", admin: "Forge Admin" },
-    { id: 2, tag: "AI & ML", title: "Integrating LLMs into Community Workflows", content: "Neural nodes are now utilizing local-first LLMs to moderate discussions and automate resource indexing.", admin: "Forge Admin" },
-    { id: 3, tag: "Backend Architecture", title: "Distributed Systems and Node Resiliency", content: "Resilient backends are shifting toward edge-computing architectures to ensure accessibility.", admin: "Forge Admin" },
-    { id: 4, tag: "UI/UX Design", title: "Spatial Interfaces in Modern Apps", content: "Designers are moving beyond flat surfaces. Implementing Z-axis depth and glassmorphism.", admin: "Forge Admin" },
-    { id: 5, tag: "Cybersecurity", title: "Zero Trust Node Verification", content: "Security is no longer a perimeter. Every node interaction must be verified independently.", admin: "Forge Admin" }
-  ];
+  // SYNC WITH ADMIN PANEL: Load data from localStorage on mount
+  useEffect(() => {
+    const savedData = localStorage.getItem('forge_broadcasts');
+    if (savedData) {
+      setBroadcasts(JSON.parse(savedData));
+    } else {
+      // Fallback if no data exists yet
+      const initialBroadcasts = [
+        { id: 1, tag: "Web3 & Crypto", title: "The Shift to Layer 2 Ecosystems", content: "As mainnet congestion increases, we are observing a massive migration of community nodes to ZK-Rollup frameworks.", admin: "Forge Admin" },
+        { id: 2, tag: "AI & ML", title: "Integrating LLMs into Community Workflows", content: "Neural nodes are now utilizing local-first LLMs to moderate discussions and automate resource indexing.", admin: "Forge Admin" }
+      ];
+      setBroadcasts(initialBroadcasts);
+      localStorage.setItem('forge_broadcasts', JSON.stringify(initialBroadcasts));
+    }
+  }, []);
 
   const filteredBroadcasts = selectedSector === "All" 
     ? broadcasts 
@@ -39,20 +48,16 @@ const Explore = () => {
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-6 pt-32 md:pt-40 pb-20">
-        {/* Responsive Grid: Column on mobile, Sidebar on LG */}
         <div className="flex flex-col lg:grid lg:grid-cols-4 gap-8 lg:gap-12">
           
-          {/* Left Sidebar / Top Scroller */}
+          {/* Left Sidebar */}
           <aside className="lg:col-span-1">
             <div className="lg:sticky lg:top-32">
               <h3 className="text-amber-500 text-[10px] font-black uppercase tracking-[0.3em] mb-4 lg:mb-6">
                 Directory Sectors
               </h3>
               
-              {/* Sidebar container: Vertical on Desktop, Horizontal Scroll on Mobile */}
               <div className="flex lg:flex-col gap-2 lg:space-y-1 mb-6 lg:mb-10 overflow-x-auto lg:overflow-y-auto pb-4 lg:pb-0 scrollbar-hide">
-                
-                {/* ALL SECTORS BUTTON */}
                 <motion.button 
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setSelectedSector("All")}
@@ -70,7 +75,6 @@ const Explore = () => {
                   </div>
                 </motion.button>
 
-                {/* List of Sectors */}
                 {categories.map((cat) => (
                   <motion.button 
                     whileTap={{ scale: 0.95 }}
@@ -88,7 +92,6 @@ const Explore = () => {
                       </span>
                       <span className="group-hover:text-white whitespace-nowrap">{cat.name}</span>
                     </div>
-                    {/* Count hidden on mobile to save space */}
                     <span className="hidden lg:block text-[10px] font-mono opacity-50 ml-4">{cat.count}</span>
                   </motion.button>
                 ))}
