@@ -1,11 +1,10 @@
 import React, { useRef, useState, Suspense, useMemo, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
 import * as THREE from 'three';
 import Navbar from '../components/Navbar';
-import styled, { keyframes } from 'styled-components';
 
-// --- 1. REAL-TIME COUNTDOWN HOOK ---
+// --- 1. FIXED REAL-TIME COUNTDOWN HOOK ---
 const useCountdown = (targetDate) => {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
@@ -13,15 +12,24 @@ const useCountdown = (targetDate) => {
     const timer = setInterval(() => {
       const now = new Date().getTime();
       const distance = targetDate - now;
+
+      if (distance <= 0) {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        clearInterval(timer);
+        return;
+      }
+
       setTimeLeft({
-        days: Math.max(0, Math.floor(distance / (1000 * 60 * 60 * 24))),
-        hours: Math.max(0, Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))),
-        minutes: Math.max(0, Math.floor((distance % (1000 * 60)) / (1000 * 60))),
-        seconds: Math.max(0, Math.floor((distance % (1000 * 60)) / 1000)),
+        days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+        minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+        seconds: Math.floor((distance % (1000 * 60)) / 1000),
       });
     }, 1000);
+
     return () => clearInterval(timer);
   }, [targetDate]);
+
   return timeLeft;
 };
 
@@ -113,7 +121,7 @@ const MovingStars = () => {
   );
 };
 
-// --- 3. UPDATED BRANDING SECTION (With New Links) ---
+// --- 3. ORGANIZED BY SECTION ---
 const OrganizedBySection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: false, amount: 0.3 });
@@ -134,7 +142,6 @@ const OrganizedBySection = () => {
         <span className="text-amber-500 tracking-[0.5em] text-[10px] md:text-xs font-bold mb-4 uppercase">Lead Organizer</span>
         <h2 className="text-5xl md:text-8xl font-serif text-white uppercase tracking-widest mb-12">Kshitij Jain</h2>
         
-        {/* LINK GROUP */}
         <div className="flex flex-col md:flex-row items-center gap-6 md:gap-12 mt-4">
           <span className="text-white/30 text-[10px] uppercase tracking-[0.4em] mb-2 md:mb-0">Connect Us:</span>
           {links.map((link, index) => (
@@ -161,6 +168,8 @@ const OrganizedBySection = () => {
 // --- 4. MAIN LANDING ---
 const Landing = () => {
   const [isMobile, setIsMobile] = useState(false);
+  
+  // Fixed Target Date (14 days from now)
   const targetDate = useMemo(() => new Date().getTime() + 14 * 24 * 60 * 60 * 1000, []);
   const timeLeft = useCountdown(targetDate);
 
@@ -174,6 +183,8 @@ const Landing = () => {
   return (
     <div className="relative w-full bg-black flex flex-col min-h-screen overflow-x-hidden overflow-y-auto snap-y snap-mandatory scrollbar-hide">
       
+      <div className="fixed top-0 left-0 right-0 z-50"><Navbar /></div>
+
       {/* SECTION 1: HERO */}
       <section className="relative min-h-[100dvh] lg:h-screen w-full flex-shrink-0 snap-start flex flex-col lg:flex-row items-center justify-center lg:justify-between px-6 lg:px-24 pt-24 lg:pt-0 overflow-hidden z-10">
         
@@ -189,8 +200,6 @@ const Landing = () => {
           </Canvas>
         </div>
 
-        <div className="fixed top-0 left-0 right-0 z-50"><Navbar /></div>
-
         {/* LEFT CONTENT */}
         <div className="relative z-10 w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left space-y-8">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
@@ -202,9 +211,12 @@ const Landing = () => {
             <p className="text-gray-400 max-w-sm mx-auto lg:mx-0 mt-6 text-sm md:text-base">
               Forge connections between passion and professional excellence in our digital ecosystem.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 mt-10 w-full max-w-xs sm:max-w-none">
-              <button className="flex-1 bg-amber-500 text-black px-8 py-4 rounded-full font-bold active:scale-95 transition-all shadow-[0_10px_20px_rgba(251,191,36,0.2)]">Register Now</button>
-              <button className="flex-1 border border-white/20 text-white px-8 py-4 rounded-full backdrop-blur-md">Join LinkedIn</button>
+            <div className="mt-10">
+              <button 
+                className="bg-amber-500 text-black px-6 py-4 rounded-full font-bold active:scale-95 transition-all shadow-[0_10px_20px_rgba(251,191,36,0.2)] uppercase tracking-widest text-xs cursor-pointer w-max"
+              >
+                Explore Here
+              </button>
             </div>
           </motion.div>
 
@@ -212,10 +224,17 @@ const Landing = () => {
           <div className="flex flex-col items-center lg:items-start space-y-3 bg-white/5 lg:bg-transparent p-6 rounded-3xl backdrop-blur-xl border border-white/10 lg:border-none w-full max-w-sm lg:max-w-none">
             <span className="text-[10px] uppercase tracking-[0.3em] text-amber-500 font-bold">DEPLOYMENT STARTS IN</span>
             <div className="flex gap-6">
-              {Object.entries(timeLeft).map(([unit, value]) => (
-                <div key={unit} className="flex flex-col items-center">
-                  <span className="text-2xl md:text-4xl font-serif text-white">{value.toString().padStart(2, '0')}</span>
-                  <span className="text-[9px] text-amber-500 font-bold uppercase">{unit.slice(0, 1)}</span>
+              {[
+                { label: 'D', value: timeLeft.days },
+                { label: 'H', value: timeLeft.hours },
+                { label: 'M', value: timeLeft.minutes },
+                { label: 'S', value: timeLeft.seconds }
+              ].map((item, idx) => (
+                <div key={idx} className="flex flex-col items-center">
+                  <span className="text-2xl md:text-4xl font-serif text-white w-[1.5ch] text-center">
+                    {item.value.toString().padStart(2, '0')}
+                  </span>
+                  <span className="text-[9px] text-amber-500 font-bold uppercase">{item.label}</span>
                 </div>
               ))}
             </div>
@@ -224,13 +243,7 @@ const Landing = () => {
 
         {/* RIGHT SIDE: HERO CREDIT + STATS CARD */}
         <div className="relative z-10 w-full lg:w-1/2 flex flex-col items-center lg:items-end mt-12 lg:mt-0 pb-10 lg:pb-0">
-          
-          <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.6 }}
-            className="mb-8 text-center lg:text-right"
-          >
+          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 }} className="mb-8 text-center lg:text-right">
             <span className="text-amber-500 text-[10px] font-bold tracking-[0.4em] uppercase block mb-2">Organized By</span>
             <h3 className="text-white text-2xl md:text-3xl font-serif tracking-widest">KSHITIJ JAIN</h3>
           </motion.div>
