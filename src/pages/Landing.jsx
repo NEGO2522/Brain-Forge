@@ -1,286 +1,262 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
+import React, { useRef, useState, Suspense, useMemo, useEffect } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { motion, useInView } from 'framer-motion';
+import * as THREE from 'three';
 import Navbar from '../components/Navbar';
+import styled, { keyframes } from 'styled-components';
 
-const CountdownTimer = () => {
-  // Set target date to 16 days from now
-  const [targetDate] = useState(() => {
-    const date = new Date();
-    date.setDate(date.getDate() + 16);
-    date.setHours(0, 0, 0, 0); // Set to midnight
-    return date;
-  });
-
-  const calculateTimeLeft = () => {
-    const now = new Date();
-    const difference = targetDate - now;
-    
-    if (difference <= 0) {
-      return { days: 0, hours: 0, minutes: 0, seconds: 0 };
-    }
-    
-    return {
-      days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-      hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-      minutes: Math.floor((difference / 1000 / 60) % 60),
-      seconds: Math.floor((difference / 1000) % 60)
-    };
-  };
-
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+// --- 1. REAL-TIME COUNTDOWN HOOK ---
+const useCountdown = (targetDate) => {
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft());
+      const now = new Date().getTime();
+      const distance = targetDate - now;
+      setTimeLeft({
+        days: Math.max(0, Math.floor(distance / (1000 * 60 * 60 * 24))),
+        hours: Math.max(0, Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))),
+        minutes: Math.max(0, Math.floor((distance % (1000 * 60)) / (1000 * 60))),
+        seconds: Math.max(0, Math.floor((distance % (1000 * 60)) / 1000)),
+      });
     }, 1000);
-
     return () => clearInterval(timer);
-  }, []);
+  }, [targetDate]);
+  return timeLeft;
+};
 
-  const unitMap = {
-    days: 'D',
-    hours: 'H',
-    minutes: 'M',
-    seconds: 'S'
-  };
+// --- 2. ENLARGED ANIMATED ROBOT ---
+const RobotModel = ({ isMobile }) => {
+  const groupRef = useRef();
+  const headTop = useRef();
+  const headBottom = useRef();
+  const torso = useRef();
+  const coreRef = useRef();
+  
+  const scale = isMobile ? 0.8 : 1.6; 
+  const posY = isMobile ? -0.5 : -1.2;
+
+  useFrame((state) => {
+    const t = state.clock.getElapsedTime();
+    const openFactor = Math.abs(Math.sin(t * 0.8)); 
+
+    if (groupRef.current) {
+      groupRef.current.position.y = posY + Math.sin(t * 1) * 0.05;
+      groupRef.current.rotation.y = Math.sin(t * 0.3) * 0.1;
+    }
+
+    if (headTop.current) headTop.current.position.y = 1.4 + (openFactor * 0.4);
+    if (headBottom.current) headBottom.current.position.y = 1.4 - (openFactor * 0.1);
+    if (torso.current) torso.current.scale.set(1 + openFactor * 0.1, 1 + openFactor * 0.1, 1 + openFactor * 0.1);
+    
+    if (coreRef.current) {
+        coreRef.current.rotation.y = t * 2;
+        coreRef.current.material.emissiveIntensity = 2 + openFactor * 8;
+    }
+  });
 
   return (
-    <div className="flex flex-col items-center">
-      <span className="text-xs sm:text-sm uppercase tracking-[0.2em] sm:tracking-[0.3em] text-white/90 font-light mb-2 sm:mb-3 font-sans">
-        TIME TO DEPLOYMENT
-      </span>
-      <div className="flex items-baseline gap-3 sm:gap-6">
-        {Object.entries(timeLeft).map(([unit, value]) => (
-          <div key={unit} className="flex items-baseline">
-            <span className="text-3xl sm:text-5xl font-serif font-normal text-white">
-              {value.toString().padStart(2, '0')}
-            </span>
-            <span className="text-xl sm:text-2xl font-sans font-light text-white/80 ml-1">
-              {unitMap[unit]}
-            </span>
-          </div>
+    <group ref={groupRef} scale={[scale, scale, scale]}>
+      <mesh ref={headTop}>
+        <sphereGeometry args={[0.7, 32, 32, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        <meshStandardMaterial color="#ffffff" metalness={0.8} roughness={0.1} side={THREE.DoubleSide} />
+        {[0.25, -0.25].map((x, i) => (
+          <mesh key={i} position={[x, -0.1, 0.6]}>
+            <sphereGeometry args={[0.12, 16, 16]} />
+            <meshStandardMaterial color="#00d4ff" emissive="#00d4ff" emissiveIntensity={5} />
+          </mesh>
         ))}
-      </div>
-    </div>
+      </mesh>
+      <mesh ref={headBottom}>
+        <sphereGeometry args={[0.7, 32, 32, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2]} />
+        <meshStandardMaterial color="#ffffff" metalness={0.8} roughness={0.1} side={THREE.DoubleSide} />
+      </mesh>
+      <mesh ref={coreRef} position={[0, 1.3, 0]}>
+        <octahedronGeometry args={[0.3, 0]} />
+        <meshStandardMaterial color="#00d4ff" emissive="#00d4ff" emissiveIntensity={2} />
+      </mesh>
+      <mesh ref={torso} position={[0, 0.4, 0]}>
+        <sphereGeometry args={[0.55, 32, 32]} />
+        <meshStandardMaterial color="#ffffff" metalness={0.8} roughness={0.1} />
+      </mesh>
+      {[0.7, -0.7].map((x, i) => (
+        <group key={i} position={[x, 0.6, 0]}>
+          <mesh><sphereGeometry args={[0.15, 16, 16]} /><meshStandardMaterial color="#333" /></mesh>
+          <mesh position={[0, -0.4, 0]}><capsuleGeometry args={[0.1, 0.5, 4, 8]} /><meshStandardMaterial color="#ffffff" metalness={0.8} /></mesh>
+        </group>
+      ))}
+      {[0.3, -0.3].map((x, i) => (
+        <mesh key={i} position={[x, -0.2, 0.1]}><cylinderGeometry args={[0.2, 0.25, 0.3, 16]} /><meshStandardMaterial color="#ffffff" metalness={0.8} /></mesh>
+      ))}
+    </group>
   );
 };
 
-// CSS for the rotating fan animation
-const rotate = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-`;
+const MovingStars = () => {
+  const starsRef = useRef();
+  const count = 1000;
+  const positions = useMemo(() => {
+    const pos = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      pos[i * 3] = (Math.random() - 0.5) * 50;
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 50;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 50;
+    }
+    return pos;
+  }, []);
+  useFrame((state) => { if (starsRef.current) starsRef.current.rotation.y = state.clock.getElapsedTime() * 0.005; });
+  return (
+    <points ref={starsRef}>
+      <bufferGeometry><bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} /></bufferGeometry>
+      <pointsMaterial size={0.05} color="#ffffff" transparent opacity={0.4} sizeAttenuation={true} />
+    </points>
+  );
+};
 
-const RotatingFanIcon = styled.div`
-  animation: ${rotate} 4s linear infinite;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-`;
+// --- 3. UPDATED BRANDING SECTION (With New Links) ---
+const OrganizedBySection = () => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: false, amount: 0.3 });
 
+  const links = [
+    { name: "About Us", url: "#about" },
+    { name: "Join LinkedIn", url: "https://linkedin.com" },
+    { name: "Join Discord", url: "https://discord.com" }
+  ];
+
+  return (
+    <section ref={ref} className="relative min-h-screen w-full flex-shrink-0 snap-start flex flex-col items-center justify-center bg-black z-20 py-20 px-6">
+      <motion.div initial={{ opacity: 0 }} animate={isInView ? { opacity: 0.05 } : { opacity: 0 }} className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <h2 className="text-[18vw] font-black text-white uppercase tracking-tighter select-none">KSHITIJ</h2>
+      </motion.div>
+      
+      <div className="relative z-30 flex flex-col items-center text-center">
+        <span className="text-amber-500 tracking-[0.5em] text-[10px] md:text-xs font-bold mb-4 uppercase">Lead Organizer</span>
+        <h2 className="text-5xl md:text-8xl font-serif text-white uppercase tracking-widest mb-12">Kshitij Jain</h2>
+        
+        {/* LINK GROUP */}
+        <div className="flex flex-col md:flex-row items-center gap-6 md:gap-12 mt-4">
+          <span className="text-white/30 text-[10px] uppercase tracking-[0.4em] mb-2 md:mb-0">Connect Us:</span>
+          {links.map((link, index) => (
+            <motion.a
+              key={link.name}
+              href={link.url}
+              initial={{ opacity: 0, y: 10 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.2 + index * 0.1 }}
+              className="group relative flex flex-col items-center"
+            >
+              <span className="text-white/70 group-hover:text-amber-500 text-xs md:text-sm uppercase tracking-[0.2em] font-medium transition-colors duration-300">
+                {link.name}
+              </span>
+              <div className="h-[1px] w-0 group-hover:w-full bg-amber-500 transition-all duration-300 mt-1 shadow-[0_0_8px_#fbbf24]" />
+            </motion.a>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// --- 4. MAIN LANDING ---
 const Landing = () => {
-  const isMobile = typeof window !== 'undefined' ? /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) : false;
-  const videoRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const targetDate = useMemo(() => new Date().getTime() + 14 * 24 * 60 * 60 * 1000, []);
+  const timeLeft = useCountdown(targetDate);
 
   useEffect(() => {
-    // Only autoplay video on non-mobile devices
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    
-    if (videoRef.current && !isMobile) {
-      const video = videoRef.current;
-      
-      const handleLoadedData = () => {
-        console.log('Video loaded successfully');
-        video.play().catch(error => {
-          console.error('Error playing video:', error);
-        });
-      };
-      
-      const handleError = (e) => {
-        console.error('Video error:', e);
-        console.log('Video source:', video.currentSrc);
-      };
-
-      video.addEventListener('loadeddata', handleLoadedData);
-      video.addEventListener('error', handleError);
-
-      return () => {
-        video.removeEventListener('loadeddata', handleLoadedData);
-        video.removeEventListener('error', handleError);
-      };
-    }
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   return (
-    <div className="relative w-full bg-gray-900 flex flex-col h-screen overflow-y-auto snap-y snap-mandatory scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-900">
-      {/* Hero Section with Video Background */}
-      <section className="relative h-screen w-full flex-shrink-0 snap-start">
-        {/* Fixed Background Elements */}
-        <div className="fixed top-4 left-4 sm:top-8 sm:left-8 z-30">
-          <RotatingFanIcon>
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-300">
-              <path d="M10.827 16.379a6.082 6.082 0 0 1-8.618-7.002l5.412 1.45a6.082 6.082 0 0 1 7.002-8.618l-1.45 5.412a6.082 6.082 0 0 1 8.618 7.002l-5.412-1.45a6.082 6.082 0 0 1-7.002 8.618l1.45-5.412Z"/>
-              <path d="M12 12v.01"/>
-            </svg>
-          </RotatingFanIcon>
-        </div>
+    <div className="relative w-full bg-black flex flex-col min-h-screen overflow-x-hidden overflow-y-auto snap-y snap-mandatory scrollbar-hide">
+      
+      {/* SECTION 1: HERO */}
+      <section className="relative min-h-[100dvh] lg:h-screen w-full flex-shrink-0 snap-start flex flex-col lg:flex-row items-center justify-center lg:justify-between px-6 lg:px-24 pt-24 lg:pt-0 overflow-hidden z-10">
         
-        {/* Fixed Navbar */}
-        <div className="fixed top-0 left-0 right-0 z-20">
-          <Navbar />
+        {/* Background 3D Layer */}
+        <div className="absolute inset-0 z-0 pointer-events-none opacity-70 lg:opacity-90">
+          <Canvas camera={{ position: [0, 0, isMobile ? 12 : 8], fov: 45 }}>
+            <Suspense fallback={null}>
+              <MovingStars />
+              <RobotModel isMobile={isMobile} />
+            </Suspense>
+            <ambientLight intensity={0.4} />
+            <pointLight position={[5, 2, 5]} intensity={50} color="#00d4ff" />
+          </Canvas>
         </div>
 
-        {/* Fixed Countdown Timer */}
-        <div className="fixed right-4 bottom-20 sm:right-10 sm:bottom-10 z-10 bg-black/40 backdrop-blur-sm rounded-lg p-2 sm:bg-transparent sm:backdrop-blur-0 sm:p-0">
-          <CountdownTimer />
-        </div>
+        <div className="fixed top-0 left-0 right-0 z-50"><Navbar /></div>
 
-        {/* Video Background */}
-        <div className="absolute inset-0 z-0">
-          <video
-            ref={videoRef}
-            className="absolute inset-0 w-full h-full object-cover z-0"
-            autoPlay={!isMobile}
-            loop={!isMobile}
-            muted
-            playsInline
-            poster="/Image.jpg"
-          >
-            <source src="/videos/background-video.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        </div>
-
-        {/* Main Content */}
-        <div className="relative z-10 h-full flex flex-col items-center justify-center px-4">
-          <div className="w-full max-w-4xl flex flex-col items-center px-2 sm:px-0">
-            <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-['redHatDisplay'] mb-4 sm:mb-6 text-amber-200/80 text-center">
-              Begin Your Community
-              <br className="hidden sm:block" />
-              Journey of Tech 
+        {/* LEFT CONTENT */}
+        <div className="relative z-10 w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left space-y-8">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif text-white leading-tight tracking-tighter">
+              Begin Your <br/> 
+              <span className="text-amber-500 italic">Community</span> <br/>
+              Journey
             </h1>
-            <p className="text-sm xs:text-base md:text-lg mb-6 sm:mb-8 max-w-2xl text-gray-100 leading-relaxed font-['Inter',sans-serif] font-light tracking-normal text-center px-2 sm:px-4">
-              Be part of a growing initiative that connects people through shared interests, enabling collaboration, learning, and long-term impact.
+            <p className="text-gray-400 max-w-sm mx-auto lg:mx-0 mt-6 text-sm md:text-base">
+              Forge connections between passion and professional excellence in our digital ecosystem.
             </p>
-            
-            {/* Buttons - Centered */}
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center w-full max-w-md px-2 sm:px-0">
-              <button className="relative group bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-medium py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-amber-500/20 w-full sm:w-auto">
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
-                  </svg>
-                  Register Now
-                </span>
-                <span className="absolute inset-0 bg-white/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-              </button>
-              <a href="https://www.linkedin.com/in/kshitij-kj-jain-422025342/" target="_blank" rel="noopener noreferrer" className="relative group bg-transparent border-2 border-amber-400/50 hover:border-amber-400/80 text-white font-medium py-3 px-8 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 hover:bg-amber-500/10 w-full sm:w-auto">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-                </svg>
-                Join LinkedIn
-                <span className="absolute inset-0 bg-amber-400/5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-              </a>
+            <div className="flex flex-col sm:flex-row gap-4 mt-10 w-full max-w-xs sm:max-w-none">
+              <button className="flex-1 bg-amber-500 text-black px-8 py-4 rounded-full font-bold active:scale-95 transition-all shadow-[0_10px_20px_rgba(251,191,36,0.2)]">Register Now</button>
+              <button className="flex-1 border border-white/20 text-white px-8 py-4 rounded-full backdrop-blur-md">Join LinkedIn</button>
             </div>
-            
-            {/* Organized By Text - Bottom Left Corner */}
-            <div className="absolute left-2 bottom-4 sm:left-10 sm:bottom-10 group">
-              <div className="flex items-start gap-2 sm:gap-4">
-                {/* Large K initial */}
-                <div className="flex flex-col items-center">
-                  <span className="text-4xl sm:text-5xl md:text-6xl font-bold text-amber-400/90 font-serif -mb-2 sm:-mb-3">K</span>
-                  <div className="h-0.5 w-8 sm:w-10 bg-gradient-to-r from-amber-400/70 to-transparent"></div>
+          </motion.div>
+
+          {/* COUNTDOWN */}
+          <div className="flex flex-col items-center lg:items-start space-y-3 bg-white/5 lg:bg-transparent p-6 rounded-3xl backdrop-blur-xl border border-white/10 lg:border-none w-full max-w-sm lg:max-w-none">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-amber-500 font-bold">DEPLOYMENT STARTS IN</span>
+            <div className="flex gap-6">
+              {Object.entries(timeLeft).map(([unit, value]) => (
+                <div key={unit} className="flex flex-col items-center">
+                  <span className="text-2xl md:text-4xl font-serif text-white">{value.toString().padStart(2, '0')}</span>
+                  <span className="text-[9px] text-amber-500 font-bold uppercase">{unit.slice(0, 1)}</span>
                 </div>
-                
-                {/* Name */}
-                <div className="flex flex-col font-serif pt-0 sm:pt-1">
-                  <span className="text-[9px] xs:text-[10px] sm:text-[11px] uppercase tracking-[0.2em] sm:tracking-[0.3em] text-amber-200/80 font-light">
-                    Organized By
-                  </span>
-                  <span className="text-lg xs:text-xl sm:text-2xl font-medium text-white tracking-wide mt-0.5 sm:mt-1">
-                   Kshitij Jain
-                  </span>
-                  <div className="h-0.5 w-12 sm:w-16 bg-gradient-to-r from-amber-400/70 to-transparent mt-1.5 sm:mt-2 transition-all duration-300 group-hover:w-16 sm:group-hover:w-24"></div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
+        </div>
+
+        {/* RIGHT SIDE: HERO CREDIT + STATS CARD */}
+        <div className="relative z-10 w-full lg:w-1/2 flex flex-col items-center lg:items-end mt-12 lg:mt-0 pb-10 lg:pb-0">
+          
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.6 }}
+            className="mb-8 text-center lg:text-right"
+          >
+            <span className="text-amber-500 text-[10px] font-bold tracking-[0.4em] uppercase block mb-2">Organized By</span>
+            <h3 className="text-white text-2xl md:text-3xl font-serif tracking-widest">KSHITIJ JAIN</h3>
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.4 }} className="w-full max-w-sm bg-white/5 border border-white/10 backdrop-blur-3xl p-8 rounded-[2rem] shadow-2xl border-l-amber-500/20">
+            <div className="mb-6">
+              <span className="text-amber-500 text-[10px] font-black tracking-widest uppercase block mb-1">Impact</span>
+              <h4 className="text-white text-xl font-serif">Community Reach</h4>
+            </div>
+            <div className="grid grid-cols-1 gap-6 text-white">
+               {[
+                 { val: "25+", label: "Communities" },
+                 { val: "5,400+", label: "Enrolled" },
+                 { val: "1,200+", label: "Connections" }
+               ].map((stat, idx) => (
+                 <div key={idx} className="flex items-center justify-between border-b border-white/5 pb-4 last:border-0">
+                    <p className="text-2xl font-serif">{stat.val}</p>
+                    <p className="text-[10px] text-white/40 uppercase tracking-widest">{stat.label}</p>
+                 </div>
+               ))}
+            </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Footer Section */}
-      <footer className="relative w-full min-h-screen h-auto flex-shrink-0 snap-start bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/Image.jpg)' }}>
-        <div className="absolute inset-0 bg-black/70"></div>
-        <div className="relative z-10 h-full max-w-7xl mx-auto px-4 py-12 sm:py-16 sm:px-6 lg:px-8">
-          <div className="w-full pt-16 sm:pt-20">
-            {/* Navigation Links */}
-            <div className="flex justify-center mb-10 sm:mb-20 px-2">
-              <div className="space-y-4 sm:space-y-6 w-full max-w-xs">
-                <div className="grid grid-cols-2 gap-x-4 sm:gap-x-8 gap-y-2">
-                  <div className="space-y-1 sm:space-y-2">
-                    <a href="#" className="hover:text-white text-white/70 text-xs xs:text-sm tracking-[0.12em] sm:tracking-[0.15em] md:tracking-[0.18em] uppercase whitespace-nowrap transition-colors block">Rules & Guidelines</a>
-                    <a href="#" className="hover:text-white text-white/70 text-xs xs:text-sm tracking-[0.12em] sm:tracking-[0.15em] md:tracking-[0.18em] uppercase whitespace-nowrap transition-colors block">Privacy Policy</a>
-                  </div>
-                  <div className="space-y-1 sm:space-y-2">
-                    <a href="#" className="hover:text-white text-white/70 text-xs xs:text-sm tracking-[0.12em] sm:tracking-[0.15em] md:tracking-[0.18em] uppercase whitespace-nowrap transition-colors block">Code of Conduct</a>
-                    <a href="#" className="hover:text-white text-white/70 text-xs xs:text-sm tracking-[0.12em] sm:tracking-[0.15em] md:tracking-[0.18em] uppercase whitespace-nowrap transition-colors block">Terms of Use</a>
-                  </div>
-                </div>
-                <a href="#" className="hover:text-white text-white/90 text-sm sm:text-base tracking-[0.12em] sm:tracking-[0.15em] md:tracking-[0.18em] uppercase whitespace-nowrap transition-colors block text-center font-medium">
-                  Contact Us
-                </a>
-              </div>
-            </div>
-
-            {/* Organized By Section - Left Aligned */}
-            <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between px-4 sm:pl-8 sm:pr-8 pt-8 sm:pt-2">
-              {/* Social Links */}
-              <div className="flex flex-col items-center sm:items-start space-y-3 sm:space-y-4 pt-2 order-2 sm:order-1 mt-6 sm:mt-0">
-                <span className="text-xs uppercase tracking-widest text-amber-200/60 font-light">Connect</span>
-                <div className="flex space-x-4">
-                  <a href="https://github.com/NEGO2522" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-amber-400 transition-colors">
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.6.113.82-.26.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.386-1.332-1.755-1.332-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.108-.775.418-1.305.762-1.604-2.665-.305-5.467-1.332-5.467-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
-                    </svg>
-                  </a>
-                  <a href="https://www.linkedin.com/in/kshitij-kj-jain-422025342/" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-amber-400 transition-colors">
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                    </svg>
-                  </a>
-                  <a href="mailto:nextgenova28@gmail.com" className="text-white/70 hover:text-amber-400 transition-colors">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                    </svg>
-                  </a>
-                </div>
-              </div>
-
-              {/* Organized By Content */}
-              <div className="flex items-start gap-3 sm:gap-4 order-1 sm:order-2">
-                <div className="flex flex-col items-center">
-                  <span className="text-6xl sm:text-7xl md:text-8xl font-bold text-amber-400/90 font-serif -mb-2 sm:-mb-3">K</span>
-                  <div className="h-0.5 w-10 sm:w-14 bg-gradient-to-r from-amber-400/70 to-transparent"></div>
-                </div>
-                <div className="flex flex-col font-serif pt-1 sm:pt-2">
-                  <span className="text-xs sm:text-sm uppercase tracking-[0.2em] sm:tracking-[0.3em] text-amber-200/80 font-light">
-                    Organized By
-                  </span>
-                  <span className="text-2xl sm:text-3xl font-medium text-white tracking-wide mt-1 sm:mt-2">
-                    Kshitij Jain
-                  </span>
-                  <div className="h-0.5 w-16 sm:w-20 bg-gradient-to-r from-amber-400/70 to-transparent mt-2 sm:mt-3"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <OrganizedBySection />
     </div>
   );
 };
