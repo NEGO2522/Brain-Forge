@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import { useNavigate } from 'react-router-dom';
 import { FaLinkedinIn, FaDiscord } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
+import { RotatingFanIcon } from '../components/RotatingFanIcon';
 
 // --- 1. 3D ROBOT MODEL ---
 const RobotModel = ({ isMobile }) => {
@@ -94,10 +95,9 @@ const MovingStars = () => {
   );
 };
 
-// --- 2. NEW COMPONENT: COMMUNITY TAG SCROLLER ---
+// --- 2. COMMUNITY TAG SCROLLER ---
 const CommunityScroller = () => {
   const tags = ["Web3 Developers", "AI Researchers", "UI/UX Designers", "SaaS Founders", "Creative Directors", "Data Scientists"];
-  
   return (
     <div className="w-full max-w-sm overflow-hidden">
       <p className="text-[10px] uppercase tracking-[0.4em] text-amber-500 font-bold mb-6 text-center lg:text-left">Trending Hubs</p>
@@ -114,10 +114,6 @@ const CommunityScroller = () => {
           </motion.span>
         ))}
       </div>
-      <div className="mt-6 flex items-center gap-2 text-[9px] text-gray-500 font-mono italic">
-        <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-        Live Activity Detected
-      </div>
     </div>
   );
 };
@@ -126,7 +122,6 @@ const CommunityScroller = () => {
 const PhilosophySection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: false, amount: 0.2 });
-
   const pillars = [
     { title: "Innovate", desc: "Pushing the boundaries of digital collaboration." },
     { title: "Connect", desc: "Linking ambitious minds with global opportunities." },
@@ -135,80 +130,25 @@ const PhilosophySection = () => {
 
   return (
     <section ref={ref} className="relative min-h-screen w-full flex-shrink-0 snap-start flex flex-col items-center justify-center bg-black z-20 py-24 px-6 overflow-hidden">
-      <motion.div 
-        initial={{ opacity: 0 }} 
-        animate={isInView ? { opacity: 0.03 } : { opacity: 0 }} 
-        className="absolute inset-0 flex items-center justify-center pointer-events-none"
-      >
+      <motion.div initial={{ opacity: 0 }} animate={isInView ? { opacity: 0.03 } : { opacity: 0 }} className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <h2 className="text-[15vw] font-black text-white uppercase tracking-tighter select-none">KSHITIJ</h2>
       </motion.div>
-      
       <div className="relative z-30 max-w-5xl w-full text-center">
-        <motion.span 
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          className="text-amber-500 tracking-[0.5em] text-[10px] md:text-xs font-bold mb-4 uppercase block"
-        >
-          Our Core Philosophy
-        </motion.span>
-        
-        <motion.h2 
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.1 }}
-          className="text-4xl md:text-7xl font-serif text-white uppercase tracking-tight mb-16"
-        >
-          The Future is <br/> <span className="text-amber-500 italic">Collaborative</span>
-        </motion.h2>
-        
+        <motion.span initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} className="text-amber-500 tracking-[0.5em] text-[10px] md:text-xs font-bold mb-4 uppercase block">Our Core Philosophy</motion.span>
+        <motion.h2 initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} className="text-4xl md:text-7xl font-serif text-white uppercase tracking-tight mb-16">The Future is <br/> <span className="text-amber-500 italic">Collaborative</span></motion.h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-left mb-20">
           {pillars.map((pillar, index) => (
-            <motion.div
-              key={pillar.title}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.3 + index * 0.1 }}
-            >
-              <div className="flex items-center gap-4 mb-4">
-                <span className="text-amber-500 font-mono text-sm">0{index + 1}</span>
-                <div className="h-[1px] flex-grow bg-white/10" />
-              </div>
-              <h3 className="text-white text-2xl font-serif mb-3 uppercase tracking-widest">
-                {pillar.title}
-              </h3>
-              <p className="text-gray-500 text-sm leading-relaxed">
-                {pillar.desc}
-              </p>
+            <motion.div key={pillar.title} initial={{ opacity: 0, y: 30 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.3 + index * 0.1 }}>
+              <div className="flex items-center gap-4 mb-4"><span className="text-amber-500 font-mono text-sm">0{index + 1}</span><div className="h-[1px] flex-grow bg-white/10" /></div>
+              <h3 className="text-white text-2xl font-serif mb-3 uppercase tracking-widest">{pillar.title}</h3>
+              <p className="text-gray-500 text-sm leading-relaxed">{pillar.desc}</p>
             </motion.div>
           ))}
         </div>
-
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.6 }}
-          className="flex flex-col md:flex-row items-center justify-center gap-6 pt-12 border-t border-white/5"
-        >
-          <a 
-            href="https://discord.com" 
-            target="_blank" 
-            rel="noreferrer"
-            className="flex items-center gap-4 px-8 py-4 bg-amber-500 text-black border border-amber-500 rounded-full shadow-[0_0_25px_rgba(245,158,11,0.4)] font-black transition-none"
-          >
-            <FaDiscord className="text-xl" />
-            <span className="text-[10px] uppercase tracking-[0.2em]">Join Discord</span>
-          </a>
-
-          <a 
-            href="https://www.linkedin.com/company/brainforge16" 
-            target="_blank" 
-            rel="noreferrer"
-            className="flex items-center gap-4 px-8 py-4 bg-amber-500 text-black border border-amber-500 rounded-full shadow-[0_0_25px_rgba(245,158,11,0.4)] font-black transition-none"
-          >
-            <FaLinkedinIn className="text-xl" />
-            <span className="text-[10px] uppercase tracking-[0.2em]">Join LinkedIn</span>
-          </a>
-        </motion.div>
+        <div className="flex flex-col md:flex-row items-center justify-center gap-6 pt-12 border-t border-white/5">
+          <a href="https://discord.com" target="_blank" rel="noreferrer" className="flex items-center gap-4 px-8 py-4 bg-amber-500 text-black rounded-full font-black"><FaDiscord /> <span className="text-[10px] uppercase tracking-[0.2em]">Join Discord</span></a>
+          <a href="https://www.linkedin.com/company/brainforge16" target="_blank" rel="noreferrer" className="flex items-center gap-4 px-8 py-4 bg-amber-500 text-black rounded-full font-black"><FaLinkedinIn /> <span className="text-[10px] uppercase tracking-[0.2em]">Join LinkedIn</span></a>
+        </div>
       </div>
     </section>
   );
@@ -226,76 +166,98 @@ const Landing = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  const footerLinks = [
+    { name: "Home", path: "/" },
+    { name: "Explore", path: "/explore" },
+    { name: "Community", path: "/community" },
+    { name: "About", path: "/about" },
+    { name: "Connect", path: "/connect" },
+    { name: "User", path: "/user" },
+    { name: "Profile", path: "/profile" },
+  ];
+
   return (
     <div className="relative w-full bg-black flex flex-col min-h-screen overflow-x-hidden overflow-y-auto snap-y snap-mandatory scrollbar-hide">
       
       <div className="fixed top-0 left-0 right-0 z-50"><Navbar /></div>
 
+      {/* HERO SECTION */}
       <section className="relative min-h-[100dvh] lg:h-screen w-full flex-shrink-0 snap-start flex flex-col lg:flex-row items-center justify-center lg:justify-between px-6 lg:px-24 pt-24 lg:pt-0 overflow-hidden z-10">
-        
         <div className="absolute inset-0 z-0 pointer-events-none opacity-70 lg:opacity-90">
           <Canvas camera={{ position: [0, 0, isMobile ? 12 : 8], fov: 45 }}>
-            <Suspense fallback={null}>
-              <MovingStars />
-              <RobotModel isMobile={isMobile} />
-            </Suspense>
-            <ambientLight intensity={0.4} />
-            <pointLight position={[5, 2, 5]} intensity={50} color="#00d4ff" />
+            <Suspense fallback={null}><MovingStars /><RobotModel isMobile={isMobile} /></Suspense>
+            <ambientLight intensity={0.4} /><pointLight position={[5, 2, 5]} intensity={50} color="#00d4ff" />
           </Canvas>
         </div>
 
         <div className="relative z-10 w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left space-y-12">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif text-white leading-tight tracking-tighter">
-              Begin Your <br/> 
-              <span className="text-amber-500 italic">Community</span> <br/>
-              Journey
+              Begin Your <br/> <span className="text-amber-500 italic">Community</span> <br/> Journey
             </h1>
-            <p className="text-gray-400 max-w-sm mx-auto lg:mx-0 mt-6 text-sm md:text-base">
-              Forge connections between passion and professional excellence in our digital ecosystem.
-            </p>
-            <div className="mt-10">
-              <button 
-                onClick={() => navigate('/explore')} 
-                className="bg-amber-500 text-black px-6 py-4 rounded-full font-bold active:scale-95 transition-all shadow-[0_10px_20px_rgba(251,191,36,0.2)] uppercase tracking-widest text-xs cursor-pointer w-max"
-              >
-                Explore Here
-              </button>
-            </div>
+            <p className="text-gray-400 max-w-sm mx-auto lg:mx-0 mt-6 text-sm md:text-base">Forge connections between passion and professional excellence.</p>
+            <button onClick={() => navigate('/explore')} className="mt-10 bg-amber-500 text-black px-6 py-4 rounded-full font-bold uppercase tracking-widest text-xs">Explore Here</button>
           </motion.div>
-
-          {/* NEW COMMUNITY TAGS SECTION */}
           <CommunityScroller />
         </div>
 
         <div className="relative z-10 w-full lg:w-1/2 flex flex-col items-center lg:items-end mt-12 lg:mt-0 pb-10 lg:pb-0">
-          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 }} className="mb-8 text-center lg:text-right">
+          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="mb-8 text-center lg:text-right">
             <span className="text-amber-500 text-[10px] font-bold tracking-[0.4em] uppercase block mb-2">Organized By</span>
             <h3 className="text-white text-2xl md:text-3xl font-serif tracking-widest">KSHITIJ JAIN</h3>
           </motion.div>
-
-          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.4 }} className="w-full max-w-sm bg-white/5 border border-white/10 backdrop-blur-3xl p-8 rounded-[2rem] shadow-2xl border-l-amber-500/20">
-            <div className="mb-6">
-              <span className="text-amber-500 text-[10px] font-black tracking-widest uppercase block mb-1">Impact</span>
-              <h4 className="text-white text-xl font-serif">Community Reach</h4>
-            </div>
-            <div className="grid grid-cols-1 gap-6 text-white">
-               {[
-                 { val: "10+", label: "Communities" },
-                 { val: "0+", label: "Enrolled" },
-                 { val: "0+", label: "Connections" }  
-               ].map((stat, idx) => (
-                 <div key={idx} className="flex items-center justify-between border-b border-white/5 pb-4 last:border-0">
-                    <p className="text-2xl font-serif">{stat.val}</p>
-                    <p className="text-[10px] text-white/40 uppercase tracking-widest">{stat.label}</p>
-                 </div>
-               ))}
-            </div>
+          <motion.div className="w-full max-w-sm bg-white/5 border border-white/10 backdrop-blur-3xl p-8 rounded-[2rem]">
+            <span className="text-amber-500 text-[10px] uppercase block mb-1">Impact</span>
+            <h4 className="text-white text-xl font-serif mb-6">Community Reach</h4>
+            {[{ val: "10+", label: "Communities" }, { val: "0+", label: "Enrolled" }, { val: "0+", label: "Connections" }].map((stat, i) => (
+              <div key={i} className="flex justify-between border-b border-white/5 pb-4 mb-4 last:border-0"><p className="text-2xl font-serif text-white">{stat.val}</p><p className="text-[10px] text-white/40 uppercase tracking-widest">{stat.label}</p></div>
+            ))}
           </motion.div>
         </div>
       </section>
 
       <PhilosophySection />
+
+      {/* --- FOOTER SECTION --- */}
+      <footer className="relative w-full bg-black border-t border-white/5 pt-16 pb-8 px-6 lg:px-24 snap-start flex-shrink-0 z-30">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-12">
+          
+          {/* Logo with Icon */}
+          <div className="space-y-4">
+            <div className="flex items-center space-x-4">
+              <RotatingFanIcon>
+                <div className="w-10 h-10 rounded-full bg-amber-500/5 flex items-center justify-center border border-amber-500/20">
+                  <svg className="h-5 w-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+              </RotatingFanIcon>
+              <h2 className="text-2xl font-serif text-white tracking-tighter">
+                BRAIN <span className="text-amber-500 italic">FORGE</span>
+              </h2>
+            </div>
+            <p className="text-gray-500 text-[10px] uppercase tracking-[0.3em] font-bold">
+              Architecting the Future of Collaboration
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-8 gap-y-4">
+            {footerLinks.map((link) => (
+              <button key={link.name} onClick={() => navigate(link.path)} className="text-left text-gray-400 hover:text-amber-500 transition-colors text-[11px] uppercase tracking-widest font-medium">
+                {link.name}
+              </button>
+            ))}
+          </div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-[9px] text-gray-600 uppercase tracking-widest font-mono">© 2026 Brain Forge Ecosystem</p>
+          <div className="flex items-center gap-2">
+            <span className="text-white/20 text-[8px] uppercase tracking-[0.6em] font-bold">Organized By</span>
+            <span className="text-white/40 text-[9px] uppercase tracking-[0.2em] font-black">Kshitij Jain</span>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
