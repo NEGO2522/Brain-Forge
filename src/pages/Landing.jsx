@@ -2,6 +2,7 @@ import React, { useRef, useState, Suspense, useMemo, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import * as THREE from 'three';
+import { useNavigate } from 'react-router-dom'; // 1. Import useNavigate
 import Navbar from '../components/Navbar';
 
 // --- 1. FIXED REAL-TIME COUNTDOWN HOOK ---
@@ -168,6 +169,7 @@ const OrganizedBySection = () => {
 // --- 4. MAIN LANDING ---
 const Landing = () => {
   const [isMobile, setIsMobile] = useState(false);
+  const navigate = useNavigate(); // 2. Initialize navigate
   
   // Fixed Target Date (14 days from now)
   const targetDate = useMemo(() => new Date().getTime() + 14 * 24 * 60 * 60 * 1000, []);
@@ -213,6 +215,7 @@ const Landing = () => {
             </p>
             <div className="mt-10">
               <button 
+                onClick={() => navigate('/explore')} // 3. Add onClick navigation
                 className="bg-amber-500 text-black px-6 py-4 rounded-full font-bold active:scale-95 transition-all shadow-[0_10px_20px_rgba(251,191,36,0.2)] uppercase tracking-widest text-xs cursor-pointer w-max"
               >
                 Explore Here

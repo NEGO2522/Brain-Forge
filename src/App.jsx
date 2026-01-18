@@ -8,6 +8,8 @@ import About from './pages/About';
 import Login from './auth/Login';
 import Profiles from './pages/Profiles';
 import User from './pages/User';
+import Explore from './pages/Explore';
+
 
 // Layout component that includes the Navbar
 const Layout = ({ children }) => {
@@ -54,6 +56,11 @@ function App() {
         <Route path="/profiles" element={
           <Layout>
             <Profiles />
+          </Layout>
+        } />
+        <Route path="/explore" element={
+          <Layout>
+            <Explore />
           </Layout>
         } />
       </Routes>
