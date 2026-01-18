@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiTrendingUp, FiZap, FiGlobe, FiCode, FiCpu, 
   FiLayout, FiDatabase, FiShield, FiSmartphone,
-  FiBookmark, FiInbox, FiGrid
+  FiBookmark, FiInbox
 } from 'react-icons/fi';
 import Navbar from '../components/Navbar';
 
@@ -12,31 +12,31 @@ import { db } from '../firebase/firebase';
 import { ref, onValue } from "firebase/database";
 
 const Explore = () => {
-  const [selectedSector, setSelectedSector] = useState("All");
+  // Defaulting to the first category
+  const [selectedSector, setSelectedSector] = useState("Web3 & Crypto");
   const [broadcasts, setBroadcasts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Removed 'count' property from categories
   const categories = [
-    { name: "Web3 & Crypto", count: "1.2k", icon: <FiGlobe /> },
-    { name: "AI & ML", count: "850", icon: <FiZap /> },
-    { name: "UI/UX Design", count: "2.4k", icon: <FiLayout /> },
-    { name: "Open Source", count: "3.1k", icon: <FiTrendingUp /> },
-    { name: "Cybersecurity", count: "420", icon: <FiShield /> },
-    { name: "Backend Architecture", count: "930", icon: <FiDatabase /> },
-    { name: "Mobile Dev", count: "1.1k", icon: <FiSmartphone /> },
-    { name: "Robotics & Hardware", count: "215", icon: <FiCpu /> },
-    { name: "Cloud Computing", count: "670", icon: <FiCode /> },
+    { name: "Web3 & Crypto", icon: <FiGlobe /> },
+    { name: "AI & ML", icon: <FiZap /> },
+    { name: "UI/UX Design", icon: <FiLayout /> },
+    { name: "Open Source", icon: <FiTrendingUp /> },
+    { name: "Cybersecurity", icon: <FiShield /> },
+    { name: "Backend Architecture", icon: <FiDatabase /> },
+    { name: "Mobile Dev", icon: <FiSmartphone /> },
+    { name: "Robotics & Hardware", icon: <FiCpu /> },
+    { name: "Cloud Computing", icon: <FiCode /> },
   ];
 
   // 2. REAL-TIME DATA FETCHING
   useEffect(() => {
     const broadcastsRef = ref(db, 'forge_broadcasts');
     
-    // Set up the listener
     const unsubscribe = onValue(broadcastsRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        // Convert Firebase object to array and reverse for newest first
         const list = Object.keys(data).map(key => ({
           id: key,
           ...data[key]
@@ -48,13 +48,10 @@ const Explore = () => {
       setLoading(false);
     });
 
-    // Cleanup listener on unmount
     return () => unsubscribe();
   }, []);
 
-  const filteredBroadcasts = selectedSector === "All" 
-    ? broadcasts 
-    : broadcasts.filter(post => post.tag === selectedSector);
+  const filteredBroadcasts = broadcasts.filter(post => post.tag === selectedSector);
 
   return (
     <div className="min-h-screen bg-black text-white selection:bg-amber-500/30">
@@ -71,29 +68,12 @@ const Explore = () => {
               </h3>
               
               <div className="flex lg:flex-col gap-2 lg:space-y-1 mb-6 lg:mb-10 overflow-x-auto lg:overflow-y-auto pb-4 lg:pb-0 scrollbar-hide">
-                <motion.button 
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setSelectedSector("All")}
-                  className={`flex-shrink-0 flex items-center justify-between p-3 rounded-xl transition-all text-sm group border lg:w-full ${
-                    selectedSector === "All" 
-                      ? 'bg-amber-500/10 border-amber-500/50 text-white' 
-                      : 'hover:bg-white/5 border-transparent text-gray-400'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <span className={selectedSector === "All" ? 'text-amber-500' : 'text-gray-500 group-hover:text-amber-500'}>
-                      <FiGrid />
-                    </span>
-                    <span className="font-bold uppercase tracking-widest text-[11px] whitespace-nowrap">All Sectors</span>
-                  </div>
-                </motion.button>
-
                 {categories.map((cat) => (
                   <motion.button 
                     whileTap={{ scale: 0.95 }}
                     key={cat.name}
                     onClick={() => setSelectedSector(cat.name)}
-                    className={`flex-shrink-0 flex items-center justify-between p-3 rounded-xl transition-all text-sm group border lg:w-full ${
+                    className={`flex-shrink-0 flex items-center p-3 rounded-xl transition-all text-sm group border lg:w-full ${
                       selectedSector === cat.name 
                         ? 'bg-amber-500/10 border-amber-500/50 text-white' 
                         : 'hover:bg-white/5 border-transparent text-gray-400'
@@ -105,7 +85,7 @@ const Explore = () => {
                       </span>
                       <span className="group-hover:text-white whitespace-nowrap">{cat.name}</span>
                     </div>
-                    <span className="hidden lg:block text-[10px] font-mono opacity-50 ml-4">{cat.count}</span>
+                    {/* The count span has been removed from here */}
                   </motion.button>
                 ))}
               </div>
@@ -116,7 +96,7 @@ const Explore = () => {
           <section className="lg:col-span-3">
             <div className="flex items-center justify-between mb-8 lg:mb-10">
               <h2 className="text-xl md:text-2xl font-serif italic whitespace-nowrap">
-                {selectedSector === "All" ? "Ecosystem" : selectedSector} <span className="text-amber-500">Insights</span>
+                {selectedSector} <span className="text-amber-500">Insights</span>
               </h2>
               <div className="h-[1px] flex-grow bg-white/5 mx-4 md:mx-6" />
             </div>
