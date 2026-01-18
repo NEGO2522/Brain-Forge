@@ -1,189 +1,162 @@
 import React from 'react';
-import { FaGithub, FaDiscord, FaLinkedin, FaEnvelope, FaMapMarkerAlt, FaPhone } from 'react-icons/fa';
+import { motion } from 'framer-motion';
+import { FaGithub, FaDiscord, FaLinkedin, FaEnvelope, FaMapMarkerAlt, FaPhone, FaChevronRight } from 'react-icons/fa';
 import { RotatingFanIcon } from '../components/RotatingFanIcon';
+
+const ContactItem = ({ icon: Icon, title, content, link }) => (
+  <motion.div 
+    whileHover={{ x: 5 }}
+    className="flex items-center space-x-3 group p-2 rounded-xl hover:bg-white/5 transition-all duration-300"
+  >
+    <div className="flex-shrink-0 bg-amber-500/10 p-3 rounded-lg group-hover:bg-amber-500/20 transition-colors">
+      <Icon className="h-5 w-5 text-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.5)]" />
+    </div>
+    <div>
+      <h3 className="text-[8px] uppercase tracking-[0.3em] text-gray-500 font-bold">{title}</h3>
+      {link ? (
+        <a href={link} className="text-white hover:text-amber-400 transition-colors font-serif text-base tracking-wide block">
+          {content}
+        </a>
+      ) : (
+        <p className="text-white font-serif text-base tracking-wide leading-none">{content}</p>
+      )}
+    </div>
+  </motion.div>
+);
 
 const Connect = () => {
   return (
-    <div 
-      className="h-screen py-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
-      style={{
-        backgroundImage: 'url(/Connect.jpg)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundAttachment: 'fixed',
-        overflow: 'hidden'
-      }}
-    >
-      {/* Overlay with blur effect */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+    <div className="h-screen w-full bg-black text-white relative overflow-hidden flex flex-col pt-20 pb-6 px-6">
       
-      <div className="max-w-7xl mx-auto relative z-10 py-12">
-        <div className="flex flex-col lg:flex-row gap-12">
-          {/* Left side - Map and Contact Info */}
-          <div className="lg:w-2/3 space-y-8">
-            <div className="bg-transparent backdrop-blur-sm rounded-xl p-8 shadow-2xl border border-amber-500/20 h-full">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Map Section */}
-                <div className="h-64 lg:h-full rounded-lg overflow-hidden">
-                  <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3557.362456021404!2d75.69663057525096!3d26.92502186028332!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396db5a6c8f5d8c1%3A0x1e2e7b3d3b3b3b3b!2sPoornima%20University!5e0!3m2!1sen!2sin!4v1679999999999!5m2!1sen!2sin" 
-                    width="100%" 
-                    height="100%" 
-                    style={{border:0}} 
-                    allowFullScreen="" 
-                    loading="lazy" 
-                    referrerPolicy="no-referrer-when-downgrade"
-                    title="Poornima University Location"
-                    className="rounded-lg"
-                  />
-                </div>
-                
-                {/* Contact Info Section */}
-                <div>
-                  <h2 className="text-2xl font-semibold text-white mb-8">Get in Touch</h2>
-                  
-                  <div className="space-y-6">
-                    <div className="flex items-start">
-                      <div className="flex-shrink-0 bg-amber-500/20 p-3 rounded-lg">
-                        <FaMapMarkerAlt className="h-6 w-6 text-amber-400" />
-                      </div>
-                      <div className="ml-4">
-                        <h3 className="text-lg font-medium text-white">Location</h3>
-                        <p className="mt-1 text-gray-400">Jaipur, India</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start">
-                      <div className="flex-shrink-0 bg-amber-500/20 p-3 rounded-lg">
-                        <FaEnvelope className="h-6 w-6 text-amber-400" />
-                      </div>
-                      <div className="ml-4">
-                        <h3 className="text-lg font-medium text-white">Email Us</h3>
-                        <a href="mailto:nextgenova28@gmail.com" className="mt-1 text-amber-400 hover:text-amber-300 transition-colors">
-                          nextgenova28@gmail.com
-                        </a>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start">
-                      <div className="flex-shrink-0 bg-amber-500/20 p-3 rounded-lg">
-                        <FaPhone className="h-6 w-6 text-amber-400" />
-                      </div>
-                      <div className="ml-4">
-                        <h3 className="text-lg font-medium text-white">Call Us</h3>
-                        <a href="tel:+919413973399" className="mt-1 text-amber-400 hover:text-amber-300 transition-colors">
-                          +91 94139 73399
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-12">
-                    <h3 className="text-lg font-medium text-white mb-4">Follow Us</h3>
-                    <div className="flex space-x-4">
-                      <a 
-                        href="https://github.com/NEGO2522/Brain-Forge" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="bg-gray-800 hover:bg-gray-700 p-3 rounded-full text-gray-300 hover:text-white transition-colors"
-                        aria-label="GitHub"
-                      >
-                        <FaGithub className="h-6 w-6" />
-                      </a>
-                      <a 
-                        href="https://discord.com/users/yourusername" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="bg-gray-800 hover:bg-gray-700 p-3 rounded-full text-gray-300 hover:text-indigo-400 transition-colors"
-                        aria-label="Discord"
-                      >
-                        <FaDiscord className="h-6 w-6" />
-                      </a>
-                      <a 
-                        href="https://www.linkedin.com/company/brainforge16" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="bg-gray-800 hover:bg-gray-700 p-3 rounded-full text-gray-300 hover:text-blue-500 transition-colors"
-                        aria-label="LinkedIn"
-                      >
-                        <FaLinkedin className="h-6 w-6" />
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          {/* Right side - Join Our Community */}
-          <div className="lg:w-1/3 flex flex-col">
-            <div className="bg-gradient-to-r from-amber-500/10 to-amber-600/10 border border-amber-500/20 rounded-xl p-6 h-full flex flex-col justify-between">
-              <div className="text-center">
-                <div className="flex items-center justify-center mb-4">
-                  <RotatingFanIcon>
-                    <svg className="h-16 w-16 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                  </RotatingFanIcon>
-                </div>
-                <h2 className="text-2xl font-bold text-white mb-2 font-['redHatDisplay']">Brain Forge</h2>
-                <p className="text-gray-300 text-sm mb-4">Where Ideas Take Flight</p>
-                <div className="w-16 h-1 bg-gradient-to-r from-amber-500 to-transparent mx-auto mb-6"></div>
-                
-                <div className="space-y-4 mb-6 text-left">
-                  <div className="flex items-start">
-                    <div className="flex-shrink-0 mt-1">
-                      <svg className="h-5 w-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                    </div>
-                    <p className="ml-3 text-sm text-gray-300">Innovative tech community</p>
-                  </div>
-                  <div className="flex items-start">
-                    <div className="flex-shrink-0 mt-1">
-                      <svg className="h-5 w-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                    </div>
-                    <p className="ml-3 text-sm text-gray-300">Collaborative learning</p>
-                  </div>
-                  <div className="flex items-start">
-                    <div className="flex-shrink-0 mt-1">
-                      <svg className="h-5 w-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                    </div>
-                    <p className="ml-3 text-sm text-gray-300">Cutting-edge projects</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="mt-auto">
-                <h3 className="text-xl font-medium text-amber-400 mb-3 text-center">Join Our Community</h3>
-                <p className="text-gray-300 mb-6 text-center">Be part of our growing community and stay updated with the latest news and events.</p>
-                <button className="w-full mt-auto inline-flex items-center justify-center px-6 py-2 border border-transparent text-sm font-medium rounded-full text-amber-900 bg-amber-400 hover:bg-amber-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-colors">
-                  Join Now
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+      {/* Background Ambience */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-amber-500/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/5 rounded-full blur-[120px]" />
       </div>
 
-      {/* FAQ Section */}
-      <div className="max-w-7xl mx-auto relative z-10 mt-16">
-        <div className="bg-transparent backdrop-blur-sm rounded-xl p-8 shadow-2xl border border-amber-500/20">
-          <h2 className="text-2xl font-semibold text-white mb-8 text-center">Frequently Asked Questions</h2>
+      <div className="max-w-7xl mx-auto w-full h-full flex flex-col relative z-10">
+        
+        {/* Header Area - Compact */}
+        <div className="mb-8 flex-shrink-0">
+          <motion.span 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-amber-500 font-bold tracking-[0.5em] text-[10px] uppercase block mb-2"
+          >
+            Terminal / Connect
+          </motion.span>
+          <motion.h1 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-4xl md:text-6xl font-serif leading-none"
+          >
+            Connect With <span className="text-amber-500 italic">Us</span>
+          </motion.h1>
+        </div>
+
+        {/* Main Layout - Takes remaining height */}
+        <div className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-0 mb-4">
           
-          <div className="space-y-6 max-w-3xl mx-auto">
-            {/* FAQ Item */}
-            <div className="bg-gray-900/50 rounded-lg p-6 border border-gray-700">
-              <h3 className="text-lg font-medium text-amber-400 mb-2">Is Brain Forge free?</h3>
-              <p className="text-gray-300">
-                Yes, joining Brain Forge and its communities is completely free.
-              </p>
+          {/* LEFT: Main Contact & Map (8 Cols) */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="lg:col-span-8 flex flex-col min-h-0"
+          >
+            <div className="flex-grow bg-white/5 backdrop-blur-xl rounded-[2rem] border border-white/10 p-6 md:p-8 flex flex-col overflow-hidden">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 h-full">
+                
+                {/* Contact List */}
+                <div className="flex flex-col justify-between py-2">
+                  <div className="space-y-4">
+                    <h2 className="text-xl font-serif text-white mb-6">Network Nodes</h2>
+                    <ContactItem icon={FaMapMarkerAlt} title="Location" content="Jaipur, Rajasthan" />
+                    <ContactItem icon={FaEnvelope} title="Email" content="nextgenova28@gmail.com" link="mailto:nextgenova28@gmail.com" />
+                    <ContactItem icon={FaPhone} title="Phone" content="+91 94139 73399" link="tel:+919413973399" />
+                  </div>
+                  
+                  <div className="pt-6">
+                    <h3 className="text-[9px] uppercase tracking-[0.4em] text-gray-500 font-bold mb-4">Social Uplink</h3>
+                    <div className="flex space-x-3">
+                      {[
+                        { icon: FaGithub, link: "https://github.com/NEGO2522/Brain-Forge", color: "hover:border-white hover:text-white" },
+                        { icon: FaDiscord, link: "#", color: "hover:border-[#5865F2] hover:text-[#5865F2]" },
+                        { icon: FaLinkedin, link: "https://www.linkedin.com/company/brainforge16", color: "hover:border-[#0077b5] hover:text-[#0077b5]" }
+                      ].map((social, i) => (
+                        <a 
+                          key={i} 
+                          href={social.link} 
+                          className={`w-10 h-10 rounded-lg border border-white/10 flex items-center justify-center text-gray-400 transition-all duration-300 bg-white/5 ${social.color}`}
+                        >
+                          <social.icon className="text-lg" />
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Map Section */}
+                <div className="relative rounded-[1.5rem] overflow-hidden border border-white/10 h-full min-h-[200px] bg-black/40">
+                  <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d113911.19690186532!2d75.7139169436153!3d26.848622119047913!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396db60803e13d1b%3A0x6b49e37817e997a!2sJaipur%2C%20Rajasthan!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" 
+                    width="100%" height="100%" style={{ border: 0, filter: 'grayscale(1) invert(0.9) contrast(1.2) brightness(0.8)' }} 
+                    allowFullScreen="" loading="lazy" title="Jaipur Map"
+                  />
+                  <div className="absolute inset-0 pointer-events-none border-[8px] border-black/20 rounded-[1.5rem]"></div>
+                </div>
+              </div>
             </div>
-          </div>
+          </motion.div>
+
+          {/* RIGHT: Join Card (4 Cols) */}
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="lg:col-span-4 flex flex-col min-h-0"
+          >
+            <div className="flex-grow bg-gradient-to-br from-amber-500/10 to-transparent backdrop-blur-xl rounded-[2rem] border border-amber-500/20 p-8 flex flex-col justify-between items-center text-center">
+              <div className="flex flex-col items-center">
+                <div className="mb-6">
+                  <RotatingFanIcon>
+                    <div className="w-16 h-16 rounded-full bg-amber-500/5 flex items-center justify-center border border-amber-500/20 shadow-[0_0_20px_rgba(245,158,11,0.1)]">
+                      <svg className="h-8 w-8 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    </div>
+                  </RotatingFanIcon>
+                </div>
+                
+                <h2 className="text-2xl font-serif text-white mb-2 italic">Brain Forge</h2>
+                <p className="text-gray-400 text-xs leading-relaxed max-w-[200px]">
+                  Join our elite circle of innovators and master the digital frontier.
+                </p>
+              </div>
+
+              <div className="w-full space-y-3 my-6 flex-grow flex flex-col justify-center">
+                {["Elite Network", "Tech Ecosystem", "Expert Mentorship"].map((item, i) => (
+                  <div key={i} className="flex items-center space-x-3 text-left bg-white/5 p-3 rounded-xl border border-white/5">
+                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                    <span className="text-[10px] uppercase tracking-widest text-gray-300 font-medium">{item}</span>
+                  </div>
+                ))}
+              </div>
+
+              <motion.button 
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full py-4 bg-amber-500 text-black font-bold text-xs rounded-xl flex items-center justify-center space-x-2 shadow-[0_10px_30px_rgba(251,191,36,0.2)]"
+              >
+                <span>JOIN THE FORGE</span>
+                <FaChevronRight className="text-[10px]" />
+              </motion.button>
+            </div>
+          </motion.div>
+
+        </div>
+
+        {/* Footer Branding - Compact */}
+        <div className="flex-shrink-0 text-center pt-2">
+          <p className="text-[8px] tracking-[0.8em] text-white/20 uppercase font-bold">Organized By Kshitij Jain</p>
         </div>
       </div>
     </div>
