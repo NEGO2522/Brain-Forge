@@ -1,18 +1,17 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { RotatingFanIcon } from './RotatingFanIcon';
+import { FaUserCircle } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export const MenuContext = createContext({
   isMenuOpen: false,
   setIsMenuOpen: () => {}
 });
 
-import { Link, useNavigate } from 'react-router-dom';
-import { RotatingFanIcon } from './RotatingFanIcon';
-import { FaUserCircle } from 'react-icons/fa';
-
 export const MenuProvider = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  
   return (
     <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
       {children}
@@ -23,178 +22,150 @@ export const MenuProvider = ({ children }) => {
 const Navbar = () => {
   const { isMenuOpen, setIsMenuOpen } = useContext(MenuContext);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setIsLoggedIn(!!user);
     });
-    return () => unsubscribe();
+    
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll);
+    
+    return () => {
+      unsubscribe();
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   const handleProfileClick = () => {
     navigate('/user');
+    setIsMenuOpen(false);
   };
 
+  const navLinks = [
+    { to: "/", text: "Home", icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" },
+    { to: "/community", text: "Community", icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" },
+    { to: "/profiles", text: "Profiles", icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" },
+    { to: "/about", text: "About", icon: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
+    { to: "/connect", text: "Connect", icon: "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" },
+  ];
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 py-4 px-4 sm:px-6 bg-transparent">
-      <div className="flex flex-col sm:flex-row sm:justify-center sm:items-center relative">
-        {/* Desktop Title with Fan Icon - Only visible on desktop */}
-        <div className="hidden sm:flex items-center gap-2 ml-4 absolute left-0">
-          <RotatingFanIcon>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-300">
-              <path d="M10.827 16.379a6.082 6.082 0 0 1-8.618-7.002l5.412 1.45a6.082 6.082 0 0 1 7.002-8.618l-1.45 5.412a6.082 6.082 0 0 1 8.618 7.002l-5.412-1.45a6.082 6.082 0 0 1-7.002 8.618l1.45-5.412Z"/>
-              <path d="M12 12v.01"/>
-            </svg>
-          </RotatingFanIcon>
-          <span className="text-xl font-bold text-amber-300">Brain Forge</span>
-        </div>
+    <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 px-6 ${scrolled ? 'py-4' : 'py-8'}`}>
+      <div className="max-w-7xl mx-auto flex items-center justify-between relative">
         
-        {/* Mobile menu button and title */}
-        <div className="flex justify-between items-center w-full sm:w-auto">
-          {/* Mobile Title - Centered, only visible on mobile */}
-          <div className="flex-1 flex justify-center">
-            <h1 className="text-xl font-bold text-amber-300 sm:hidden">Brain Forge</h1>
+        {/* LOGO SECTION */}
+        <Link to="/" className="flex items-center gap-3 group z-[110]">
+          <RotatingFanIcon>
+            <div className="p-2 bg-amber-500/10 rounded-lg border border-amber-500/20 group-hover:border-amber-500/50 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-500">
+                <path d="M10.827 16.379a6.082 6.082 0 0 1-8.618-7.002l5.412 1.45a6.082 6.082 0 0 1 7.002-8.618l-1.45 5.412a6.082 6.082 0 0 1 8.618 7.002l-5.412-1.45a6.082 6.082 0 0 1-7.002 8.618l1.45-5.412Z"/>
+                <path d="M12 12v.01"/>
+              </svg>
+            </div>
+          </RotatingFanIcon>
+          <span className="text-xl font-serif tracking-tighter text-white group-hover:text-amber-500 transition-colors hidden sm:block">
+            BRAIN<span className="italic font-light text-amber-500">FORGE</span>
+          </span>
+        </Link>
+
+        {/* DESKTOP FLOATING MENU */}
+        <div className="hidden sm:flex items-center bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl px-2 py-1.5 absolute left-1/2 -translate-x-1/2 shadow-2xl">
+          {navLinks.map((link) => {
+            const isActive = location.pathname === link.to;
+            return (
+              <Link
+                key={link.to}
+                to={link.to}
+                className={`px-5 py-2 rounded-xl text-[10px] uppercase tracking-[0.2em] font-bold transition-all duration-300 flex items-center gap-2 ${
+                  isActive ? 'bg-amber-500 text-black shadow-[0_0_15px_rgba(245,158,11,0.4)]' : 'text-gray-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                {link.text}
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* RIGHT SECTION (PROFILE/LOGIN) */}
+        <div className="flex items-center gap-4 z-[110]">
+          <div className="hidden sm:block">
+            {isLoggedIn ? (
+              <button onClick={handleProfileClick} className="p-1 border border-white/10 rounded-full hover:border-amber-500/50 transition-all">
+                <FaUserCircle className="w-8 h-8 text-white/80 hover:text-amber-500 transition-colors" />
+              </button>
+            ) : (
+              <Link to="/login" className="text-[10px] font-black uppercase tracking-[0.2em] px-6 py-2.5 bg-white text-black rounded-xl hover:bg-amber-500 transition-colors">
+                Sign In
+              </Link>
+            )}
           </div>
-          
-          {/* Mobile menu button */}
+
+          {/* MOBILE TOGGLE */}
           <button 
-            className="sm:hidden p-2 rounded-md text-amber-300 hover:bg-amber-500/10 focus:outline-none focus:ring-2 focus:ring-amber-400/50 absolute right-0"
+            className="sm:hidden w-10 h-10 flex flex-col items-center justify-center gap-1.5 bg-white/5 border border-white/10 rounded-xl"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle menu"
           >
-          {isMenuOpen ? (
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          ) : (
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
-            </svg>
-          )}
+            <div className={`w-5 h-0.5 bg-amber-500 transition-all ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
+            <div className={`w-5 h-0.5 bg-amber-500 transition-all ${isMenuOpen ? 'opacity-0' : ''}`} />
+            <div className={`w-5 h-0.5 bg-amber-500 transition-all ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
           </button>
         </div>
-
-        {/* Navigation Links - Desktop */}
-        <div className="hidden sm:flex gap-3">
-          <Link to="/" className="flex flex-col items-center justify-center p-2 border border-white/20 rounded-lg hover:bg-amber-500/10 hover:border-amber-400/50 transition-all duration-300 group">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-            </svg>
-            <span className="text-[10px] mt-0.5 text-amber-200/80 opacity-100 transition-opacity">Home</span>
-          </Link>
-          <Link to="/community" className="flex flex-col items-center justify-center p-2 border border-white/20 rounded-lg hover:bg-amber-500/10 hover:border-amber-400/50 transition-all duration-300 group">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-            </svg>
-            <span className="text-[10px] mt-0.5 text-amber-200/80 opacity-100 transition-opacity">Community</span>
-          </Link>
-          <Link to="/profiles" className="flex flex-col items-center justify-center p-2 border border-white/20 rounded-lg hover:bg-amber-500/10 hover:border-amber-400/50 transition-all duration-300 group">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
-            <span className="text-[10px] mt-0.5 text-amber-200/80 opacity-100 transition-opacity">Profiles</span>
-          </Link>
-          <Link to="/about" className="flex flex-col items-center justify-center p-2 border border-white/20 rounded-lg hover:bg-amber-500/10 hover:border-amber-400/50 transition-all duration-300 group">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span className="text-[10px] mt-0.5 text-amber-200/80 opacity-100 transition-opacity">About</span>
-          </Link>
-          <Link to="/connect" className="flex flex-col items-center justify-center p-2 border border-white/20 rounded-lg hover:bg-amber-500/10 hover:border-amber-400/50 transition-all duration-300 group">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-            <span className="text-[10px] mt-0.5 text-amber-200/80 opacity-100 transition-opacity">Connect</span>
-          </Link>
-        </div>
-
-        {/* Mobile Menu */}
-        <div className={`sm:hidden fixed top-0 left-0 right-0 bottom-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${isMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-          <div className={`absolute top-20 left-4 right-4 bg-gray-900/95 backdrop-blur-lg rounded-xl p-4 shadow-2xl transition-all duration-300 transform ${isMenuOpen ? 'translate-y-0' : '-translate-y-4'}`}>
-            {/* Close Button */}
-            <button 
-              onClick={() => setIsMenuOpen(false)}
-              className="absolute top-2 right-2 p-1 rounded-full text-amber-300 hover:bg-amber-500/10 focus:outline-none focus:ring-2 focus:ring-amber-400/50"
-              aria-label="Close menu"
-            >
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-            <div className="flex flex-col p-4 space-y-2">
-              <NavLink to="/" icon="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" text="Home" />
-              <NavLink to="/community" icon="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" text="Community" />
-              <NavLink to="/profiles" icon="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" text="Profiles" />
-              <NavLink to="/about" icon="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" text="About" />
-              <NavLink to="/connect" icon="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" text="Connect" />
-              {isLoggedIn ? (
-                <button 
-                  onClick={() => {
-                    handleProfileClick();
-                    setIsMenuOpen(false);
-                  }}
-                  className="flex items-center justify-center w-full mt-2 px-4 py-3 text-base font-medium text-amber-100 hover:bg-amber-500/10 rounded-lg transition-colors duration-300 border border-amber-500/30"
-                >
-                  <FaUserCircle className="w-5 h-5 mr-2" />
-                  Profile
-                </button>
-              ) : (
-                <Link 
-                  to="/login" 
-                  className="flex items-center justify-center w-full mt-2 px-4 py-3 text-base font-medium text-amber-100 hover:bg-amber-500/10 rounded-lg transition-colors duration-300 border border-amber-500/30"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Sign In
-                </Link>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Sign In / Profile Button - Desktop */}
-        <div className="hidden sm:block absolute right-0">
-          {isLoggedIn ? (
-            <button 
-              onClick={handleProfileClick}
-              className="p-2 text-amber-100 hover:bg-amber-500/10 rounded-full transition-colors duration-300"
-              aria-label="Profile"
-            >
-              <FaUserCircle className="w-6 h-6" />
-            </button>
-          ) : (
-            <Link to="/login" className="px-4 py-2 text-sm font-medium text-amber-100 bg-amber-600/50 hover:bg-amber-500/70 rounded-lg transition-colors duration-300 border border-amber-500/30">
-              Sign In
-            </Link>
-          )}
-        </div>
-        
-        {/* Spacer to balance the layout on mobile */}
-        <div className="sm:hidden w-10"></div>
       </div>
+
+      {/* MOBILE OVERLAY MENU */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed inset-0 bg-black/95 backdrop-blur-2xl z-[100] flex flex-col justify-center px-12 sm:hidden"
+          >
+            <div className="space-y-8">
+              {navLinks.map((link, i) => (
+                <motion.div
+                  key={link.to}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                >
+                  <Link 
+                    to={link.to} 
+                    onClick={() => setIsMenuOpen(false)}
+                    className="text-4xl font-serif text-white hover:text-amber-500 transition-colors flex items-center gap-4 group"
+                  >
+                    <span className="text-xs font-mono text-amber-500 opacity-50 group-hover:opacity-100">0{i+1}</span>
+                    {link.text}
+                  </Link>
+                </motion.div>
+              ))}
+              <motion.div 
+                initial={{ opacity: 0 }} 
+                animate={{ opacity: 1 }} 
+                transition={{ delay: 0.5 }}
+                className="pt-12 border-t border-white/10"
+              >
+                {isLoggedIn ? (
+                  <button onClick={handleProfileClick} className="text-amber-500 font-bold uppercase tracking-widest flex items-center gap-3">
+                    <FaUserCircle className="text-2xl" /> View Profile
+                  </button>
+                ) : (
+                  <Link to="/login" onClick={() => setIsMenuOpen(false)} className="text-amber-500 font-bold uppercase tracking-widest">
+                    Access Terminal (Login)
+                  </Link>
+                )}
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };
-
-// Reusable NavLink component for better code organization
-const NavLink = ({ to, icon, text }) => (
-  <Link 
-    to={to} 
-    className="flex items-center p-3 space-x-3 rounded-lg hover:bg-amber-500/10 hover:border-amber-400/30 transition-all duration-300 border border-transparent"
-    onClick={() => document.activeElement.blur()}
-  >
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      className="h-5 w-5 text-amber-300 flex-shrink-0" 
-      fill="none" 
-      viewBox="0 0 24 24" 
-      stroke="currentColor"
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={icon} />
-    </svg>
-    <span className="text-amber-200/90">{text}</span>
-  </Link>
-);
 
 export default Navbar;
