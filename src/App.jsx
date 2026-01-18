@@ -9,6 +9,7 @@ import Login from './auth/Login';
 import Profiles from './pages/Profiles';
 import User from './pages/User';
 import Explore from './pages/Explore';
+import AdminPannel from './pages/AdminPannel';
 
 
 // Layout component that includes the Navbar
@@ -47,6 +48,11 @@ function App() {
           </Layout>
         } />
         <Route path="/login" element={<Login />} />
+        <Route path="/adminpannel" element={
+          <Layout>
+            <AdminPannel />
+          </Layout>
+        } />
         <Route path="/user" element={
           <Layout>
             <User />
