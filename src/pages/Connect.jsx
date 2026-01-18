@@ -14,11 +14,11 @@ const ContactItem = ({ icon: Icon, title, content, link }) => (
     <div>
       <h3 className="text-[8px] uppercase tracking-[0.3em] text-gray-500 font-bold">{title}</h3>
       {link ? (
-        <a href={link} className="text-white hover:text-amber-400 transition-colors font-serif text-base tracking-wide block">
+        <a href={link} className="text-white hover:text-amber-400 transition-colors font-serif text-sm md:text-base tracking-wide block">
           {content}
         </a>
       ) : (
-        <p className="text-white font-serif text-base tracking-wide leading-none">{content}</p>
+        <p className="text-white font-serif text-sm md:text-base tracking-wide leading-none">{content}</p>
       )}
     </div>
   </motion.div>
@@ -26,18 +26,19 @@ const ContactItem = ({ icon: Icon, title, content, link }) => (
 
 const Connect = () => {
   return (
-    <div className="h-screen w-full bg-black text-white relative overflow-hidden flex flex-col pt-20 pb-6 px-6">
+    // Changed h-screen to min-h-screen for mobile and allowed lg:h-screen for desktop
+    <div className="min-h-screen lg:h-screen w-full bg-black text-white relative overflow-x-hidden flex flex-col pt-24 md:pt-20 pb-10 md:pb-6 px-6">
       
       {/* Background Ambience */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-amber-500/5 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/5 rounded-full blur-[120px]" />
+        <div className="absolute top-[-10%] right-[-10%] w-[60%] lg:w-[40%] h-[40%] bg-amber-500/5 rounded-full blur-[80px] lg:blur-[120px]" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[60%] lg:w-[40%] h-[40%] bg-blue-500/5 rounded-full blur-[80px] lg:blur-[120px]" />
       </div>
 
       <div className="max-w-7xl mx-auto w-full h-full flex flex-col relative z-10">
         
-        {/* Header Area - Compact */}
-        <div className="mb-8 flex-shrink-0">
+        {/* Header Area */}
+        <div className="mb-8 flex-shrink-0 text-center lg:text-left">
           <motion.h1 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -47,20 +48,20 @@ const Connect = () => {
           </motion.h1>
         </div>
 
-        {/* Main Layout - Takes remaining height */}
-        <div className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-0 mb-4">
+        {/* Main Layout - Stacked on mobile, 12-col grid on desktop */}
+        <div className="flex-grow flex flex-col lg:grid lg:grid-cols-12 gap-6 min-h-0 mb-4">
           
-          {/* LEFT: Main Contact & Map (8 Cols) */}
+          {/* LEFT: Main Contact & Map (8 Cols on Desktop) */}
           <motion.div 
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="lg:col-span-8 flex flex-col min-h-0"
+            className="order-1 lg:order-none lg:col-span-8 flex flex-col min-h-0"
           >
             <div className="flex-grow bg-white/5 backdrop-blur-xl rounded-[2rem] border border-white/10 p-6 md:p-8 flex flex-col overflow-hidden">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 h-full">
                 
                 {/* Contact List */}
-                <div className="flex flex-col justify-between py-2">
+                <div className="flex flex-col justify-between py-2 space-y-8 md:space-y-0">
                   <div className="space-y-4">
                     <h2 className="text-xl font-serif text-white mb-6">Network Nodes</h2>
                     <ContactItem icon={FaMapMarkerAlt} title="Location" content="Jaipur, Rajasthan" />
@@ -88,10 +89,10 @@ const Connect = () => {
                   </div>
                 </div>
 
-                {/* Map Section */}
-                <div className="relative rounded-[1.5rem] overflow-hidden border border-white/10 h-full min-h-[200px] bg-black/40">
+                {/* Map Section - Adjusted min-height for mobile */}
+                <div className="relative rounded-[1.5rem] overflow-hidden border border-white/10 h-[250px] md:h-full min-h-[200px] bg-black/40">
                   <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d113911.19690186532!2d75.7139169436153!3d26.848622119047913!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396db60803e13d1b%3A0x6b49e37817e997a!2sJaipur%2C%20Rajasthan!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d227748.382562431!2d75.71397335!3d26.8851417!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396c4adb4a9da627%3A0x518161f7afcd6391!2sJaipur%2C%20Rajasthan!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" 
                     width="100%" height="100%" style={{ border: 0, filter: 'grayscale(1) invert(0.9) contrast(1.2) brightness(0.8)' }} 
                     allowFullScreen="" loading="lazy" title="Jaipur Map"
                   />
@@ -101,11 +102,11 @@ const Connect = () => {
             </div>
           </motion.div>
 
-          {/* RIGHT: Join Card (4 Cols) */}
+          {/* RIGHT: Join Card (4 Cols on Desktop) */}
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="lg:col-span-4 flex flex-col min-h-0"
+            className="order-2 lg:order-none lg:col-span-4 flex flex-col min-h-0"
           >
             <div className="flex-grow bg-gradient-to-br from-amber-500/10 to-transparent backdrop-blur-xl rounded-[2rem] border border-amber-500/20 p-8 flex flex-col justify-between items-center text-center">
               <div className="flex flex-col items-center">
@@ -125,7 +126,7 @@ const Connect = () => {
                 </p>
               </div>
 
-              <div className="w-full space-y-3 my-6 flex-grow flex flex-col justify-center">
+              <div className="w-full space-y-3 my-8 md:my-6 flex-grow flex flex-col justify-center">
                 {["Elite Network", "Tech Ecosystem", "Expert Mentorship"].map((item, i) => (
                   <div key={i} className="flex items-center space-x-3 text-left bg-white/5 p-3 rounded-xl border border-white/5">
                     <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
@@ -147,8 +148,8 @@ const Connect = () => {
 
         </div>
 
-        {/* Footer Branding - Compact */}
-        <div className="flex-shrink-0 text-center pt-2">
+        {/* Footer Branding */}
+        <div className="flex-shrink-0 text-center mt-6 lg:mt-2">
           <p className="text-[8px] tracking-[0.8em] text-white/20 uppercase font-bold">Organized By Kshitij Jain</p>
         </div>
       </div>
