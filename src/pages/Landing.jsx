@@ -3,7 +3,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import * as THREE from 'three';
 import { useNavigate } from 'react-router-dom';
-import { FaLinkedinIn, FaDiscord, FaLightbulb, FaHandsHelping, FaSeedling } from 'react-icons/fa';
+import { FaLinkedinIn, FaDiscord, FaLightbulb, FaHandsHelping, FaSeedling, FaGlobe, FaCubes, FaRocket } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
 
 // --- 1. STAR BACKGROUND ---
@@ -28,7 +28,7 @@ const MovingStars = () => {
   );
 };
 
-// --- 2. 3D ROBOT MODEL (FULLY RESTORED) ---
+// --- 2. 3D ROBOT MODEL ---
 const RobotModel = ({ isMobile }) => {
   const groupRef = useRef();
   const headTop = useRef();
@@ -138,7 +138,7 @@ const IsometricPhilosophyStack = () => {
   };
 
   return (
-    <div className="relative h-[750px] w-full flex items-center justify-center lg:justify-start perspective-2000">
+    <div className="relative h-[600px] md:h-[750px] w-full flex items-center justify-center lg:justify-start perspective-2000">
       <AnimatePresence mode="popLayout">
         {stack.map((item, i) => (
           <motion.div
@@ -185,24 +185,56 @@ const PhilosophySection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: false, amount: 0.2 });
 
+  const pillars = [
+    { icon: <FaGlobe />, title: "Decentralized", desc: "No single point of failure, only community-led progress." },
+    { icon: <FaCubes />, title: "Modular", desc: "Built to adapt. Integrate with the tools you already use." },
+  ];
+
   return (
-    // Fixed: Added -mt-[1px] to remove the white line gap
-    <section ref={ref} className="relative min-h-screen w-full flex-shrink-0 snap-start flex flex-col lg:flex-row items-center justify-center bg-black z-20 py-24 px-10 lg:px-32 overflow-hidden -mt-[1px]">
+    <section ref={ref} className="relative min-h-screen w-full flex-shrink-0 snap-start flex flex-col items-center justify-center bg-black z-20 py-24 px-6 lg:px-32 overflow-hidden -mt-[1px]">
+      {/* Background Large Text */}
       <motion.div initial={{ opacity: 0 }} animate={isInView ? { opacity: 0.05 } : { opacity: 0 }} className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <h2 className="text-[15vw] font-black text-white uppercase tracking-tighter select-none">LINKORA</h2>
       </motion.div>
-      <div className="relative z-30 w-full flex flex-col lg:flex-row items-center gap-16 lg:gap-32">
+
+      <div className="relative z-30 w-full flex flex-col lg:flex-row items-start gap-16 lg:gap-32">
+        {/* Left Side: Isometric Stack */}
         <div className="w-full lg:w-1/2 flex justify-center lg:justify-start">
           <IsometricPhilosophyStack />
         </div>
-        <div className="w-full lg:w-1/2 text-left">
+
+        {/* Right Side: Philosophy Content (Updated to fill space) */}
+        <div className="w-full lg:w-1/2 text-left flex flex-col justify-center h-full">
           <motion.span initial={{ opacity: 0, x: -20 }} animate={isInView ? { opacity: 1, x: 0 } : {}} className="text-amber-500 tracking-[0.5em] text-xs font-bold mb-6 uppercase block font-mono">Our Core Philosophy</motion.span>
-          <motion.h2 initial={{ opacity: 0, x: -20 }} animate={isInView ? { opacity: 1, x: 0 } : {}} className="text-6xl md:text-8xl lg:text-9xl font-serif text-white uppercase tracking-tight mb-12 leading-[0.85]">
+          
+          <motion.h2 initial={{ opacity: 0, x: -20 }} animate={isInView ? { opacity: 1, x: 0 } : {}} className="text-6xl md:text-8xl lg:text-9xl font-serif text-white uppercase tracking-tight mb-8 leading-[0.85]">
             The Future is <br/> <span className="text-amber-500 italic">Connected</span>
           </motion.h2>
-          <div className="flex flex-col md:flex-row items-center lg:items-start gap-6 pt-12 border-t border-white/5">
-            <a href="https://discord.com" target="_blank" rel="noreferrer" className="flex items-center gap-4 px-8 py-4 bg-amber-500 text-black rounded-full font-black hover:bg-amber-400 transition-all uppercase tracking-[0.2em] text-[10px]"><FaDiscord /> Join Discord</a>
-            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="flex items-center gap-4 px-8 py-4 bg-amber-500 text-black rounded-full font-black hover:bg-amber-400 transition-all uppercase tracking-[0.2em] text-[10px]"><FaLinkedinIn /> Join LinkedIn</a>
+
+          <motion.p initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.2 }} className="text-gray-400 text-lg md:text-xl max-w-xl mb-12 font-light leading-relaxed">
+            Linkora is more than a platform; it's a living ecosystem designed to bridge the gap between raw talent and groundbreaking technology through a high-signal human network.
+          </motion.p>
+
+          {/* Strategic Pillar Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+            {pillars.map((p, i) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: 0.3 + (i * 0.1) }}
+                className="group p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-amber-500/50 transition-all duration-500"
+              >
+                <div className="text-amber-500 text-2xl mb-4 group-hover:scale-110 transition-transform duration-500">{p.icon}</div>
+                <h4 className="text-white text-lg font-serif uppercase tracking-widest mb-2">{p.title}</h4>
+                <p className="text-gray-500 text-sm leading-relaxed">{p.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center lg:items-start gap-6 pt-12 border-t border-white/5">
+            <a href="https://discord.com" target="_blank" rel="noreferrer" className="w-full sm:w-auto flex items-center justify-center gap-4 px-8 py-4 bg-amber-500 text-black rounded-full font-black hover:bg-amber-400 transition-all uppercase tracking-[0.2em] text-[10px]"><FaDiscord /> Join Discord</a>
+            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="w-full sm:w-auto flex items-center justify-center gap-4 px-8 py-4 border border-white/20 text-white rounded-full font-black hover:bg-white hover:text-black transition-all uppercase tracking-[0.2em] text-[10px]"><FaLinkedinIn /> Join LinkedIn</a>
           </div>
         </div>
       </div>
@@ -223,7 +255,6 @@ const Landing = () => {
   }, []);
 
   return (
-    // Fixed: Ensure the parent is solid black with no outline
     <div className="relative w-full bg-black flex flex-col min-h-screen overflow-x-hidden overflow-y-auto snap-y snap-mandatory scrollbar-hide text-white outline-none border-none">
       <div className="fixed top-0 left-0 right-0 z-50"><Navbar /></div>
 
