@@ -41,6 +41,25 @@ const Navbar = () => {
     };
   }, []);
 
+  // Prevent background scrolling when menu is open
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => { document.body.style.overflow = 'unset'; };
+  }, [isMenuOpen]);
+
+  // Close menu on resize to desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) setIsMenuOpen(false);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [setIsMenuOpen]);
+
   const handleProfileClick = () => {
     navigate('/user');
     setIsMenuOpen(false);
@@ -56,10 +75,12 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 px-4 md:px-6 ${scrolled ? 'py-3 md:py-4 bg-black/70 backdrop-blur-lg border-b border-white/5' : 'py-6 md:py-8'}`}>
+    <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 px-4 md:px-8 ${
+      scrolled ? 'py-3 bg-black/80 backdrop-blur-xl border-b border-white/5' : 'py-5 md:py-8 bg-transparent'
+    }`}>
       <div className="max-w-7xl mx-auto flex items-center justify-between relative">
         
-        {/* LOGO SECTION - LINKORA */}
+        {/* LOGO SECTION */}
         <Link to="/" className="flex items-center gap-2 md:gap-3 group z-[110]" onClick={() => setIsMenuOpen(false)}>
           <RotatingFanIcon>
             <div className="p-1.5 md:p-2 bg-amber-500/10 rounded-lg border border-amber-500/20 group-hover:border-amber-500/50 transition-colors">
@@ -69,12 +90,12 @@ const Navbar = () => {
               </svg>
             </div>
           </RotatingFanIcon>
-          <span className="text-xl md:text-2xl font-serif tracking-tighter text-white group-hover:text-amber-500 transition-colors uppercase italic">
+          <span className="text-lg md:text-2xl font-serif tracking-tighter text-white group-hover:text-amber-500 transition-colors uppercase italic">
             LINK<span className="font-light text-amber-500 not-italic">ORA</span>
           </span>
         </Link>
 
-        {/* DESKTOP FLOATING MENU */}
+        {/* DESKTOP MENU */}
         <div className="hidden lg:flex items-center bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl px-2 py-1.5 absolute left-1/2 -translate-x-1/2 shadow-2xl">
           {navLinks.map((link) => {
             const isActive = location.pathname === link.to;
@@ -92,76 +113,80 @@ const Navbar = () => {
           })}
         </div>
 
-        {/* RIGHT SECTION (PROFILE/LOGIN & MOBILE TOGGLE) */}
-        <div className="flex items-center gap-3 md:gap-4 z-[110]">
-          <div className="hidden sm:block">
-            {isLoggedIn ? (
-              <button onClick={handleProfileClick} className="p-1 border border-white/10 rounded-full hover:border-amber-500/50 transition-all">
-                <FaUserCircle className="w-7 h-7 md:w-8 md:h-8 text-white/80 hover:text-amber-500 transition-colors" />
-              </button>
-            ) : (
-              <Link to="/login" className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] px-4 md:px-6 py-2 md:py-2.5 bg-white text-black rounded-xl hover:bg-amber-500 transition-colors">
-                Sign In
-              </Link>
-            )}
-          </div>
+        {/* RIGHT SECTION */}
+        <div className="flex items-center gap-2 md:gap-4 z-[110]">
+          {isLoggedIn ? (
+            <button onClick={handleProfileClick} className="p-1 border border-white/10 rounded-full hover:border-amber-500/50 transition-all">
+              <FaUserCircle className="w-7 h-7 md:w-8 md:h-8 text-white/80 hover:text-amber-500 transition-colors" />
+            </button>
+          ) : (
+            <Link to="/login" className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] px-3 md:px-6 py-2 md:py-2.5 bg-white text-black rounded-xl hover:bg-amber-500 transition-colors whitespace-nowrap">
+              Sign In
+            </Link>
+          )}
 
           {/* MOBILE TOGGLE */}
           <button 
-            className="lg:hidden w-10 h-10 flex flex-col items-center justify-center gap-1.5 bg-white/5 border border-white/10 rounded-xl hover:border-amber-500/50 transition-all"
+            className="lg:hidden w-10 h-10 flex flex-col items-center justify-center bg-white/5 border border-white/10 rounded-xl hover:border-amber-500/50 transition-all"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle Menu"
           >
-            <div className={`w-5 h-0.5 bg-amber-500 transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
-            <div className={`w-5 h-0.5 bg-amber-500 transition-all duration-300 ${isMenuOpen ? 'opacity-0' : ''}`} />
-            <div className={`w-5 h-0.5 bg-amber-500 transition-all duration-300 ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+            <div className="flex flex-col gap-1.5">
+                <div className={`w-5 h-0.5 bg-amber-500 transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
+                <div className={`w-5 h-0.5 bg-amber-500 transition-all duration-300 ${isMenuOpen ? 'opacity-0' : ''}`} />
+                <div className={`w-5 h-0.5 bg-amber-500 transition-all duration-300 ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+            </div>
           </button>
         </div>
       </div>
 
-      {/* MOBILE OVERLAY MENU */}
+      {/* MOBILE OVERLAY MENU - FIXED HEIGHT ISSUE */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div 
-            initial={{ opacity: 0, x: '100%' }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-0 bg-black/98 backdrop-blur-2xl z-[100] flex flex-col justify-center px-10 lg:hidden"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 w-full h-[100dvh] bg-black/98 backdrop-blur-2xl z-[105] flex flex-col lg:hidden"
           >
-            <div className="space-y-6 md:space-y-8">
-              {navLinks.map((link, i) => (
-                <motion.div
-                  key={link.to}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                >
-                  <Link 
-                    to={link.to} 
-                    onClick={() => setIsMenuOpen(false)}
-                    className="text-4xl md:text-5xl font-serif text-white hover:text-amber-500 transition-colors flex items-center gap-4 group"
+            <div className="flex flex-col h-full justify-center px-8 sm:px-12">
+              <div className="space-y-6">
+                {navLinks.map((link, i) => (
+                  <motion.div
+                    key={link.to}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.05 }}
                   >
-                    <span className="text-[10px] font-mono text-amber-500 opacity-50 group-hover:opacity-100">0{i+1}</span>
-                    {link.text}
-                  </Link>
+                    <Link 
+                      to={link.to} 
+                      onClick={() => setIsMenuOpen(false)}
+                      className="text-4xl sm:text-5xl font-serif text-white hover:text-amber-500 transition-colors flex items-center gap-4 group"
+                    >
+                      <span className="text-[10px] font-mono text-amber-500/50">0{i+1}</span>
+                      {link.text}
+                    </Link>
+                  </motion.div>
+                ))}
+                
+                <motion.div 
+                  initial={{ opacity: 0 }} 
+                  animate={{ opacity: 1 }} 
+                  transition={{ delay: 0.4 }}
+                  className="pt-10 border-t border-white/10 mt-6"
+                >
+                  {isLoggedIn ? (
+                    <button onClick={handleProfileClick} className="text-amber-500 font-bold uppercase tracking-widest text-xs flex items-center gap-3">
+                      <FaUserCircle className="text-xl" /> View Account
+                    </button>
+                  ) : (
+                    <Link to="/login" onClick={() => setIsMenuOpen(false)} className="text-amber-500 font-bold uppercase tracking-widest text-xs">
+                      Join the Network &rarr;
+                    </Link>
+                  )}
                 </motion.div>
-              ))}
-              <motion.div 
-                initial={{ opacity: 0 }} 
-                animate={{ opacity: 1 }} 
-                transition={{ delay: 0.4 }}
-                className="pt-10 border-t border-white/10 mt-4"
-              >
-                {isLoggedIn ? (
-                  <button onClick={handleProfileClick} className="text-amber-500 font-bold uppercase tracking-[0.2em] text-xs flex items-center gap-3">
-                    <FaUserCircle className="text-2xl" /> View Profile
-                  </button>
-                ) : (
-                  <Link to="/login" onClick={() => setIsMenuOpen(false)} className="text-amber-500 font-bold uppercase tracking-[0.2em] text-xs">
-                    Access Linkora (Login)
-                  </Link>
-                )}
-              </motion.div>
+              </div>
             </div>
           </motion.div>
         )}
