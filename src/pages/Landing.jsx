@@ -131,7 +131,7 @@ const PhilosophySection = () => {
   return (
     <section ref={ref} className="relative min-h-screen w-full flex-shrink-0 snap-start flex flex-col items-center justify-center bg-black z-20 py-24 px-6 overflow-hidden">
       <motion.div initial={{ opacity: 0 }} animate={isInView ? { opacity: 0.03 } : { opacity: 0 }} className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <h2 className="text-[15vw] font-black text-white uppercase tracking-tighter select-none">KSHITIJ</h2>
+        <h2 className="text-[10vw] font-black text-white uppercase tracking-tighter select-none">FORGE</h2>
       </motion.div>
       <div className="relative z-30 max-w-5xl w-full text-center">
         <motion.span initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} className="text-amber-500 tracking-[0.5em] text-[10px] md:text-xs font-bold mb-4 uppercase block">Our Core Philosophy</motion.span>
@@ -204,7 +204,9 @@ const Landing = () => {
         <div className="relative z-10 w-full lg:w-1/2 flex flex-col items-center lg:items-end mt-12 lg:mt-0 pb-10 lg:pb-0">
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="mb-8 text-center lg:text-right">
             <span className="text-amber-500 text-[10px] font-bold tracking-[0.4em] uppercase block mb-2">Organized By</span>
-            <h3 className="text-white text-2xl md:text-3xl font-serif tracking-widest">KSHITIJ JAIN</h3>
+            <h3 className="text-white text-xl md:text-2xl font-serif tracking-widest uppercase leading-tight">
+              KSHITIJ JAIN <br/> & MANISH KUMAR
+            </h3>
           </motion.div>
           <motion.div className="w-full max-w-sm bg-white/5 border border-white/10 backdrop-blur-3xl p-8 rounded-[2rem]">
             <span className="text-amber-500 text-[10px] uppercase block mb-1">Impact</span>
@@ -222,7 +224,6 @@ const Landing = () => {
       <footer className="relative w-full bg-black border-t border-white/5 pt-16 pb-8 px-6 lg:px-24 snap-start flex-shrink-0 z-30">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-12">
           
-          {/* Logo with Icon */}
           <div className="space-y-4">
             <div className="flex items-center space-x-4">
               <RotatingFanIcon>
@@ -254,7 +255,7 @@ const Landing = () => {
           <p className="text-[9px] text-gray-600 uppercase tracking-widest font-mono">© 2026 Brain Forge Ecosystem</p>
           <div className="flex items-center gap-2">
             <span className="text-white/20 text-[8px] uppercase tracking-[0.6em] font-bold">Organized By</span>
-            <span className="text-white/40 text-[9px] uppercase tracking-[0.2em] font-black">Kshitij Jain</span>
+            <span className="text-white/40 text-[9px] uppercase tracking-[0.2em] font-black">Kshitij Jain & Manish Kumar</span>
           </div>
         </div>
       </footer>
