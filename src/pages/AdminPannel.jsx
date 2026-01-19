@@ -1,232 +1,207 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  FiSend, FiTrash2, FiPlusCircle, FiBarChart2, 
-  FiCheckCircle, FiAlertCircle, FiLayers 
+  FiPlus, FiTrash2, FiSend, FiDatabase, 
+  FiLayers, FiImage, FiAlertCircle, FiExternalLink 
 } from 'react-icons/fi';
 import Navbar from '../components/Navbar';
 
-// Corrected Import Path
-import { db } from '../firebase/firebase'; 
-import { ref, push, onValue, remove, serverTimestamp } from "firebase/database";
+// Firebase
+import { db } from '../firebase/firebase';
+import { ref, push, set, onValue, remove } from "firebase/database";
 
 const AdminPanel = () => {
-  const [broadcasts, setBroadcasts] = useState([]);
-  const [newPost, setNewPost] = useState({ title: '', tag: 'Web3 & Crypto', content: '' });
-  const [status, setStatus] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [milestones, setMilestones] = useState([]);
+  
+  const [formData, setFormData] = useState({ 
+    title: '', 
+    content: '', 
+    tag: 'Web3 & Crypto', 
+    imageUrl: '' 
+  });
 
   const categories = [
-    "Web3 & Crypto", "AI & ML", "UI/UX Design", "Open Source",
-    "Cybersecurity", "Backend Architecture", "Mobile Dev",
-    "Robotics & Hardware", "Cloud Computing",
+    "Web3 & Crypto", "AI & ML", "UI/UX Design", 
+    "Cybersecurity", "Backend Architecture", 
+    "Mobile Dev", "Cloud Computing"
   ];
 
-  // Sync with Firebase Realtime Database
   useEffect(() => {
-    const broadcastsRef = ref(db, 'forge_broadcasts');
-    const unsubscribe = onValue(broadcastsRef, (snapshot) => {
+    const roadmapRef = ref(db, 'forge_broadcasts');
+    onValue(roadmapRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        const list = Object.keys(data).map(key => ({
-          id: key,
-          ...data[key]
-        })).reverse(); 
-        setBroadcasts(list);
-      } else {
-        setBroadcasts([]);
+        const list = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+        setMilestones(list.reverse());
       }
     });
-
-    return () => unsubscribe();
   }, []);
 
-  const handleAddPost = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!newPost.title || !newPost.content) {
-      showStatus('error');
-      return;
-    }
-
+    if (!formData.title || !formData.content) return alert("Title and Content are required");
+    setLoading(true);
     try {
-      const broadcastsRef = ref(db, 'forge_broadcasts');
-      await push(broadcastsRef, {
-        ...newPost,
-        admin: "Forge Admin",
-        createdAt: serverTimestamp()
-      });
-
-      setNewPost({ title: '', tag: 'Web3 & Crypto', content: '' });
-      showStatus('success');
-    } catch (error) {
-      console.error("Firebase Deploy Error:", error);
-      showStatus('error');
+      const roadmapRef = ref(db, 'forge_broadcasts');
+      await push(roadmapRef, { ...formData, timestamp: Date.now() });
+      setFormData({ ...formData, title: '', content: '', imageUrl: '' });
+      alert("Roadmap Updated Successfully!");
+    } catch (error) { 
+      console.error(error); 
+    } finally { 
+      setLoading(false); 
     }
-  };
-
-  const deletePost = async (id) => {
-    try {
-      const postRef = ref(db, `forge_broadcasts/${id}`);
-      await remove(postRef);
-    } catch (error) {
-      console.error("Firebase Delete Error:", error);
-    }
-  };
-
-  const showStatus = (type) => {
-    setStatus(type);
-    setTimeout(() => setStatus(null), 3000);
   };
 
   return (
-    <div className="h-screen w-full bg-black text-white selection:bg-amber-500/30 overflow-hidden flex flex-col">
+    <div className="min-h-screen bg-black text-white">
       <Navbar />
       
-      <main className="flex-grow max-w-7xl mx-auto w-full px-6 pt-28 pb-6 flex flex-col overflow-hidden">
-        
-        {/* Header */}
-        <div className="flex flex-row items-end justify-between mb-8 flex-shrink-0">
-          <div>
-            <motion.h1 
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="text-3xl md:text-4xl font-serif italic mb-1"
-            >
-              Control <span className="text-amber-500">Center</span>
-            </motion.h1>
-            <p className="text-gray-500 text-[8px] tracking-[0.5em] uppercase font-bold">
-              Broadcast Intelligence to the Ecosystem
-            </p>
+      <main className="max-w-7xl mx-auto px-6 pt-32 pb-20">
+        <div className="flex items-center justify-between mb-12 border-b border-white/5 pb-8">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-amber-500 rounded-2xl flex items-center justify-center text-black shadow-[0_0_20px_rgba(245,158,11,0.3)]">
+              <FiDatabase size={24} />
+            </div>
+            <div>
+              <h1 className="text-3xl font-serif italic">Linkora <span className="text-amber-500">Editor</span></h1>
+              <p className="text-gray-500 text-[10px] uppercase tracking-[0.3em]">Content Management System</p>
+            </div>
           </div>
-          
-          <div className="bg-white/5 border border-white/10 px-4 py-2 rounded-xl">
-            <p className="text-[7px] uppercase tracking-widest text-gray-500 mb-0.5">Cloud Sync Active</p>
-            <p className="text-lg font-serif text-amber-500 leading-none">{broadcasts.length}</p>
+          <div className="hidden md:block text-right">
+             <p className="text-amber-500 text-xs font-mono">{milestones.length} Active Nodes</p>
           </div>
         </div>
 
-        {/* Main Grid Area */}
-        <div className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-0 overflow-hidden mb-6">
+        {/* Increased width for the form using a 12-column grid */}
+        <div className="grid lg:grid-cols-12 gap-12">
           
-          {/* Form */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="lg:col-span-7 flex flex-col min-h-0"
-          >
-            <div className="flex-grow bg-white/5 border border-white/10 rounded-[2rem] p-6 md:p-8 relative overflow-hidden flex flex-col">
-              <div className="absolute -top-24 -right-24 w-48 h-48 bg-amber-500/10 blur-[80px] rounded-full pointer-events-none" />
-              <h2 className="text-lg font-serif mb-6 flex items-center gap-3 flex-shrink-0">
-                <FiPlusCircle className="text-amber-500" /> New Broadcast
-              </h2>
+          {/* LEFT: THE WIDE FORM (Col span 7) */}
+          <section className="lg:col-span-7">
+            <form onSubmit={handleSubmit} className="bg-white/[0.03] border border-white/10 rounded-[2.5rem] p-8 md:p-10 space-y-8">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold flex items-center gap-3">
+                  <FiPlus className="text-amber-500" /> New Roadmap Node
+                </h2>
+                <span className="text-[10px] bg-white/5 px-3 py-1 rounded-full text-gray-400 uppercase tracking-widest font-bold">Draft Mode</span>
+              </div>
+              
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] text-gray-500 uppercase font-black tracking-widest ml-1">Domain Category</label>
+                  <select 
+                    value={formData.tag} 
+                    onChange={(e) => setFormData({...formData, tag: e.target.value})} 
+                    className="w-full bg-black border border-white/10 rounded-2xl px-5 py-4 text-sm outline-none focus:border-amber-500 transition-all appearance-none cursor-pointer"
+                  >
+                    {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                  </select>
+                </div>
 
-              <form onSubmit={handleAddPost} className="flex-grow flex flex-col space-y-4 min-h-0">
-                <div className="space-y-1.5 flex-shrink-0">
-                  <label className="text-[9px] uppercase tracking-widest text-gray-500 font-bold ml-1">Title</label>
+                <div className="space-y-2">
+                  <label className="text-[10px] text-gray-500 uppercase font-black tracking-widest ml-1">Node Title</label>
                   <input 
                     type="text" 
-                    placeholder="Enter headline..."
-                    value={newPost.title}
-                    onChange={(e) => setNewPost({...newPost, title: e.target.value})}
-                    className="w-full bg-black border border-white/10 rounded-xl p-3 focus:border-amber-500/50 outline-none text-sm transition-all"
+                    placeholder="e.g. Advanced Neural Architectures" 
+                    value={formData.title} 
+                    onChange={(e) => setFormData({...formData, title: e.target.value})} 
+                    className="w-full bg-black border border-white/10 rounded-2xl px-5 py-4 text-sm outline-none focus:border-amber-500 transition-all" 
                   />
                 </div>
-                
-                <div className="space-y-1.5 flex-shrink-0">
-                  <label className="text-[9px] uppercase tracking-widest text-gray-500 font-bold ml-1">Sector</label>
-                  <div className="relative">
-                    <select 
-                      value={newPost.tag}
-                      onChange={(e) => setNewPost({...newPost, tag: e.target.value})}
-                      className="w-full bg-black border border-white/10 rounded-xl p-3 focus:border-amber-500/50 outline-none cursor-pointer appearance-none text-sm text-white"
-                    >
-                      {categories.map(cat => (
-                        <option key={cat} value={cat} className="bg-zinc-900">{cat}</option>
-                      ))}
-                    </select>
-                    <FiLayers className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
-                  </div>
-                </div>
-
-                <div className="flex-grow flex flex-col space-y-1.5 min-h-0">
-                  <label className="text-[9px] uppercase tracking-widest text-gray-500 font-bold ml-1">Content</label>
-                  <textarea 
-                    placeholder="Provide insights..."
-                    value={newPost.content}
-                    onChange={(e) => setNewPost({...newPost, content: e.target.value})}
-                    className="flex-grow w-full bg-black border border-white/10 rounded-xl p-4 focus:border-amber-500/50 outline-none transition-all resize-none text-sm leading-relaxed"
-                  />
-                </div>
-
-                <div className="pt-2 flex items-center gap-4 flex-shrink-0">
-                  <motion.button 
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.99 }}
-                    type="submit"
-                    className="flex-grow bg-amber-500 text-black font-black py-4 rounded-xl flex items-center justify-center gap-2 text-[10px] tracking-[0.2em] uppercase shadow-lg"
-                  >
-                    <FiSend /> Deploy to Cloud
-                  </motion.button>
-
-                  <AnimatePresence>
-                    {status && (
-                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className={`flex items-center gap-1 ${status === 'success' ? 'text-green-500' : 'text-red-500'}`}>
-                        {status === 'success' ? <FiCheckCircle /> : <FiAlertCircle />}
-                        <span className="text-[9px] font-bold uppercase">{status === 'success' ? 'Live' : 'Error'}</span>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </form>
-            </div>
-          </motion.div>
-
-          {/* Feed */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="lg:col-span-5 flex flex-col min-h-0"
-          >
-            <div className="flex-grow bg-white/5 border border-white/10 rounded-[2rem] p-6 flex flex-col overflow-hidden">
-              <h2 className="text-lg font-serif mb-4 flex items-center gap-3 flex-shrink-0">
-                <FiBarChart2 className="text-amber-500" /> Active Feed
-              </h2>
-              
-              <div className="flex-grow overflow-y-auto pr-2 scrollbar-hide space-y-3">
-                {broadcasts.length > 0 ? (
-                  broadcasts.map((post) => (
-                    <motion.div 
-                      layout
-                      key={post.id} 
-                      className="group bg-black/40 border border-white/5 p-4 rounded-xl hover:border-amber-500/30 transition-all relative"
-                    >
-                      <div className="flex justify-between items-start mb-1">
-                        <span className="text-[7px] bg-amber-500/10 text-amber-500 px-2 py-0.5 rounded-full font-bold uppercase tracking-widest">
-                          {post.tag}
-                        </span>
-                        <button onClick={() => deletePost(post.id)} className="text-gray-600 hover:text-red-500 transition-colors">
-                          <FiTrash2 size={14} />
-                        </button>
-                      </div>
-                      <h4 className="font-bold text-xs group-hover:text-amber-500 transition-colors truncate">{post.title}</h4>
-                      <p className="text-gray-500 text-[10px] line-clamp-1 italic mt-1">"{post.content}"</p>
-                    </motion.div>
-                  ))
-                ) : (
-                  <div className="h-full flex flex-col items-center justify-center opacity-10">
-                    <FiLayers size={32} />
-                    <p className="text-[10px] mt-2 uppercase tracking-widest">Syncing...</p>
-                  </div>
-                )}
               </div>
-            </div>
-          </motion.div>
-        </div>
 
-        <div className="flex justify-end items-center flex-shrink-0 pt-2 border-t border-white/5">
-          <p className="text-[8px] tracking-[0.6em] text-white/30 uppercase font-bold">
-            Organized By Kshitij Jain
-          </p>
+              <div className="space-y-2">
+                <label className="text-[10px] text-gray-500 uppercase font-black tracking-widest ml-1">Roadmap Visual (Image URL)</label>
+                <div className="relative">
+                  <FiImage className="absolute left-5 top-5 text-gray-500" />
+                  <input 
+                    type="text" 
+                    placeholder="Paste URL: https://images.unsplash.com/..." 
+                    value={formData.imageUrl} 
+                    onChange={(e) => setFormData({...formData, imageUrl: e.target.value})} 
+                    className="w-full bg-black border border-white/10 rounded-2xl pl-14 pr-5 py-4 text-sm outline-none focus:border-amber-500 transition-all font-mono text-amber-500/70" 
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] text-gray-500 uppercase font-black tracking-widest ml-1">Technical Documentation / Description</label>
+                <textarea 
+                  rows="8" 
+                  placeholder="Explain the learning path or technical milestone in detail..." 
+                  value={formData.content} 
+                  onChange={(e) => setFormData({...formData, content: e.target.value})} 
+                  className="w-full bg-black border border-white/10 rounded-2xl px-5 py-4 text-sm outline-none focus:border-amber-500 transition-all resize-none leading-relaxed" 
+                />
+              </div>
+
+              <button 
+                disabled={loading} 
+                className="w-full bg-white text-black font-black uppercase text-xs tracking-[0.2em] py-5 rounded-2xl hover:bg-amber-500 transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
+              >
+                {loading ? "Syncing with Linkora..." : <><FiSend /> Deploy Milestone</>}
+              </button>
+            </form>
+          </section>
+
+          {/* RIGHT: LIST VIEW (Col span 5) */}
+          <section className="lg:col-span-5 space-y-6">
+            <div className="flex items-center justify-between px-2">
+               <h2 className="text-lg font-bold flex items-center gap-2">
+                 <FiLayers className="text-amber-500" /> Live Nodes
+               </h2>
+               <button onClick={() => window.location.reload()} className="text-[10px] text-gray-500 hover:text-white transition-colors uppercase font-bold tracking-tighter">Refresh Sync</button>
+            </div>
+            
+            <div className="space-y-3 max-h-[800px] overflow-y-auto pr-2 scrollbar-hide">
+              <AnimatePresence>
+                {milestones.map((item) => (
+                  <motion.div 
+                    layout
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    key={item.id} 
+                    className="group bg-white/[0.02] border border-white/5 p-4 rounded-3xl flex items-center justify-between hover:bg-white/[0.05] hover:border-white/20 transition-all duration-300"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-14 h-14 rounded-2xl overflow-hidden bg-white/5 border border-white/10">
+                        {item.imageUrl ? (
+                          <img src={item.imageUrl} className="w-full h-full object-cover" alt="" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-gray-700"><FiImage /></div>
+                        )}
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-sm line-clamp-1">{item.title}</h4>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[9px] text-amber-500 font-black uppercase">{item.tag}</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-1">
+                       <button 
+                        onClick={() => remove(ref(db, `forge_broadcasts/${item.id}`))} 
+                        className="p-3 text-gray-600 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
+                        title="Delete Node"
+                      >
+                        <FiTrash2 size={16} />
+                      </button>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+
+              {milestones.length === 0 && (
+                <div className="py-20 text-center border border-dashed border-white/10 rounded-[2.5rem]">
+                  <FiAlertCircle className="mx-auto text-gray-700 text-3xl mb-3" />
+                  <p className="text-gray-500 text-sm italic">No roadmap nodes found.</p>
+                </div>
+              )}
+            </div>
+          </section>
         </div>
       </main>
     </div>

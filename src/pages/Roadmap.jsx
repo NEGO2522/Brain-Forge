@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiZap, FiGlobe, FiCode, FiCpu, 
   FiLayout, FiDatabase, FiShield, FiSmartphone,
-  FiInbox, FiCheckCircle, FiClock, FiLayers, FiMap
+  FiInbox, FiLayers, FiMap, FiImage
 } from 'react-icons/fi';
 import Navbar from '../components/Navbar';
 
@@ -33,8 +33,7 @@ const Roadmap = () => {
       if (data) {
         const list = Object.keys(data).map(key => ({
           id: key,
-          ...data[key],
-          status: data[key].status || (Math.random() > 0.5 ? "Completed" : "In Progress")
+          ...data[key]
         })).reverse();
         setMilestones(list);
       } else {
@@ -124,43 +123,53 @@ const Roadmap = () => {
                       {/* Timeline Dot */}
                       <div className="absolute left-8 md:left-[34px] top-9 hidden md:flex items-center justify-center w-3 h-3 rounded-full bg-black border-2 border-amber-500 z-10" />
 
-                      <div className="bg-white/[0.03] border border-white/10 rounded-[2rem] p-7 md:p-10 hover:bg-white/[0.06] transition-all duration-500 group">
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                          <div className="flex items-center gap-3">
-                            <span className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${
-                              item.status === "Completed" 
-                                ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500" 
-                                : "bg-amber-500/10 border-amber-500/20 text-amber-500"
-                            }`}>
-                              {item.status === "Completed" ? <FiCheckCircle /> : <FiClock />} {item.status}
-                            </span>
-                            <span className="text-[10px] text-gray-600 font-mono tracking-tighter uppercase">Ref: {item.id.slice(-6)}</span>
-                          </div>
-                        </div>
-
-                        <h3 className="text-2xl md:text-3xl font-bold mb-4 group-hover:text-amber-500 transition-colors">
-                          {item.title}
-                        </h3>
+                      <div className="bg-white/[0.03] border border-white/10 rounded-[2.5rem] overflow-hidden hover:bg-white/[0.06] transition-all duration-500 group">
                         
-                        <p className="text-gray-400 leading-relaxed text-sm md:text-base mb-8 max-w-3xl">
-                          {item.content}
-                        </p>
+                        {/* Roadmap Image Integration */}
+                        {item.imageUrl && (
+                          <div className="w-full h-48 md:h-80 overflow-hidden border-b border-white/5">
+                            <img 
+                              src={item.imageUrl} 
+                              alt={item.title} 
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+                            />
+                          </div>
+                        )}
 
-                        <div className="flex flex-wrap items-center justify-between gap-6 pt-8 border-t border-white/5">
-                           <div className="flex gap-8">
-                             <div>
+                        <div className="p-7 md:p-10">
+                          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                            <div className="flex items-center gap-3">
+                              <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border bg-amber-500/10 border-amber-500/20 text-amber-500">
+                                <FiLayers /> Milestone
+                              </span>
+                              <span className="text-[10px] text-gray-600 font-mono tracking-tighter uppercase">Ref: {item.id.slice(-6)}</span>
+                            </div>
+                          </div>
+
+                          <h3 className="text-2xl md:text-3xl font-bold mb-4 group-hover:text-amber-500 transition-colors">
+                            {item.title}
+                          </h3>
+                          
+                          <p className="text-gray-400 leading-relaxed text-sm md:text-base mb-8 max-w-3xl">
+                            {item.content}
+                          </p>
+
+                          <div className="flex flex-wrap items-center justify-between gap-6 pt-8 border-t border-white/5">
+                            <div className="flex gap-8">
+                              <div>
                                 <p className="text-[9px] text-gray-600 uppercase mb-1 font-bold">Pathway</p>
                                 <p className="text-xs text-white">{selectedPhase}</p>
-                             </div>
-                             <div>
-                                <p className="text-[9px] text-gray-600 uppercase mb-1 font-bold">Level</p>
-                                <p className="text-xs text-white">Core Tech</p>
-                             </div>
-                           </div>
-                           
-                           <button className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-amber-500 hover:text-white transition-colors">
-                              <FiLayers className="text-sm" /> View Details
-                           </button>
+                              </div>
+                              <div>
+                                <p className="text-[9px] text-gray-600 uppercase mb-1 font-bold">Standard</p>
+                                <p className="text-xs text-white">v2.0 Path</p>
+                              </div>
+                            </div>
+                            
+                            <button className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-amber-500 hover:text-white transition-colors">
+                               Detailed Specs
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </motion.div>
