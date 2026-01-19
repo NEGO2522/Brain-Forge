@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FaDiscord, FaLinkedin, FaEnvelope, FaMapMarkerAlt, FaPhone, FaChevronRight } from 'react-icons/fa';
+import { FaDiscord, FaLinkedin, FaEnvelope, FaMapMarkerAlt, FaPhone, FaChevronRight, FaTerminal, FaUsers, FaLayerGroup } from 'react-icons/fa';
 import { RotatingFanIcon } from '../components/RotatingFanIcon';
 import Navbar from '../components/Navbar';
 
@@ -33,7 +33,6 @@ const Connect = () => {
     <div className="h-screen w-full bg-black text-white relative overflow-hidden flex flex-col pt-20 pb-4 px-6">
       <Navbar />
       
-      {/* Background Ambience */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-amber-500/5 rounded-full blur-[120px]" />
         <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/5 rounded-full blur-[120px]" />
@@ -41,7 +40,6 @@ const Connect = () => {
 
       <div className="max-w-7xl mx-auto w-full h-full flex flex-col relative z-10 overflow-hidden">
         
-        {/* Header Area */}
         <div className="mb-6 flex-shrink-0 text-center lg:text-left pt-4">
           <motion.h1 
             initial={{ opacity: 0, y: 10 }}
@@ -52,22 +50,19 @@ const Connect = () => {
           </motion.h1>
         </div>
 
-        {/* Main Layout */}
-        <div className="flex-grow flex flex-col lg:grid lg:grid-cols-12 gap-4 min-h-0 mb-2">
+        <div className="flex-grow flex flex-col lg:grid lg:grid-cols-12 gap-4 min-h-0 mb-2 overflow-hidden">
           
-          {/* LEFT: Main Contact & Map */}
+          {/* LEFT SECTION */}
           <motion.div 
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="lg:col-span-8 flex flex-col min-h-0"
+            className="lg:col-span-7 flex flex-col min-h-0"
           >
             <div className="flex-grow bg-white/5 backdrop-blur-xl rounded-[2rem] border border-white/10 p-5 md:p-6 flex flex-col overflow-hidden">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full min-h-0">
-                
-                {/* Contact List */}
                 <div className="flex flex-col justify-between py-1 overflow-hidden">
                   <div className="space-y-3">
-                    <h2 className="text-lg font-serif text-white mb-4">Network Nodes</h2>
+                    <h2 className="text-lg font-serif text-white mb-4 tracking-tight">Network Nodes</h2>
                     <ContactItem icon={FaMapMarkerAlt} title="Location" content="Jaipur, Rajasthan" />
                     <ContactItem icon={FaEnvelope} title="Email" content="nextgenova28@gmail.com" link="mailto:nextgenova28@gmail.com" />
                     <ContactItem icon={FaPhone} title="Phone" content="+91 94139 73399" link="tel:+919413973399" />
@@ -94,10 +89,9 @@ const Connect = () => {
                   </div>
                 </div>
 
-                {/* Map Section */}
                 <div className="relative rounded-[1.5rem] overflow-hidden border border-white/10 flex-grow h-full bg-black/40">
                   <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d227748.3825624328!2d75.650472!3d26.8851417!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396c4adb4feed511%3A0xd132170c46979958!2sJaipur%2C%20Rajasthan!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d227748.3825624311!2d75.65046927533838!3d26.88544791796718!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396c4adb4ad87441%3A0xd1d9354086603d36!2sJaipur%2C%20Rajasthan!5e0!3m2!1sen!2sin!4v1715456382145!5m2!1sen!2sin" 
                     width="100%" height="100%" style={{ border: 0, filter: 'grayscale(1) invert(0.9) contrast(1.2) brightness(0.8)' }} 
                     allowFullScreen="" loading="lazy" title="Jaipur Map"
                   />
@@ -107,62 +101,120 @@ const Connect = () => {
             </div>
           </motion.div>
 
-          {/* RIGHT: Join Card */}
+          {/* RIGHT SECTION - ENHANCED BOTTOM AREA */}
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="lg:col-span-4 flex flex-col min-h-0"
+            className="lg:col-span-5 flex flex-col min-h-0"
           >
-            <div className="flex-grow bg-gradient-to-br from-amber-500/10 to-transparent backdrop-blur-xl rounded-[2rem] border border-amber-500/20 p-6 flex flex-col justify-between items-center text-center overflow-hidden">
-              <div className="flex flex-col items-center">
-                <div className="mb-4">
-                  <RotatingFanIcon>
-                    <div className="w-12 h-12 rounded-full bg-amber-500/5 flex items-center justify-center border border-amber-500/20">
-                      <svg className="h-6 w-6 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="flex-grow bg-gradient-to-br from-amber-500/10 to-transparent backdrop-blur-xl rounded-[2rem] border border-amber-500/20 p-6 flex flex-col overflow-hidden">
+              
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-3">
+                   <RotatingFanIcon>
+                    <div className="w-10 h-10 rounded-full bg-amber-500/5 flex items-center justify-center border border-amber-500/20">
+                      <svg className="h-5 w-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
                       </svg>
                     </div>
                   </RotatingFanIcon>
+                  <div>
+                    <h2 className="text-lg font-serif text-white leading-none italic">Brain Forge</h2>
+                    <span className="text-[7px] uppercase tracking-[0.3em] text-amber-500 font-black">Ecosystem Hub</span>
+                  </div>
                 </div>
-                
-                <h2 className="text-xl font-serif text-white mb-1 italic">Brain Forge</h2>
-                <p className="text-gray-400 text-[10px] leading-relaxed max-w-[180px]">
-                  Join our elite circle of innovators and master the digital frontier.
+                <div className="flex items-center space-x-1.5 px-3 py-1 bg-white/5 rounded-full border border-white/10">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-[8px] font-mono text-emerald-500 uppercase">Live</span>
+                </div>
+              </div>
+
+              <div className="mb-4 space-y-2">
+                <div className="flex items-center space-x-2 text-gray-400">
+                  <FaTerminal className="text-[10px]" />
+                  <span className="text-[9px] uppercase tracking-widest font-bold">Mission Brief</span>
+                </div>
+                <p className="text-gray-400 text-[10px] leading-relaxed font-light italic border-l border-amber-500/30 pl-3">
+                  "Building a decentralized network of high-performers, bridging the gap between talent and global opportunities."
                 </p>
               </div>
 
-              <div className="w-full space-y-2 my-4 flex-grow flex flex-col justify-center">
-                {["Elite Network", "Tech Ecosystem", "Expert Mentorship"].map((item, i) => (
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                <div className="bg-black/40 p-3 rounded-2xl border border-white/5">
+                  <div className="flex items-center justify-between mb-1">
+                    <FaUsers className="text-amber-500 text-xs" />
+                    <span className="text-[8px] text-gray-500 uppercase">Active</span>
+                  </div>
+                  <p className="text-xl font-serif text-white tracking-tighter">200+</p>
+                </div>
+                <div className="bg-black/40 p-3 rounded-2xl border border-white/5">
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="w-2 h-2 rounded-full border border-amber-500" />
+                    <span className="text-[8px] text-gray-500 uppercase">Uptime</span>
+                  </div>
+                  <p className="text-xl font-serif text-white tracking-tighter">99.9%</p>
+                </div>
+              </div>
+
+              {/* Features List */}
+              <div className="w-full space-y-1.5 mb-4">
+                {["Elite Network Access", "Tech Stack Ecosystem", "Direct Mentorship Channels"].map((item, i) => (
                   <div key={i} className="flex items-center space-x-3 text-left bg-white/5 p-2.5 rounded-xl border border-white/5">
-                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse flex-shrink-0" />
+                    <div className="w-1 h-1 rounded-full bg-amber-500 flex-shrink-0" />
                     <span className="text-[9px] uppercase tracking-widest text-gray-300 font-medium">{item}</span>
                   </div>
                 ))}
               </div>
 
-              <a 
-                href={DISCORD_LINK} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="w-full"
-              >
-                <motion.button 
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full py-3.5 bg-amber-500 text-black font-bold text-[10px] rounded-xl flex items-center justify-center space-x-2 shadow-[0_10px_30px_rgba(251,191,36,0.2)] hover:bg-amber-400 transition-colors"
-                >
-                  <span>JOIN THE FORGE</span>
-                  <FaChevronRight className="text-[8px]" />
-                </motion.button>
-              </a>
+              {/* NEW SECTION: STRATEGIC ROADMAP (Fills the "Empty" space) */}
+              <div className="w-full p-4 bg-white/5 rounded-2xl border border-white/5 mb-4 space-y-3">
+                <div className="flex items-center justify-between">
+                   <div className="flex items-center space-x-2">
+                    <FaLayerGroup className="text-amber-500 text-[10px]" />
+                    <span className="text-[8px] uppercase tracking-[0.2em] text-gray-400 font-bold">Strategic Roadmap</span>
+                   </div>
+                   <span className="text-[8px] text-amber-500 font-mono">PHASE 02</span>
+                </div>
+                <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: "65%" }}
+                    transition={{ duration: 1.5, ease: "easeOut" }}
+                    className="h-full bg-amber-500 shadow-[0_0_10px_#f59e0b]"
+                  />
+                </div>
+                <div className="flex justify-between text-[7px] uppercase tracking-widest font-bold">
+                  <span className="text-amber-500">Foundation</span>
+                  <span className="text-amber-500/50">Expansion</span>
+                  <span className="text-white/20">Global Scale</span>
+                </div>
+              </div>
+
+              {/* Ticker & Button */}
+              <div className="mt-auto">
+                <div className="flex items-center space-x-2 mb-3">
+                  <span className="text-[7px] uppercase tracking-widest text-gray-500">Node Status:</span>
+                  <span className="text-[8px] text-amber-500 font-bold animate-pulse uppercase tracking-tight">Syncing new member data...</span>
+                </div>
+                
+                <a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer" className="w-full block">
+                  <motion.button 
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full py-3.5 bg-amber-500 text-black font-black text-[10px] rounded-xl flex items-center justify-center space-x-2 shadow-[0_10px_30px_rgba(251,191,36,0.2)] hover:bg-amber-400 transition-all group"
+                  >
+                    <span>JOIN THE FORGE</span>
+                    <FaChevronRight className="text-[8px] group-hover:translate-x-1 transition-transform" />
+                  </motion.button>
+                </a>
+              </div>
             </div>
           </motion.div>
 
         </div>
 
-        {/* Footer Branding */}
         <div className="flex-shrink-0 text-center pb-2">
-          <p className="text-[7px] tracking-[0.8em] text-white/20 uppercase font-bold">Organized By Kshitij Jain</p>
+          <p className="text-[7px] tracking-[0.8em] text-white/20 uppercase font-bold">Organized By Kshitij Jain & Manish Kumar</p>
         </div>
       </div>
     </div>

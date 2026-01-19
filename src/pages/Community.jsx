@@ -118,7 +118,7 @@ const Community = () => {
       
       {/* Footer Branding */}
       <div className="py-20 text-center border-t border-white/5">
-         <p className="text-[10px] tracking-[0.4em] text-white/20 uppercase">Curated by Kshitij Jain</p>
+         <p className="text-[10px] tracking-[0.4em] text-white/20 uppercase">Curated by Kshitij Jain & Manish Kumar</p>
       </div>
     </div>
   );
