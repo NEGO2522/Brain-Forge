@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+// 1. IMPORT REACT MARKDOWN
+import ReactMarkdown from 'react-markdown';
 import { 
   FiZap, FiGlobe, FiCode, FiCpu, 
   FiLayout, FiDatabase, FiShield, FiSmartphone,
@@ -44,7 +46,6 @@ const Roadmap = () => {
     return () => unsubscribe();
   }, []);
 
-  // Filtered only by the selected skill domain
   const filteredMilestones = milestones.filter(item => item.tag === selectedPhase);
 
   return (
@@ -64,20 +65,13 @@ const Roadmap = () => {
           <h1 className="text-5xl md:text-7xl font-serif italic mb-6">
             <span className="text-amber-500">Linkaura</span> Roadmap
           </h1>
-          <p className="text-gray-400 max-w-2xl text-sm md:text-base leading-relaxed">
-            Select a domain to view the structured learning path and technical milestones. 
-            Track the evolution of modern skill sets within the Linkaura ecosystem.
-          </p>
         </div>
 
         <div className="flex flex-col lg:grid lg:grid-cols-4 gap-8 lg:gap-12">
           
-          {/* SIDEBAR - Domain Selector Only */}
           <aside className="lg:col-span-1">
             <div className="lg:sticky lg:top-32">
-              <h3 className="text-amber-500 text-[10px] font-black uppercase tracking-[0.3em] mb-6">
-                Select Domain
-              </h3>
+              <h3 className="text-amber-500 text-[10px] font-black uppercase tracking-[0.3em] mb-6">Select Domain</h3>
               <div className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 scrollbar-hide">
                 {categories.map((cat) => (
                   <button 
@@ -85,11 +79,11 @@ const Roadmap = () => {
                     onClick={() => setSelectedPhase(cat.name)}
                     className={`flex-shrink-0 flex items-center p-3 rounded-xl transition-all text-sm group border lg:w-full ${
                       selectedPhase === cat.name 
-                        ? 'bg-amber-500/10 border-amber-500/50 text-white shadow-lg shadow-amber-500/5' 
+                        ? 'bg-amber-500/10 border-amber-500/50 text-white' 
                         : 'hover:bg-white/5 border-transparent text-gray-500'
                     }`}
                   >
-                    <span className={`mr-3 transition-colors ${selectedPhase === cat.name ? 'text-amber-500' : 'text-gray-600 group-hover:text-amber-500'}`}>
+                    <span className={`mr-3 ${selectedPhase === cat.name ? 'text-amber-500' : 'text-gray-600'}`}>
                       {cat.icon}
                     </span>
                     {cat.name}
@@ -99,10 +93,8 @@ const Roadmap = () => {
             </div>
           </aside>
 
-          {/* MILESTONE CONTENT */}
           <section className="lg:col-span-3">
             <div className="space-y-8 relative">
-              {/* Vertical Timeline Thread */}
               <div className="absolute left-6 md:left-10 top-0 bottom-0 w-[1px] bg-gradient-to-b from-amber-500/30 via-white/10 to-transparent hidden md:block" />
 
               <AnimatePresence mode='popLayout'>
@@ -116,43 +108,38 @@ const Roadmap = () => {
                       key={item.id}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.98 }}
-                      transition={{ duration: 0.4, delay: index * 0.05 }}
                       className="relative pl-0 md:pl-24"
                     >
-                      {/* Timeline Dot */}
                       <div className="absolute left-8 md:left-[34px] top-9 hidden md:flex items-center justify-center w-3 h-3 rounded-full bg-black border-2 border-amber-500 z-10" />
 
-                      <div className="bg-white/[0.03] border border-white/10 rounded-[2.5rem] overflow-hidden hover:bg-white/[0.06] transition-all duration-500 group">
+                      <div className="bg-white/[0.03] border border-white/10 rounded-[2.5rem] overflow-hidden hover:bg-white/[0.04] transition-all duration-500 group">
                         
-                        {/* Roadmap Image Integration */}
                         {item.imageUrl && (
                           <div className="w-full h-48 md:h-80 overflow-hidden border-b border-white/5">
-                            <img 
-                              src={item.imageUrl} 
-                              alt={item.title} 
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
-                            />
+                            <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
                           </div>
                         )}
 
                         <div className="p-7 md:p-10">
-                          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                            <div className="flex items-center gap-3">
-                              <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border bg-amber-500/10 border-amber-500/20 text-amber-500">
-                                <FiLayers /> Milestone
-                              </span>
-                              <span className="text-[10px] text-gray-600 font-mono tracking-tighter uppercase">Ref: {item.id.slice(-6)}</span>
-                            </div>
-                          </div>
-
-                          <h3 className="text-2xl md:text-3xl font-bold mb-4 group-hover:text-amber-500 transition-colors">
+                          <h3 className="text-3xl font-bold mb-6 text-amber-500">
                             {item.title}
                           </h3>
                           
-                          <p className="text-gray-400 leading-relaxed text-sm md:text-base mb-8 max-w-3xl">
-                            {item.content}
-                          </p>
+                          {/* 2. RENDER MARKDOWN CONTENT HERE */}
+                          <div className="markdown-container text-gray-300 leading-relaxed text-sm md:text-base mb-8">
+                            <ReactMarkdown 
+                              components={{
+                                h1: ({node, ...props}) => <h1 className="text-2xl font-bold text-white mt-8 mb-4 border-b border-white/10 pb-2" {...props} />,
+                                h2: ({node, ...props}) => <h2 className="text-xl font-bold text-white mt-6 mb-3" {...props} />,
+                                h3: ({node, ...props}) => <h3 className="text-lg font-semibold text-amber-400 mt-4 mb-2" {...props} />,
+                                ul: ({node, ...props}) => <ul className="list-disc list-inside space-y-2 mb-4 ml-2" {...props} />,
+                                li: ({node, ...props}) => <li className="text-gray-400" {...props} />,
+                                p: ({node, ...props}) => <p className="mb-4" {...props} />,
+                              }}
+                            >
+                              {item.content}
+                            </ReactMarkdown>
+                          </div>
 
                           <div className="flex flex-wrap items-center justify-between gap-6 pt-8 border-t border-white/5">
                             <div className="flex gap-8">
@@ -165,9 +152,8 @@ const Roadmap = () => {
                                 <p className="text-xs text-white">v2.0 Path</p>
                               </div>
                             </div>
-                            
-                            <button className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-amber-500 hover:text-white transition-colors">
-                               Detailed Specs
+                            <button className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-amber-500">
+                               Ref: {item.id.slice(-6)}
                             </button>
                           </div>
                         </div>
@@ -175,9 +161,9 @@ const Roadmap = () => {
                     </motion.div>
                   ))
                 ) : (
-                  <div className="py-24 text-center border border-dashed border-white/10 rounded-[3rem] md:ml-24 bg-white/[0.01]">
+                  <div className="py-24 text-center border border-dashed border-white/10 rounded-[3rem] md:ml-24">
                     <FiInbox className="mx-auto text-4xl text-amber-500 mb-4 opacity-20" />
-                    <p className="text-gray-500 italic font-serif">No milestones found for {selectedPhase}.</p>
+                    <p className="text-gray-500 italic font-serif">No milestones found.</p>
                   </div>
                 )}
               </AnimatePresence>
