@@ -27,7 +27,7 @@ const ContactItem = ({ icon: Icon, title, content, link }) => (
 
 const Connect = () => {
   const DISCORD_LINK = "https://discord.com/invite/7CSFqfaxMp";
-  const LINKEDIN_LINK = "https://www.linkedin.com/company/brainforge16";
+  const LINKEDIN_LINK = "https://www.linkedin.com/company/brainforge16"; // Update this link if your LinkedIn handle changes to Linkora
 
   return (
     <div className="h-screen w-full bg-black text-white relative overflow-hidden flex flex-col pt-20 pb-4 px-6">
@@ -91,7 +91,7 @@ const Connect = () => {
 
                 <div className="relative rounded-[1.5rem] overflow-hidden border border-white/10 flex-grow h-full bg-black/40">
                   <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d227748.3825624311!2d75.65046927533838!3d26.88544791796718!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396c4adb4ad87441%3A0xd1d9354086603d36!2sJaipur%2C%20Rajasthan!5e0!3m2!1sen!2sin!4v1715456382145!5m2!1sen!2sin" 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d227748.38256249!2d75.7062035!3d26.885247!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396c4adb4ad8e121%3A0x84deaf7138054e76!2sJaipur%2C%20Rajasthan!5e0!3m2!1sen!2sin!4v1715456482931!5m2!1sen!2sin" 
                     width="100%" height="100%" style={{ border: 0, filter: 'grayscale(1) invert(0.9) contrast(1.2) brightness(0.8)' }} 
                     allowFullScreen="" loading="lazy" title="Jaipur Map"
                   />
@@ -101,7 +101,7 @@ const Connect = () => {
             </div>
           </motion.div>
 
-          {/* RIGHT SECTION - ENHANCED BOTTOM AREA */}
+          {/* RIGHT SECTION - LINKORA HUB */}
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -119,8 +119,8 @@ const Connect = () => {
                     </div>
                   </RotatingFanIcon>
                   <div>
-                    <h2 className="text-lg font-serif text-white leading-none italic">Brain Forge</h2>
-                    <span className="text-[7px] uppercase tracking-[0.3em] text-amber-500 font-black">Ecosystem Hub</span>
+                    <h2 className="text-lg font-serif text-white leading-none italic uppercase tracking-tighter">Linkora</h2>
+                    <span className="text-[7px] uppercase tracking-[0.3em] text-amber-500 font-black">Community Hub</span>
                   </div>
                 </div>
                 <div className="flex items-center space-x-1.5 px-3 py-1 bg-white/5 rounded-full border border-white/10">
@@ -135,7 +135,7 @@ const Connect = () => {
                   <span className="text-[9px] uppercase tracking-widest font-bold">Mission Brief</span>
                 </div>
                 <p className="text-gray-400 text-[10px] leading-relaxed font-light italic border-l border-amber-500/30 pl-3">
-                  "Building a decentralized network of high-performers, bridging the gap between talent and global opportunities."
+                  "Linking ambitious minds to the future of technology through collaborative ecosystems and high-impact networking."
                 </p>
               </div>
 
@@ -143,7 +143,7 @@ const Connect = () => {
                 <div className="bg-black/40 p-3 rounded-2xl border border-white/5">
                   <div className="flex items-center justify-between mb-1">
                     <FaUsers className="text-amber-500 text-xs" />
-                    <span className="text-[8px] text-gray-500 uppercase">Active</span>
+                    <span className="text-[8px] text-gray-500 uppercase">Members</span>
                   </div>
                   <p className="text-xl font-serif text-white tracking-tighter">200+</p>
                 </div>
@@ -159,19 +159,19 @@ const Connect = () => {
               {/* Features List */}
               <div className="w-full space-y-1.5 mb-4">
                 {["Elite Network Access", "Tech Stack Ecosystem", "Direct Mentorship Channels"].map((item, i) => (
-                  <div key={i} className="flex items-center space-x-3 text-left bg-white/5 p-2.5 rounded-xl border border-white/5">
+                  <div key={i} className="flex items-center space-x-3 text-left bg-white/5 p-2.5 rounded-xl border border-white/5 hover:border-amber-500/20 transition-colors">
                     <div className="w-1 h-1 rounded-full bg-amber-500 flex-shrink-0" />
                     <span className="text-[9px] uppercase tracking-widest text-gray-300 font-medium">{item}</span>
                   </div>
                 ))}
               </div>
 
-              {/* NEW SECTION: STRATEGIC ROADMAP (Fills the "Empty" space) */}
+              {/* STRATEGIC ROADMAP */}
               <div className="w-full p-4 bg-white/5 rounded-2xl border border-white/5 mb-4 space-y-3">
                 <div className="flex items-center justify-between">
                    <div className="flex items-center space-x-2">
                     <FaLayerGroup className="text-amber-500 text-[10px]" />
-                    <span className="text-[8px] uppercase tracking-[0.2em] text-gray-400 font-bold">Strategic Roadmap</span>
+                    <span className="text-[8px] uppercase tracking-[0.2em] text-gray-400 font-bold">Growth Roadmap</span>
                    </div>
                    <span className="text-[8px] text-amber-500 font-mono">PHASE 02</span>
                 </div>
@@ -184,9 +184,9 @@ const Connect = () => {
                   />
                 </div>
                 <div className="flex justify-between text-[7px] uppercase tracking-widest font-bold">
-                  <span className="text-amber-500">Foundation</span>
-                  <span className="text-amber-500/50">Expansion</span>
-                  <span className="text-white/20">Global Scale</span>
+                  <span className="text-amber-500">Launch</span>
+                  <span className="text-amber-500/50">Scaling</span>
+                  <span className="text-white/20">Global</span>
                 </div>
               </div>
 
@@ -194,7 +194,7 @@ const Connect = () => {
               <div className="mt-auto">
                 <div className="flex items-center space-x-2 mb-3">
                   <span className="text-[7px] uppercase tracking-widest text-gray-500">Node Status:</span>
-                  <span className="text-[8px] text-amber-500 font-bold animate-pulse uppercase tracking-tight">Syncing new member data...</span>
+                  <span className="text-[8px] text-amber-500 font-bold animate-pulse uppercase tracking-tight">Updating Linkora database...</span>
                 </div>
                 
                 <a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer" className="w-full block">
@@ -203,7 +203,7 @@ const Connect = () => {
                     whileTap={{ scale: 0.98 }}
                     className="w-full py-3.5 bg-amber-500 text-black font-black text-[10px] rounded-xl flex items-center justify-center space-x-2 shadow-[0_10px_30px_rgba(251,191,36,0.2)] hover:bg-amber-400 transition-all group"
                   >
-                    <span>JOIN THE FORGE</span>
+                    <span>JOIN LINKORA</span>
                     <FaChevronRight className="text-[8px] group-hover:translate-x-1 transition-transform" />
                   </motion.button>
                 </a>
