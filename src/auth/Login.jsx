@@ -39,8 +39,8 @@ const Login = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.email) newErrors.email = 'Access key (email) required';
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Invalid key format';
+    if (!formData.email) newErrors.email = 'Identity Link required';
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Invalid link format';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -99,8 +99,8 @@ const Login = () => {
                   <FiShield className="text-3xl text-amber-500" />
                 </div>
               </RotatingFanIcon>
-              <h1 className="text-4xl font-serif italic text-white tracking-tight">Access <span className="text-amber-500">Terminal</span></h1>
-              <p className="text-gray-500 text-[10px] uppercase tracking-[0.4em] mt-2 font-bold">Brain Forge Security Protocol</p>
+              <h1 className="text-4xl font-serif italic text-white tracking-tight">Establish <span className="text-amber-500">Uplink</span></h1>
+              <p className="text-gray-500 text-[10px] uppercase tracking-[0.4em] mt-2 font-bold text-center">Linkora Ecosystem Portal</p>
             </div>
 
             {/* Login Card */}
@@ -115,7 +115,7 @@ const Login = () => {
 
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label className="text-[10px] uppercase tracking-widest text-gray-400 font-bold ml-1 mb-2 block">Identity Link</label>
+                  <label className="text-[10px] uppercase tracking-widest text-gray-400 font-bold ml-1 mb-2 block">Identity Email</label>
                   <div className="relative group">
                     <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-amber-500 transition-colors" />
                     <input
@@ -123,7 +123,7 @@ const Login = () => {
                       type="email"
                       value={formData.email}
                       onChange={handleChange}
-                      placeholder="name@nexus.com"
+                      placeholder="user@linkora.com"
                       className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm focus:outline-none focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/5 transition-all"
                     />
                   </div>
@@ -136,20 +136,20 @@ const Login = () => {
                   disabled={isLoading}
                   className="w-full py-4 bg-amber-500 text-black font-black text-xs uppercase tracking-[0.2em] rounded-2xl flex items-center justify-center gap-2 shadow-[0_10px_30px_rgba(245,158,11,0.2)] hover:bg-amber-400 transition-all"
                 >
-                  {isLoading ? "Synchronizing..." : <><FiSend /> Request Magic Link</>}
+                  {isLoading ? "Connecting..." : <><FiSend /> Request Magic Link</>}
                 </motion.button>
               </form>
 
               <div className="relative my-8">
                 <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/5"></div></div>
-                <div className="relative flex justify-center text-[8px] uppercase tracking-[0.3em] text-gray-500 font-bold">Biometric Bypass</div>
+                <div className="relative flex justify-center text-[8px] uppercase tracking-[0.3em] text-gray-500 font-bold">Fast-Track Entry</div>
               </div>
 
               <button
                 onClick={handleGoogleSignIn}
                 className="w-full py-4 bg-white/5 border border-white/10 rounded-2xl text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-white/10 transition-all group"
               >
-                <FaGoogle className="text-red-500 group-hover:scale-110 transition-transform" /> Continue with Neural-ID
+                <FaGoogle className="text-red-500 group-hover:scale-110 transition-transform" /> Sign in with Google-ID
               </button>
             </div>
           </motion.div>
@@ -164,17 +164,17 @@ const Login = () => {
               <div className="w-20 h-20 bg-amber-500 rounded-full mx-auto flex items-center justify-center mb-8 shadow-[0_0_30px_rgba(245,158,11,0.4)]">
                 <FiMail className="text-3xl text-black" />
               </div>
-              <h2 className="text-3xl font-serif italic mb-4">Transmission Sent</h2>
+              <h2 className="text-3xl font-serif italic mb-4">Link Sent</h2>
               <p className="text-gray-400 text-sm leading-relaxed mb-8">
-                A secure entry link has been dispatched to <br />
+                A verification bridge has been sent to <br />
                 <span className="text-amber-500 font-mono">{formData.email}</span>. <br />
-                Check your inbox to finalize uplink.
+                Check your inbox to finalize your connection.
               </p>
               <button 
                 onClick={() => setEmailSent(false)}
                 className="flex items-center gap-2 text-gray-500 hover:text-white transition-colors mx-auto text-xs uppercase tracking-widest font-bold"
               >
-                <FiArrowLeft /> Return to Terminal
+                <FiArrowLeft /> Back to Login
               </button>
             </div>
           </motion.div>
@@ -183,7 +183,7 @@ const Login = () => {
 
       {/* Footer Branding */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 opacity-20">
-        <p className="text-[8px] tracking-[1em] uppercase font-black">Authorized Access Only</p>
+        <p className="text-[8px] tracking-[1em] uppercase font-black">Linkora Unified Network</p>
       </div>
     </div>
   );
