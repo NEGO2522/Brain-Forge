@@ -100,7 +100,7 @@ const Login = () => {
                 </div>
               </RotatingFanIcon>
               <h1 className="text-4xl font-serif italic text-white tracking-tight">Establish <span className="text-amber-500">Uplink</span></h1>
-              <p className="text-gray-500 text-[10px] uppercase tracking-[0.4em] mt-2 font-bold text-center">Linkora Ecosystem Portal</p>
+              <p className="text-gray-500 text-[10px] uppercase tracking-[0.4em] mt-2 font-bold text-center">Linkaura Ecosystem Portal</p>
             </div>
 
             {/* Login Card */}
@@ -123,7 +123,7 @@ const Login = () => {
                       type="email"
                       value={formData.email}
                       onChange={handleChange}
-                      placeholder="user@linkora.com"
+                      placeholder="user@linkaura.com"
                       className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm focus:outline-none focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/5 transition-all"
                     />
                   </div>
@@ -183,7 +183,7 @@ const Login = () => {
 
       {/* Footer Branding */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 opacity-20">
-        <p className="text-[8px] tracking-[1em] uppercase font-black">Linkora Unified Network</p>
+        <p className="text-[8px] tracking-[1em] uppercase font-black">Linkaura Unified Network</p>
       </div>
     </div>
   );

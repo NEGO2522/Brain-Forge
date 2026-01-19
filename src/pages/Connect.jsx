@@ -27,7 +27,7 @@ const ContactItem = ({ icon: Icon, title, content, link }) => (
 
 const Connect = () => {
   const DISCORD_LINK = "https://discord.com/invite/7CSFqfaxMp";
-  const LINKEDIN_LINK = "https://www.linkedin.com/company/brainforge16"; // Update this link if your LinkedIn handle changes to Linkora
+  const LINKEDIN_LINK = "https://www.linkedin.com/company/brainforge16"; // Update this link if your LinkedIn handle changes to Linkaura
 
   return (
     <div className="h-screen w-full bg-black text-white relative overflow-hidden flex flex-col pt-20 pb-4 px-6">
@@ -101,7 +101,7 @@ const Connect = () => {
             </div>
           </motion.div>
 
-          {/* RIGHT SECTION - LINKORA HUB */}
+          {/* RIGHT SECTION - LINKAURA HUB */}
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -119,7 +119,7 @@ const Connect = () => {
                     </div>
                   </RotatingFanIcon>
                   <div>
-                    <h2 className="text-lg font-serif text-white leading-none italic uppercase tracking-tighter">Linkora</h2>
+                    <h2 className="text-lg font-serif text-white leading-none italic uppercase tracking-tighter">Linkaura</h2>
                     <span className="text-[7px] uppercase tracking-[0.3em] text-amber-500 font-black">Community Hub</span>
                   </div>
                 </div>
@@ -194,7 +194,7 @@ const Connect = () => {
               <div className="mt-auto">
                 <div className="flex items-center space-x-2 mb-3">
                   <span className="text-[7px] uppercase tracking-widest text-gray-500">Node Status:</span>
-                  <span className="text-[8px] text-amber-500 font-bold animate-pulse uppercase tracking-tight">Updating Linkora database...</span>
+                  <span className="text-[8px] text-amber-500 font-bold animate-pulse uppercase tracking-tight">Updating Linkaura database...</span>
                 </div>
                 
                 <a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer" className="w-full block">
@@ -203,7 +203,7 @@ const Connect = () => {
                     whileTap={{ scale: 0.98 }}
                     className="w-full py-3.5 bg-amber-500 text-black font-black text-[10px] rounded-xl flex items-center justify-center space-x-2 shadow-[0_10px_30px_rgba(251,191,36,0.2)] hover:bg-amber-400 transition-all group"
                   >
-                    <span>JOIN LINKORA</span>
+                    <span>JOIN LINKAURA</span>
                     <FaChevronRight className="text-[8px] group-hover:translate-x-1 transition-transform" />
                   </motion.button>
                 </a>

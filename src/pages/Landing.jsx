@@ -194,7 +194,7 @@ const PhilosophySection = () => {
     <section ref={ref} className="relative min-h-screen w-full flex-shrink-0 snap-start flex flex-col items-center justify-center bg-black z-20 py-24 px-6 lg:px-32 overflow-hidden -mt-[1px]">
       {/* Background Large Text */}
       <motion.div initial={{ opacity: 0 }} animate={isInView ? { opacity: 0.05 } : { opacity: 0 }} className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <h2 className="text-[15vw] font-black text-white uppercase tracking-tighter select-none">LINKORA</h2>
+        <h2 className="text-[15vw] font-black text-white uppercase tracking-tighter select-none">LINKAURA</h2>
       </motion.div>
 
       <div className="relative z-30 w-full flex flex-col lg:flex-row items-start gap-16 lg:gap-32">
@@ -212,7 +212,7 @@ const PhilosophySection = () => {
           </motion.h2>
 
           <motion.p initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.2 }} className="text-gray-400 text-lg md:text-xl max-w-xl mb-12 font-light leading-relaxed">
-            Linkora is more than a platform; it's a living ecosystem designed to bridge the gap between raw talent and groundbreaking technology through a high-signal human network.
+            Linkaura is more than a platform; it's a living ecosystem designed to bridge the gap between raw talent and groundbreaking technology through a high-signal human network.
           </motion.p>
 
           {/* Strategic Pillar Grid */}
@@ -273,7 +273,7 @@ const Landing = () => {
         <div className="relative z-10 w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left space-y-12">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif text-white leading-tight tracking-tighter">
-              Begin Your <br/> <span className="text-amber-500 italic">Linkora</span> <br/> Journey
+              Begin Your <br/> <span className="text-amber-500 italic">Linkaura</span> <br/> Journey
             </h1>
             <p className="text-gray-400 max-w-sm mx-auto lg:mx-0 mt-6 text-sm md:text-base">Linking the world's most ambitious talent to the future of technology.</p>
             <button onClick={() => navigate('/roadmap')} className="mt-10 bg-amber-500 hover:bg-amber-400 transition-colors text-black px-8 py-4 rounded-full font-bold uppercase tracking-widest text-xs">Explore Ecosystem</button>
@@ -290,7 +290,7 @@ const Landing = () => {
           </motion.div>
           <motion.div className="w-full max-w-sm bg-white/5 border border-white/10 backdrop-blur-3xl p-8 rounded-[2rem]">
             <span className="text-amber-500 text-[10px] uppercase block mb-1 font-bold">Impact</span>
-            <h4 className="text-white text-xl font-serif mb-6">Linkora Network</h4>
+            <h4 className="text-white text-xl font-serif mb-6">Linkaura Network</h4>
             {[{ val: "10+", label: "Communities" }, { val: "200+", label: "Members" }, { val: "500+", label: "Connections" }].map((stat, i) => (
               <div key={i} className="flex justify-between border-b border-white/5 pb-4 mb-4 last:border-0"><p className="text-2xl font-serif text-white">{stat.val}</p><p className="text-[10px] text-white/40 uppercase tracking-widest">{stat.label}</p></div>
             ))}
@@ -303,7 +303,7 @@ const Landing = () => {
       <footer className="relative w-full bg-black border-t border-white/5 py-12 px-6 lg:px-24 snap-start flex-shrink-0 z-30">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-[11px] text-gray-500 uppercase tracking-[0.4em] font-mono">
-            © 2026 LINKORA ECOSYSTEM
+            © 2026 LINKAURA ECOSYSTEM
           </p>
           <div className="flex flex-col items-center md:items-end">
             <span className="text-white/20 text-[8px] uppercase tracking-[0.6em] font-bold mb-1">Organized By</span>

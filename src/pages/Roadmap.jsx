@@ -62,11 +62,11 @@ const Roadmap = () => {
             <span className="text-gray-500 text-xs font-mono uppercase tracking-widest">Skill Pathways</span>
           </div>
           <h1 className="text-5xl md:text-7xl font-serif italic mb-6">
-            <span className="text-amber-500">Linkora</span> Roadmap
+            <span className="text-amber-500">Linkaura</span> Roadmap
           </h1>
           <p className="text-gray-400 max-w-2xl text-sm md:text-base leading-relaxed">
             Select a domain to view the structured learning path and technical milestones. 
-            Track the evolution of modern skill sets within the Linkora ecosystem.
+            Track the evolution of modern skill sets within the Linkaura ecosystem.
           </p>
         </div>
 

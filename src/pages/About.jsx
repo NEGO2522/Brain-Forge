@@ -67,7 +67,7 @@ const About = () => {
           <InfoCard 
             icon={FaUserFriends}
             title="Who We Are"
-            text="Linkora is a community-driven platform built for the curious and the motivated. We provide a digital sanctuary where ideas are shared, and meaningful connections are established through the power of a global network."
+            text="Linkaura is a community-driven platform built for the curious and the motivated. We provide a digital sanctuary where ideas are shared, and meaningful connections are established through the power of a global network."
             delay={0.1}
           />
           
@@ -81,7 +81,7 @@ const About = () => {
           <InfoCard 
             icon={FaLightbulb}
             title="The Vision"
-            text="Designed for students, developers, and creators who refuse to be average. Linkora is the ecosystem where you don't just learn—you evolve alongside a network of elite like-minded peers."
+            text="Designed for students, developers, and creators who refuse to be average. Linkaura is the ecosystem where you don't just learn—you evolve alongside a network of elite like-minded peers."
             delay={0.3}
           />
 
@@ -92,7 +92,7 @@ const About = () => {
             className="pt-6 text-center lg:text-left"
           >
             <p className="text-[9px] tracking-[0.6em] text-white/20 uppercase font-bold">
-              EST. 2026 • Linkora Ecosystem
+              EST. 2026 • Linkaura Ecosystem
             </p>
           </motion.div>
         </div>

@@ -65,7 +65,7 @@ const AdminPanel = () => {
               <FiDatabase size={24} />
             </div>
             <div>
-              <h1 className="text-3xl font-serif italic">Linkora <span className="text-amber-500">Editor</span></h1>
+              <h1 className="text-3xl font-serif italic">Linkaura <span className="text-amber-500">Editor</span></h1>
               <p className="text-gray-500 text-[10px] uppercase tracking-[0.3em]">Content Management System</p>
             </div>
           </div>
@@ -140,7 +140,7 @@ const AdminPanel = () => {
                 disabled={loading} 
                 className="w-full bg-white text-black font-black uppercase text-xs tracking-[0.2em] py-5 rounded-2xl hover:bg-amber-500 transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
               >
-                {loading ? "Syncing with Linkora..." : <><FiSend /> Deploy Milestone</>}
+                {loading ? "Syncing with Linkaura..." : <><FiSend /> Deploy Milestone</>}
               </button>
             </form>
           </section>
