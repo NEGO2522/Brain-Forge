@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-// 1. IMPORT REACT MARKDOWN
 import ReactMarkdown from 'react-markdown';
 import { 
   FiZap, FiGlobe, FiCode, FiCpu, 
   FiLayout, FiDatabase, FiShield, FiSmartphone,
-  FiInbox, FiLayers, FiMap, FiImage
+  FiInbox, FiMap, FiArrowRight
 } from 'react-icons/fi';
 import Navbar from '../components/Navbar';
 
@@ -94,7 +93,7 @@ const Roadmap = () => {
           </aside>
 
           <section className="lg:col-span-3">
-            <div className="space-y-8 relative">
+            <div className="space-y-12 relative">
               <div className="absolute left-6 md:left-10 top-0 bottom-0 w-[1px] bg-gradient-to-b from-amber-500/30 via-white/10 to-transparent hidden md:block" />
 
               <AnimatePresence mode='popLayout'>
@@ -112,49 +111,52 @@ const Roadmap = () => {
                     >
                       <div className="absolute left-8 md:left-[34px] top-9 hidden md:flex items-center justify-center w-3 h-3 rounded-full bg-black border-2 border-amber-500 z-10" />
 
-                      <div className="bg-white/[0.03] border border-white/10 rounded-[2.5rem] overflow-hidden hover:bg-white/[0.04] transition-all duration-500 group">
+                      <div className="bg-white/[0.03] border border-white/10 rounded-[2.5rem] overflow-hidden group">
                         
+                        {/* Improved Full-Image Visibility Layout */}
                         {item.imageUrl && (
-                          <div className="w-full h-48 md:h-80 overflow-hidden border-b border-white/5">
-                            <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
+                          <div className="w-full bg-white/[0.02] border-b border-white/5 flex items-center justify-center p-4">
+                            <img 
+                              src={item.imageUrl} 
+                              alt={item.title} 
+                              className="w-full h-auto max-h-[600px] object-contain rounded-xl shadow-2xl" 
+                            />
                           </div>
                         )}
 
-                        <div className="p-7 md:p-10">
-                          <h3 className="text-3xl font-bold mb-6 text-amber-500">
+                        <div className="p-7 md:p-12">
+                          <h3 className="text-3xl md:text-4xl font-bold mb-8 text-white group-hover:text-amber-500 transition-colors">
                             {item.title}
                           </h3>
                           
-                          {/* 2. RENDER MARKDOWN CONTENT HERE */}
-                          <div className="markdown-container text-gray-300 leading-relaxed text-sm md:text-base mb-8">
+                          <div className="markdown-container text-gray-300 leading-relaxed text-sm md:text-base mb-10">
                             <ReactMarkdown 
                               components={{
                                 h1: ({node, ...props}) => <h1 className="text-2xl font-bold text-white mt-8 mb-4 border-b border-white/10 pb-2" {...props} />,
-                                h2: ({node, ...props}) => <h2 className="text-xl font-bold text-white mt-6 mb-3" {...props} />,
-                                h3: ({node, ...props}) => <h3 className="text-lg font-semibold text-amber-400 mt-4 mb-2" {...props} />,
-                                ul: ({node, ...props}) => <ul className="list-disc list-inside space-y-2 mb-4 ml-2" {...props} />,
-                                li: ({node, ...props}) => <li className="text-gray-400" {...props} />,
-                                p: ({node, ...props}) => <p className="mb-4" {...props} />,
+                                h2: ({node, ...props}) => <h2 className="text-xl font-bold text-amber-500 mt-8 mb-4 flex items-center gap-2" {...props} />,
+                                h3: ({node, ...props}) => <h3 className="text-lg font-semibold text-white mt-6 mb-2 underline decoration-amber-500/30 underline-offset-4" {...props} />,
+                                ul: ({node, ...props}) => <ul className="list-none space-y-3 mb-6 ml-1" {...props} />,
+                                li: ({node, ...props}) => (
+                                  <li className="text-gray-400 flex items-start gap-3">
+                                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0" />
+                                    {props.children}
+                                  </li>
+                                ),
+                                p: ({node, ...props}) => <p className="mb-4 text-gray-400 leading-loose" {...props} />,
                               }}
                             >
                               {item.content}
                             </ReactMarkdown>
                           </div>
 
-                          <div className="flex flex-wrap items-center justify-between gap-6 pt-8 border-t border-white/5">
-                            <div className="flex gap-8">
-                              <div>
-                                <p className="text-[9px] text-gray-600 uppercase mb-1 font-bold">Pathway</p>
-                                <p className="text-xs text-white">{selectedPhase}</p>
-                              </div>
-                              <div>
-                                <p className="text-[9px] text-gray-600 uppercase mb-1 font-bold">Standard</p>
-                                <p className="text-xs text-white">v2.0 Path</p>
-                              </div>
+                          <div className="flex items-center justify-between pt-8 border-t border-white/5">
+                            <div className="flex items-center gap-2">
+                               <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                               <span className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500">
+                                 Powered by <span className="text-white">Linkaura</span>
+                               </span>
                             </div>
-                            <button className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-amber-500">
-                               Ref: {item.id.slice(-6)}
-                            </button>
+                            <FiArrowRight className="text-gray-700 group-hover:text-amber-500 transition-colors" />
                           </div>
                         </div>
                       </div>
@@ -163,7 +165,7 @@ const Roadmap = () => {
                 ) : (
                   <div className="py-24 text-center border border-dashed border-white/10 rounded-[3rem] md:ml-24">
                     <FiInbox className="mx-auto text-4xl text-amber-500 mb-4 opacity-20" />
-                    <p className="text-gray-500 italic font-serif">No milestones found.</p>
+                    <p className="text-gray-500 italic font-serif">Pathways for {selectedPhase} are being forged.</p>
                   </div>
                 )}
               </AnimatePresence>
