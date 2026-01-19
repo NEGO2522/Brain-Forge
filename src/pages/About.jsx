@@ -24,7 +24,6 @@ const InfoCard = ({ icon: Icon, title, text, delay }) => (
 
 const About = () => {
   return (
-    // min-h-screen ensures it takes full height on desktop but can expand on mobile
     <div className="min-h-screen lg:h-screen w-full bg-black text-white relative overflow-x-hidden flex flex-col pt-32 lg:pt-24 pb-12 lg:pb-8 px-6">
       
       {/* Background Ambience */}
@@ -46,8 +45,8 @@ const About = () => {
               Manifesto / 01
             </span>
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif leading-tight">
-              The <span className="text-amber-500 italic">Forge</span> <br /> 
-              of Ideas.
+              Link<span className="text-amber-500 italic">ora</span>. <br /> 
+              The Bridge.
             </h1>
             <div className="h-1 w-24 bg-amber-500 shadow-[0_0_15px_#fbbf24] mb-8" />
             
@@ -64,26 +63,25 @@ const About = () => {
         </div>
 
         {/* RIGHT SIDE: Content Cards */}
-        {/* Added lg:overflow-y-auto to preserve your desktop scroll behavior */}
         <div className="w-full lg:w-1/2 flex flex-col justify-center space-y-4 lg:overflow-y-auto pr-2 custom-scrollbar">
           <InfoCard 
             icon={FaUserFriends}
             title="Who We Are"
-            text="Brain Forge is a community-driven platform built for the curious and the motivated. We provide a digital sanctuary where ideas are shared, and meaningful connections are forged in the fire of collaboration."
+            text="Linkora is a community-driven platform built for the curious and the motivated. We provide a digital sanctuary where ideas are shared, and meaningful connections are established through the power of a global network."
             delay={0.1}
           />
           
           <InfoCard 
             icon={FaRocket}
             title="The Mission"
-            text="We exist to eliminate the noise. By organizing interest-based communities in one high-vibrancy hub, we encourage thoughtful, value-driven interaction for the next generation of leaders."
+            text="We exist to eliminate the noise. By organizing interest-based communities into one high-vibrancy hub, we facilitate thoughtful, value-driven interactions for the next generation of global leaders."
             delay={0.2}
           />
 
           <InfoCard 
             icon={FaLightbulb}
             title="The Vision"
-            text="For students, developers, and creators who refuse to be average. Brain Forge is the ecosystem where you don't just learn—you evolve alongside a network of like-minded peers."
+            text="Designed for students, developers, and creators who refuse to be average. Linkora is the ecosystem where you don't just learn—you evolve alongside a network of elite like-minded peers."
             delay={0.3}
           />
 
@@ -94,7 +92,7 @@ const About = () => {
             className="pt-6 text-center lg:text-left"
           >
             <p className="text-[9px] tracking-[0.6em] text-white/20 uppercase font-bold">
-              EST. 2026 • Brain Forge Ecosystem
+              EST. 2026 • Linkora Ecosystem
             </p>
           </motion.div>
         </div>

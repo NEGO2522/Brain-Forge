@@ -56,11 +56,11 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 px-4 md:px-6 ${scrolled ? 'py-3 md:py-4 bg-black/50 backdrop-blur-lg' : 'py-6 md:py-8'}`}>
+    <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 px-4 md:px-6 ${scrolled ? 'py-3 md:py-4 bg-black/70 backdrop-blur-lg border-b border-white/5' : 'py-6 md:py-8'}`}>
       <div className="max-w-7xl mx-auto flex items-center justify-between relative">
         
-        {/* LOGO SECTION - Now fully visible on mobile */}
-        <Link to="/" className="flex items-center gap-2 md:gap-3 group z-[110]">
+        {/* LOGO SECTION - LINKORA */}
+        <Link to="/" className="flex items-center gap-2 md:gap-3 group z-[110]" onClick={() => setIsMenuOpen(false)}>
           <RotatingFanIcon>
             <div className="p-1.5 md:p-2 bg-amber-500/10 rounded-lg border border-amber-500/20 group-hover:border-amber-500/50 transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-500 md:w-5 md:h-5">
@@ -69,8 +69,8 @@ const Navbar = () => {
               </svg>
             </div>
           </RotatingFanIcon>
-          <span className="text-lg md:text-xl font-serif tracking-tighter text-white group-hover:text-amber-500 transition-colors">
-            BRAIN<span className="italic font-light text-amber-500">FORGE</span>
+          <span className="text-xl md:text-2xl font-serif tracking-tighter text-white group-hover:text-amber-500 transition-colors uppercase italic">
+            LINK<span className="font-light text-amber-500 not-italic">ORA</span>
           </span>
         </Link>
 
@@ -106,7 +106,7 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* MOBILE TOGGLE - Adjusted for better alignment */}
+          {/* MOBILE TOGGLE */}
           <button 
             className="lg:hidden w-10 h-10 flex flex-col items-center justify-center gap-1.5 bg-white/5 border border-white/10 rounded-xl hover:border-amber-500/50 transition-all"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -154,11 +154,11 @@ const Navbar = () => {
               >
                 {isLoggedIn ? (
                   <button onClick={handleProfileClick} className="text-amber-500 font-bold uppercase tracking-[0.2em] text-xs flex items-center gap-3">
-                    <FaUserCircle className="text-2xl" /> View Terminal Profile
+                    <FaUserCircle className="text-2xl" /> View Profile
                   </button>
                 ) : (
                   <Link to="/login" onClick={() => setIsMenuOpen(false)} className="text-amber-500 font-bold uppercase tracking-[0.2em] text-xs">
-                    Access Terminal (Login)
+                    Access Linkora (Login)
                   </Link>
                 )}
               </motion.div>

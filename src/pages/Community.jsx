@@ -27,7 +27,6 @@ const CommunityCard = ({ name, description, category, whatsappLink, index }) => 
             </h3>
           </div>
           <div className="p-2 bg-white/5 rounded-lg group-hover:bg-amber-500/20 transition-colors">
-             {/* Swapped Discord for WhatsApp */}
              <FaWhatsapp className="text-xl text-white/50 group-hover:text-amber-500" />
           </div>
         </div>
@@ -37,7 +36,6 @@ const CommunityCard = ({ name, description, category, whatsappLink, index }) => 
         </p>
 
         <div className="mt-auto pt-6 border-t border-white/5 flex justify-end items-center">
-          {/* Removed member counts and avatars, kept only the Join link */}
           <a 
             href={whatsappLink} 
             target="_blank" 
@@ -87,14 +85,14 @@ const Community = () => {
             animate={{ opacity: 1 }}
             className="text-amber-500 font-bold tracking-[0.5em] text-xs uppercase block mb-4"
           >
-            Digital Ecosystem
+            Linkora Hub
           </motion.span>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="text-5xl md:text-7xl font-serif mb-6 leading-tight"
           >
-            Brain Forge <br/> 
+            Linkora <br/> 
             <span className="text-amber-500 italic">Communities</span>
           </motion.h1>
           <motion.div 
@@ -118,7 +116,7 @@ const Community = () => {
       
       {/* Footer Branding */}
       <div className="py-20 text-center border-t border-white/5">
-         <p className="text-[10px] tracking-[0.4em] text-white/20 uppercase">Curated by Kshitij Jain & Manish Kumar</p>
+         <p className="text-[10px] tracking-[0.4em] text-white/20 uppercase">© 2026 Linkora Ecosystem • Curated by Kshitij Jain & Manish Kumar</p>
       </div>
     </div>
   );

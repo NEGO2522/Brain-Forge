@@ -106,7 +106,8 @@ const CommunityScroller = () => {
           <motion.span 
             key={idx}
             initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
             transition={{ delay: 0.1 * idx }}
             className="px-4 py-2 bg-white/5 border border-white/10 rounded-full text-[10px] text-white/70 uppercase tracking-widest hover:border-amber-500/50 hover:text-white transition-all cursor-default"
           >
@@ -131,11 +132,11 @@ const PhilosophySection = () => {
   return (
     <section ref={ref} className="relative min-h-screen w-full flex-shrink-0 snap-start flex flex-col items-center justify-center bg-black z-20 py-24 px-6 overflow-hidden">
       <motion.div initial={{ opacity: 0 }} animate={isInView ? { opacity: 0.03 } : { opacity: 0 }} className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <h2 className="text-[10vw] font-black text-white uppercase tracking-tighter select-none">FORGE</h2>
+        <h2 className="text-[10vw] font-black text-white uppercase tracking-tighter select-none">LINKORA</h2>
       </motion.div>
       <div className="relative z-30 max-w-5xl w-full text-center">
         <motion.span initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} className="text-amber-500 tracking-[0.5em] text-[10px] md:text-xs font-bold mb-4 uppercase block">Our Core Philosophy</motion.span>
-        <motion.h2 initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} className="text-4xl md:text-7xl font-serif text-white uppercase tracking-tight mb-16">The Future is <br/> <span className="text-amber-500 italic">Collaborative</span></motion.h2>
+        <motion.h2 initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} className="text-4xl md:text-7xl font-serif text-white uppercase tracking-tight mb-16">The Future is <br/> <span className="text-amber-500 italic">Connected</span></motion.h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-left mb-20">
           {pillars.map((pillar, index) => (
             <motion.div key={pillar.title} initial={{ opacity: 0, y: 30 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.3 + index * 0.1 }}>
@@ -146,8 +147,8 @@ const PhilosophySection = () => {
           ))}
         </div>
         <div className="flex flex-col md:flex-row items-center justify-center gap-6 pt-12 border-t border-white/5">
-          <a href="https://discord.com" target="_blank" rel="noreferrer" className="flex items-center gap-4 px-8 py-4 bg-amber-500 text-black rounded-full font-black"><FaDiscord /> <span className="text-[10px] uppercase tracking-[0.2em]">Join Discord</span></a>
-          <a href="https://www.linkedin.com/company/brainforge16" target="_blank" rel="noreferrer" className="flex items-center gap-4 px-8 py-4 bg-amber-500 text-black rounded-full font-black"><FaLinkedinIn /> <span className="text-[10px] uppercase tracking-[0.2em]">Join LinkedIn</span></a>
+          <a href="https://discord.com" target="_blank" rel="noreferrer" className="flex items-center gap-4 px-8 py-4 bg-amber-500 text-black rounded-full font-black hover:bg-amber-400 transition-colors"><FaDiscord /> <span className="text-[10px] uppercase tracking-[0.2em]">Join Discord</span></a>
+          <a href="https://www.linkedin.com/company/brainforge16" target="_blank" rel="noreferrer" className="flex items-center gap-4 px-8 py-4 bg-amber-500 text-black rounded-full font-black hover:bg-amber-400 transition-colors"><FaLinkedinIn /> <span className="text-[10px] uppercase tracking-[0.2em]">Join LinkedIn</span></a>
         </div>
       </div>
     </section>
@@ -193,10 +194,10 @@ const Landing = () => {
         <div className="relative z-10 w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left space-y-12">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif text-white leading-tight tracking-tighter">
-              Begin Your <br/> <span className="text-amber-500 italic">Community</span> <br/> Journey
+              Begin Your <br/> <span className="text-amber-500 italic">Linkora</span> <br/> Journey
             </h1>
-            <p className="text-gray-400 max-w-sm mx-auto lg:mx-0 mt-6 text-sm md:text-base">Forge connections between passion and professional excellence.</p>
-            <button onClick={() => navigate('/explore')} className="mt-10 bg-amber-500 text-black px-6 py-4 rounded-full font-bold uppercase tracking-widest text-xs">Explore Here</button>
+            <p className="text-gray-400 max-w-sm mx-auto lg:mx-0 mt-6 text-sm md:text-base">Linking the world's most ambitious talent to the future of technology.</p>
+            <button onClick={() => navigate('/explore')} className="mt-10 bg-amber-500 hover:bg-amber-400 transition-colors text-black px-8 py-4 rounded-full font-bold uppercase tracking-widest text-xs shadow-[0_10px_30px_rgba(251,191,36,0.2)]">Explore Ecosystem</button>
           </motion.div>
           <CommunityScroller />
         </div>
@@ -210,8 +211,8 @@ const Landing = () => {
           </motion.div>
           <motion.div className="w-full max-w-sm bg-white/5 border border-white/10 backdrop-blur-3xl p-8 rounded-[2rem]">
             <span className="text-amber-500 text-[10px] uppercase block mb-1">Impact</span>
-            <h4 className="text-white text-xl font-serif mb-6">Community Reach</h4>
-            {[{ val: "10+", label: "Communities" }, { val: "0+", label: "Enrolled" }, { val: "0+", label: "Connections" }].map((stat, i) => (
+            <h4 className="text-white text-xl font-serif mb-6">Linkora Network</h4>
+            {[{ val: "10+", label: "Communities" }, { val: "200+", label: "Members" }, { val: "500+", label: "Connections" }].map((stat, i) => (
               <div key={i} className="flex justify-between border-b border-white/5 pb-4 mb-4 last:border-0"><p className="text-2xl font-serif text-white">{stat.val}</p><p className="text-[10px] text-white/40 uppercase tracking-widest">{stat.label}</p></div>
             ))}
           </motion.div>
@@ -233,12 +234,12 @@ const Landing = () => {
                   </svg>
                 </div>
               </RotatingFanIcon>
-              <h2 className="text-2xl font-serif text-white tracking-tighter">
-                BRAIN <span className="text-amber-500 italic">FORGE</span>
+              <h2 className="text-3xl font-serif text-white tracking-tighter uppercase italic">
+                Link<span className="text-amber-500">ora</span>
               </h2>
             </div>
             <p className="text-gray-500 text-[10px] uppercase tracking-[0.3em] font-bold">
-              Architecting the Future of Collaboration
+              Linking the Future of Collaboration
             </p>
           </div>
 
@@ -252,7 +253,7 @@ const Landing = () => {
         </div>
         
         <div className="max-w-7xl mx-auto mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-[9px] text-gray-600 uppercase tracking-widest font-mono">© 2026 Brain Forge Ecosystem</p>
+          <p className="text-[9px] text-gray-600 uppercase tracking-widest font-mono">© 2026 LINKORA ECOSYSTEM</p>
           <div className="flex items-center gap-2">
             <span className="text-white/20 text-[8px] uppercase tracking-[0.6em] font-bold">Organized By</span>
             <span className="text-white/40 text-[9px] uppercase tracking-[0.2em] font-black">Kshitij Jain & Manish Kumar</span>
