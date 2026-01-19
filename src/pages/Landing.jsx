@@ -276,7 +276,7 @@ const Landing = () => {
               Begin Your <br/> <span className="text-amber-500 italic">Linkora</span> <br/> Journey
             </h1>
             <p className="text-gray-400 max-w-sm mx-auto lg:mx-0 mt-6 text-sm md:text-base">Linking the world's most ambitious talent to the future of technology.</p>
-            <button onClick={() => navigate('/explore')} className="mt-10 bg-amber-500 hover:bg-amber-400 transition-colors text-black px-8 py-4 rounded-full font-bold uppercase tracking-widest text-xs">Explore Ecosystem</button>
+            <button onClick={() => navigate('/roadmap')} className="mt-10 bg-amber-500 hover:bg-amber-400 transition-colors text-black px-8 py-4 rounded-full font-bold uppercase tracking-widest text-xs">Explore Ecosystem</button>
           </motion.div>
           <CommunityScroller />
         </div>
