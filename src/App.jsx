@@ -2,13 +2,12 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { Fragment, useContext } from 'react';
 import Navbar, { MenuProvider, MenuContext } from './components/Navbar';
 import Landing from './pages/Landing';
-import Community from './pages/Community';
 import Connect from './pages/Connect';
 import About from './pages/About';
 import Login from './auth/Login';
 import Profiles from './pages/Profiles';
 import User from './pages/User';
-import Explore from './pages/Explore';
+import Explore from './pages/Roadmap';
 import AdminPannel from './pages/AdminPannel';
 
 
@@ -32,11 +31,6 @@ function App() {
       <MenuProvider>
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/community" element={
-          <Layout>
-            <Community />
-          </Layout>
-        } />
         <Route path="/connect" element={
           <Layout>
             <Connect />
@@ -64,7 +58,7 @@ function App() {
             <Profiles />
           </Layout>
         } />
-        <Route path="/explore" element={
+        <Route path="/roadmap" element={
           <Layout>
             <Explore />
           </Layout>

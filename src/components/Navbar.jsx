@@ -63,10 +63,10 @@ const Navbar = () => {
     setIsMenuOpen(false);
   };
 
+  // UPDATED: Explore changed to Roadmap
   const navLinks = [
     { to: "/", text: "Home" },
-    { to: "/explore", text: "Explore" },
-    { to: "/community", text: "Community" },
+    { to: "/roadmap", text: "Roadmap" },
     { to: "/profiles", text: "Profiles" },
     { to: "/about", text: "About" },
     { to: "/connect", text: "Connect" },
@@ -78,12 +78,9 @@ const Navbar = () => {
         ? 'py-3 bg-black/90 backdrop-blur-xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)]' 
         : 'py-5 md:py-8 bg-transparent'
     }`}>
-      {/* FIX: Removed 'border-b border-white/5' from the line above. 
-         Added bg-black/90 and a shadow instead to create separation 
-         without the harsh white line.
-      */}
       <div className="max-w-7xl mx-auto flex items-center justify-between relative">
         
+        {/* LOGO SECTION */}
         <Link to="/" className="flex items-center gap-2 md:gap-3 group z-[110]" onClick={() => setIsMenuOpen(false)}>
           <RotatingFanIcon>
             <div className="p-1.5 md:p-2 bg-amber-500/10 rounded-lg border border-amber-500/20 group-hover:border-amber-500/50 transition-colors">
@@ -98,6 +95,7 @@ const Navbar = () => {
           </span>
         </Link>
 
+        {/* DESKTOP MENU */}
         <div className="hidden lg:flex items-center bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl px-2 py-1.5 absolute left-1/2 -translate-x-1/2 shadow-2xl">
           {navLinks.map((link) => {
             const isActive = location.pathname === link.to;
@@ -115,6 +113,7 @@ const Navbar = () => {
           })}
         </div>
 
+        {/* RIGHT SECTION */}
         <div className="flex items-center gap-2 md:gap-4 z-[110]">
           {isLoggedIn ? (
             <button onClick={handleProfileClick} className="p-1 border border-white/10 rounded-full hover:border-amber-500/50 transition-all">
@@ -126,6 +125,7 @@ const Navbar = () => {
             </Link>
           )}
 
+          {/* MOBILE TOGGLE */}
           <button 
             className="lg:hidden w-10 h-10 flex flex-col items-center justify-center bg-white/5 border border-white/10 rounded-xl hover:border-amber-500/50 transition-all"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -140,6 +140,7 @@ const Navbar = () => {
         </div>
       </div>
 
+      {/* MOBILE OVERLAY MENU */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div 
