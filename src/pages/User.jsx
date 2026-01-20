@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiUser, FiMail, FiGithub, FiLinkedin, FiMapPin, 
   FiCpu, FiLogOut, FiSave, FiCheckCircle, 
-  FiAlertCircle, FiX, FiChevronDown, FiSearch, FiPlus 
+  FiAlertCircle, FiX, FiChevronDown, FiSearch, FiPlus, FiCalendar 
 } from 'react-icons/fi';
 
 const TECH_OPTIONS = [
@@ -24,7 +24,13 @@ const User = () => {
   const dropdownRef = useRef(null);
 
   const [formData, setFormData] = useState({
-    name: '', email: '', address: '', github: '', linkedin: '', techStack: ''
+    name: '', 
+    email: '', 
+    address: '', 
+    github: '', 
+    linkedin: '', 
+    techStack: '',
+    year: '' // Added Year to state
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -36,7 +42,6 @@ const User = () => {
 
   // --- Handlers ---
 
-  // FIXED: Added the missing handleChange function
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prevState => ({
@@ -75,7 +80,11 @@ const User = () => {
           const querySnapshot = await getDocs(q);
           if (!querySnapshot.empty) {
             const userData = querySnapshot.docs[0].data();
-            setFormData(prev => ({ ...prev, ...userData, email: userData.email || user.email || '' }));
+            setFormData(prev => ({ 
+                ...prev, 
+                ...userData, 
+                email: userData.email || user.email || '' 
+            }));
           } else {
             setFormData(prev => ({ ...prev, email: user.email || '' }));
           }
@@ -136,7 +145,11 @@ const User = () => {
               <p className="text-gray-500 text-[10px] uppercase tracking-[0.4em] font-black mt-2">Forge Identity Matrix</p>
             </div>
           </div>
-          <button onClick={() => signOut(auth).then(() => navigate('/login'))} className="flex items-center gap-3 px-6 py-3 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 text-[10px] font-bold uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all">
+          <button 
+            type="button"
+            onClick={() => signOut(auth).then(() => navigate('/login'))} 
+            className="flex items-center gap-3 px-6 py-3 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 text-[10px] font-bold uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all"
+          >
             <FiLogOut /> Terminate Session
           </button>
         </div>
@@ -144,9 +157,36 @@ const User = () => {
         <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
             <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-6 md:p-10 space-y-8 shadow-2xl">
+              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <InputField label="Identity Name" icon={<FiUser />} name="name" value={formData.name} onChange={handleChange} required />
                 <InputField label="Network Node" icon={<FiMail />} name="email" value={formData.email} onChange={handleChange} required />
+              </div>
+
+              {/* Year Dropdown & Coordinates Row */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-3">
+                  <label className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-gray-500 font-black ml-1">
+                    <FiCalendar className="text-amber-500" /> Academic Phase
+                  </label>
+                  <div className="relative">
+                    <select 
+                      name="year" 
+                      value={formData.year} 
+                      onChange={handleChange}
+                      required
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-sm focus:border-amber-500/50 transition-all text-white outline-none appearance-none cursor-pointer uppercase tracking-widest"
+                    >
+                      <option value="" className="bg-neutral-900 text-gray-500">Select Year</option>
+                      <option value="1" className="bg-neutral-900 text-white">Year 01 // Freshmen</option>
+                      <option value="2" className="bg-neutral-900 text-white">Year 02 // Sophomore</option>
+                      <option value="3" className="bg-neutral-900 text-white">Year 03 // Junior</option>
+                      <option value="4" className="bg-neutral-900 text-white">Year 04 // Senior</option>
+                    </select>
+                    <FiChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 text-amber-500 pointer-events-none" />
+                  </div>
+                </div>
+                <div className="hidden md:block"></div>
               </div>
 
               {/* Tech Stack Area */}
@@ -180,7 +220,6 @@ const User = () => {
                   )}
                 </AnimatePresence>
 
-                {/* Custom Tech Input */}
                 <AnimatePresence>
                   {showCustomInput && (
                     <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} className="mt-4 flex gap-2">
@@ -200,7 +239,7 @@ const User = () => {
 
               <div className="space-y-3">
                 <label className="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-black ml-1">Physical Coordinates</label>
-                <textarea name="address" value={formData.address} onChange={handleChange} rows="3" className="w-full bg-white/5 border border-white/10 rounded-3xl py-4 px-6 text-sm focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/5 transition-all resize-none text-white uppercase" placeholder="Locality // City // Region" />
+                <textarea name="address" value={formData.address} onChange={handleChange} rows="3" className="w-full bg-white/5 border border-white/10 rounded-3xl py-4 px-6 text-sm focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/5 transition-all resize-none text-white uppercase outline-none" placeholder="Locality // City // Region" />
               </div>
             </div>
           </div>
@@ -216,7 +255,9 @@ const User = () => {
             <div className="bg-amber-500 rounded-[2.5rem] p-8 text-black shadow-xl">
               <h4 className="font-serif italic text-2xl mb-2">Finalize</h4>
               <p className="text-[9px] font-black uppercase tracking-widest opacity-70 mb-6">Commit changes to forge servers.</p>
-              <button type="submit" disabled={isSubmitting} className="w-full bg-black text-white py-4 rounded-2xl flex items-center justify-center gap-3 font-black text-xs uppercase tracking-widest hover:bg-neutral-900 transition-all">{isSubmitting ? "Syncing..." : <><FiSave /> Sync Profile</>}</button>
+              <button type="submit" disabled={isSubmitting} className="w-full bg-black text-white py-4 rounded-2xl flex items-center justify-center gap-3 font-black text-xs uppercase tracking-widest hover:bg-neutral-900 transition-all">
+                {isSubmitting ? "Syncing..." : <><FiSave /> Sync Profile</>}
+              </button>
             </div>
           </div>
         </form>
