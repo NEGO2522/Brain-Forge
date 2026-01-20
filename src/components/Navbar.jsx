@@ -91,7 +91,7 @@ const Navbar = () => {
             </div>
           </RotatingFanIcon>
           <span className="text-lg md:text-2xl font-serif tracking-tighter text-white group-hover:text-amber-500 transition-colors uppercase italic">
-            LINK<span className="font-light text-amber-500 not-italic">ORA</span>
+            LINK<span className="font-light text-amber-500 not-italic">AURA</span>
           </span>
         </Link>
 
