@@ -3,7 +3,11 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import * as THREE from 'three';
 import { useNavigate } from 'react-router-dom';
-import { FaLinkedinIn, FaDiscord, FaLightbulb, FaHandsHelping, FaSeedling, FaGlobe, FaCubes, FaRocket, FaGithub, FaLinkedin } from 'react-icons/fa';
+import { 
+  FaLinkedinIn, FaDiscord, FaLightbulb, FaHandsHelping, 
+  FaGlobe, FaCubes, FaRocket, FaGithub, FaLinkedin, 
+  FaUserGraduate // Imported for the educator profile icon
+} from 'react-icons/fa';
 import Navbar from '../components/Navbar';
 
 // --- 1. STAR BACKGROUND ---
@@ -36,7 +40,6 @@ const RobotModel = ({ isMobile }) => {
   const torso = useRef();
   const coreRef = useRef();
   
-  // Increased scale for a more impactful center presence
   const scale = isMobile ? 1.0 : 2.0; 
   const posY = isMobile ? -1.0 : -1.8; 
 
@@ -123,7 +126,7 @@ const IsometricPhilosophyStack = () => {
   const initialPillars = [
     { id: 1, title: "Innovate", icon: <FaLightbulb />, color: "bg-white/10", tagline: "Build the Future", details: "Access cutting-edge resources and AI frameworks to scale your vision." },
     { id: 2, title: "Connect", icon: <FaHandsHelping />, color: "bg-amber-500/10", tagline: "Unite with Peers", details: "Join high-signal networks and collaborate with top-tier developers." },
-    { id: 3, title: "Evolve", icon: <FaSeedling />, color: "bg-white/5", tagline: "Continuous Growth", details: "Stay ahead with exclusive workshops and community-led mentorship." },
+    { id: 3, title: "Evolve", icon: <FaUserGraduate />, color: "bg-white/5", tagline: "Continuous Growth", details: "Stay ahead with exclusive workshops and community-led mentorship." },
   ];
 
   const [stack, setStack] = useState(initialPillars);
@@ -242,7 +245,7 @@ const PhilosophySection = () => {
 
         <div className="w-full border-t border-white/5 pt-12 md:pt-16 mb-16 md:mb-20">
           <div className="flex flex-col md:flex-row justify-between items-end mb-8 md:mb-10 gap-4">
-            <div>
+            <div className="group">
               <p className="text-amber-500 text-[9px] md:text-[10px] uppercase tracking-[0.4em] font-bold mb-2 font-mono">Network Core</p>
               <h3 className="text-3xl md:text-5xl font-serif text-white uppercase italic">Verified Educators</h3>
             </div>
@@ -255,8 +258,9 @@ const PhilosophySection = () => {
                 key={idx}
                 className="group relative p-4 md:p-6 rounded-[2rem] bg-white/5 border border-white/10 hover:border-amber-500 transition-all duration-500 flex flex-col items-center text-center"
               >
+                {/* Updated Icon from FaSeedling to FaUserGraduate */}
                 <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 mb-4 group-hover:bg-amber-500 group-hover:text-black transition-all">
-                  <FaSeedling size={16} />
+                  <FaUserGraduate size={16} />
                 </div>
                 <h5 className="text-white text-[10px] md:text-[11px] font-black uppercase tracking-widest mb-4 leading-tight min-h-[2em] flex items-center">{edu.name}</h5>
                 <div className="flex gap-4 mt-auto">
@@ -295,7 +299,6 @@ const Landing = () => {
 
       <section className="relative min-h-[100vh] lg:h-screen w-full flex-shrink-0 snap-start flex flex-col lg:flex-row items-center justify-center lg:justify-between px-6 lg:px-24 pt-20 lg:pt-0 overflow-hidden z-10 bg-black">
         <div className="absolute inset-0 z-0 pointer-events-none opacity-60 lg:opacity-80">
-          {/* Increased model size in this Canvas */}
           <Canvas camera={{ position: [0, 0, isMobile ? 12 : 8], fov: 45 }}>
             <Suspense fallback={null}>
               <MovingStars />
