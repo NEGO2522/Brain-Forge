@@ -30,39 +30,40 @@ const Connect = () => {
   const LINKEDIN_LINK = "https://www.linkedin.com/company/brainforge16"; 
 
   return (
-    <div className="min-h-screen w-full bg-black text-white relative overflow-x-hidden flex flex-col pt-20 pb-6 px-4 md:px-6">
+    /* FIXED: Changed min-h-screen to h-screen and added overflow-hidden */
+    <div className="h-screen w-full bg-black text-white relative overflow-hidden flex flex-col pt-20 pb-4 px-4 md:px-6">
       <Navbar />
       
       <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute top-[-5%] right-[-10%] w-[60%] md:w-[40%] h-[40%] bg-amber-500/5 rounded-full blur-[80px] md:blur-[120px]" />
         <div className="absolute bottom-[-5%] left-[-10%] w-[60%] md:w-[40%] h-[40%] bg-blue-500/5 rounded-full blur-[80px] md:blur-[120px]" />
       </div>
-
-      <div className="max-w-7xl mx-auto w-full flex-grow flex flex-col relative z-10">
+      <div className="max-w-7xl mx-auto w-full flex-grow flex flex-col relative z-10 overflow-hidden">
         
-        <div className="mb-6 md:mb-10 flex-shrink-0 text-center lg:text-left pt-4">
+        {/* Compact Header */}
+        <div className="mb-4 md:mb-6 flex-shrink-0 text-center lg:text-left pt-2">
           <motion.h1 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-serif leading-tight"
+            className="text-3xl md:text-5xl lg:text-6xl font-serif leading-tight"
           >
             Connect With <span className="text-amber-500 italic">Us</span>
           </motion.h1>
         </div>
 
-        <div className="flex flex-col lg:grid lg:grid-cols-12 gap-6 mb-8">
+        {/* FIXED: Changed grid layout to h-full/overflow-hidden to prevent vertical expansion */}
+        <div className="grid lg:grid-cols-12 gap-6 mb-4 flex-grow overflow-hidden">
           
-          {/* LEFT SECTION - HEIGHT REDUCED & COMPACTED */}
+          {/* LEFT SECTION */}
           <motion.div 
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="lg:col-span-7"
+            className="lg:col-span-7 flex flex-col min-h-0"
           >
-            <div className="bg-white/5 backdrop-blur-xl rounded-[2.5rem] border border-white/10 p-5 md:p-6 flex flex-col">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white/5 backdrop-blur-xl rounded-[2.5rem] border border-white/10 p-5 md:p-6 flex flex-col h-full overflow-hidden">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
                 
-                {/* Compact Text Content */}
-                <div className="flex flex-col space-y-6">
+                <div className="flex flex-col space-y-4 md:space-y-6">
                   <div className="space-y-3">
                     <h2 className="text-lg font-serif text-white mb-2 tracking-tight flex items-center gap-2">
                       <div className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse" />
@@ -94,8 +95,7 @@ const Connect = () => {
                   </div>
                 </div>
 
-                {/* Map - Now matches the text height more closely */}
-                <div className="relative rounded-[1.5rem] overflow-hidden border border-white/10 h-[220px] md:h-full bg-black/40">
+                <div className="relative rounded-[1.5rem] overflow-hidden border border-white/10 h-full bg-black/40 hidden md:block">
                   <iframe 
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d227748.3825624311!2d75.65047033534571!3d26.88544791845112!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396c4adb4ad85659%3A0x139059bc57d0ad61!2sJaipur%2C%20Rajasthan!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" 
                     width="100%" height="100%" style={{ border: 0, filter: 'grayscale(1) invert(0.9) contrast(1.2) brightness(0.8)' }} 
@@ -111,21 +111,21 @@ const Connect = () => {
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="lg:col-span-5 flex flex-col"
+            className="lg:col-span-5 flex flex-col min-h-0"
           >
-            <div className="bg-gradient-to-br from-amber-500/10 to-transparent backdrop-blur-xl rounded-[2.5rem] border border-amber-500/20 p-6 md:p-8 flex flex-col h-full">
+            <div className="bg-gradient-to-br from-amber-500/10 to-transparent backdrop-blur-xl rounded-[2.5rem] border border-amber-500/20 p-6 md:p-8 flex flex-col h-full overflow-hidden">
               
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex-shrink-0 flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-4">
                    <RotatingFanIcon>
-                    <div className="w-12 h-12 rounded-full bg-amber-500/5 flex items-center justify-center border border-amber-500/20">
-                      <svg className="h-6 w-6 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-amber-500/5 flex items-center justify-center border border-amber-500/20">
+                      <svg className="h-5 w-5 md:h-6 md:w-6 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
                       </svg>
                     </div>
                   </RotatingFanIcon>
                   <div>
-                    <h2 className="text-2xl font-serif text-white leading-none italic uppercase tracking-tighter">Linkaura</h2>
+                    <h2 className="text-xl md:text-2xl font-serif text-white leading-none italic uppercase tracking-tighter">Linkaura</h2>
                     <span className="text-[9px] uppercase tracking-[0.3em] text-amber-500 font-black">Community Hub</span>
                   </div>
                 </div>
@@ -135,67 +135,70 @@ const Connect = () => {
                 </div>
               </div>
 
-              <div className="mb-6 space-y-2">
+              {/* Mission Brief Section */}
+              <div className="flex-shrink-0 mb-4 space-y-2">
                 <div className="flex items-center space-x-2 text-gray-400">
                   <FaTerminal className="text-xs" />
                   <span className="text-[10px] uppercase tracking-widest font-bold">Mission Brief</span>
                 </div>
-                <p className="text-gray-400 text-sm leading-relaxed font-light italic border-l-2 border-amber-500/30 pl-4">
+                <p className="text-gray-400 text-xs md:text-sm leading-relaxed font-light italic border-l-2 border-amber-500/30 pl-4 line-clamp-2">
                   "Linking ambitious minds to the future of technology through collaborative ecosystems."
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="bg-black/40 p-4 rounded-2xl border border-white/5">
+              {/* Stats Section */}
+              <div className="grid grid-cols-2 gap-4 mb-4 flex-shrink-0">
+                <div className="bg-black/40 p-3 md:p-4 rounded-2xl border border-white/5">
                   <div className="flex items-center justify-between mb-1">
                     <FaUsers className="text-amber-500 text-sm" />
                     <span className="text-[9px] text-gray-500 uppercase">Members</span>
                   </div>
-                  <p className="text-2xl font-serif text-white tracking-tighter">200+</p>
+                  <p className="text-xl md:text-2xl font-serif text-white tracking-tighter">200+</p>
                 </div>
-                <div className="bg-black/40 p-4 rounded-2xl border border-white/5">
+                <div className="bg-black/40 p-3 md:p-4 rounded-2xl border border-white/5">
                   <div className="flex items-center justify-between mb-1">
                     <div className="w-2 h-2 rounded-full border-2 border-amber-500" />
                     <span className="text-[9px] text-gray-500 uppercase">Uptime</span>
                   </div>
-                  <p className="text-2xl font-serif text-white tracking-tighter">99.9%</p>
+                  <p className="text-xl md:text-2xl font-serif text-white tracking-tighter">99.9%</p>
                 </div>
               </div>
 
-              <div className="w-full space-y-2 mb-6">
+              {/* Features List - Using flex-shrink to prevent overflow */}
+              <div className="w-full space-y-2 mb-4 overflow-hidden">
                 {["Elite Network Access", "Tech Stack Ecosystem", "Direct Mentorship"].map((item, i) => (
-                  <div key={i} className="flex items-center space-x-3 text-left bg-white/5 p-3 rounded-xl border border-white/5 hover:border-amber-500/20 transition-colors">
+                  <div key={i} className="flex items-center space-x-3 text-left bg-white/5 p-2 md:p-3 rounded-xl border border-white/5">
                     <div className="w-1 h-1 rounded-full bg-amber-500 flex-shrink-0" />
-                    <span className="text-[10px] md:text-xs uppercase tracking-widest text-gray-300 font-medium">{item}</span>
+                    <span className="text-[9px] md:text-[10px] uppercase tracking-widest text-gray-300 font-medium">{item}</span>
                   </div>
                 ))}
               </div>
 
-              <div className="w-full p-4 bg-white/5 rounded-[2rem] border border-white/5 mb-6 space-y-3">
-                <div className="flex items-center justify-between">
-                   <div className="flex items-center space-x-2">
-                    <FaLayerGroup className="text-amber-500 text-xs" />
-                    <span className="text-[9px] uppercase tracking-[0.2em] text-gray-400 font-bold">Roadmap</span>
-                   </div>
-                   <span className="text-[9px] text-amber-500 font-mono">PHASE 02</span>
-                </div>
-                <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
-                  <motion.div 
-                    initial={{ width: 0 }}
-                    whileInView={{ width: "65%" }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1.5, ease: "easeOut" }}
-                    className="h-full bg-amber-500"
-                  />
-                </div>
-              </div>
-
               <div className="mt-auto space-y-4">
+                <div className="w-full p-3 bg-white/5 rounded-[1.5rem] border border-white/5 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <FaLayerGroup className="text-amber-500 text-xs" />
+                      <span className="text-[9px] uppercase tracking-[0.2em] text-gray-400 font-bold">Roadmap</span>
+                    </div>
+                    <span className="text-[9px] text-amber-500 font-mono">PHASE 02</span>
+                  </div>
+                  <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+                    <motion.div 
+                      initial={{ width: 0 }}
+                      whileInView={{ width: "65%" }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1.5, ease: "easeOut" }}
+                      className="h-full bg-amber-500"
+                    />
+                  </div>
+                </div>
+
                 <a href={LINKEDIN_LINK} target="_blank" rel="noopener noreferrer" className="w-full block">
                   <motion.button 
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full py-4 bg-amber-500 text-black font-black text-xs rounded-2xl flex items-center justify-center space-x-3 shadow-[0_10px_30px_rgba(251,191,36,0.3)] hover:bg-amber-400 transition-all group"
+                    className="w-full py-4 bg-amber-500 text-black font-black text-xs rounded-2xl flex items-center justify-center space-x-3 shadow-[0_10px_30px_rgba(251,191,36,0.3)] group"
                   >
                     <span className="uppercase tracking-[0.2em]">JOIN LINKAURA</span>
                     <FaChevronRight className="text-[10px] group-hover:translate-x-1 transition-transform" />
@@ -207,8 +210,9 @@ const Connect = () => {
 
         </div>
 
-        <div className="flex-shrink-0 text-center pb-4 mt-auto">
-          <p className="text-[8px] md:text-[10px] tracking-[0.6em] text-white/20 uppercase font-bold">
+        {/* Footer */}
+        <div className="flex-shrink-0 text-center pb-2">
+          <p className="text-[8px] md:text-[9px] tracking-[0.6em] text-white/20 uppercase font-bold">
             Organized By Kshitij Jain & Manish Kumar
           </p>
         </div>
