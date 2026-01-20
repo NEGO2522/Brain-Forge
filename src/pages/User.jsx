@@ -10,8 +10,9 @@ import {
   FiAlertCircle, FiX, FiChevronDown, FiSearch, FiPlus, FiCalendar 
 } from 'react-icons/fi';
 
-// UPDATED: Domain-based options for a cleaner UI
+// UPDATED: Added "Beginner" and reorganized for a cleaner UI
 const TECH_DOMAINS = [
+  "Beginner", // Added as requested
   "Frontend Developer",
   "Backend Developer",
   "Full Stack Developer",
@@ -114,6 +115,16 @@ const User = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // STRICT VALIDATION: Check if every field in formData is filled
+    const isAnyFieldEmpty = Object.values(formData).some(value => value.trim() === '');
+    
+    if (isAnyFieldEmpty) {
+      setSubmitStatus({ success: false, message: 'All fields are mandatory!' });
+      setTimeout(() => setSubmitStatus({ success: null, message: '' }), 4000);
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const user = auth.currentUser;
@@ -177,7 +188,7 @@ const User = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-3">
                   <label className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-gray-500 font-black ml-1">
-                    <FiCalendar className="text-amber-500" /> Academic Phase
+                    <FiCalendar className="text-amber-500" /> Academic Phase <span className="text-amber-500">*</span>
                   </label>
                   <div className="relative">
                     <select 
@@ -187,11 +198,10 @@ const User = () => {
                       required
                       className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-sm focus:border-amber-500/50 transition-all text-white outline-none appearance-none cursor-pointer uppercase tracking-widest"
                     >
-                      <option value="" className="bg-neutral-900 text-gray-500">Select Year</option>
-                      <option value="1" className="bg-neutral-900 text-white">Year 01 // Freshmen</option>
-                      <option value="2" className="bg-neutral-900 text-white">Year 02 // Sophomore</option>
-                      <option value="3" className="bg-neutral-900 text-white">Year 03 // Junior</option>
-                      <option value="4" className="bg-neutral-900 text-white">Year 04 // Senior</option>
+                      <option value="1" className="bg-neutral-900 text-white">Year 01</option>
+                      <option value="2" className="bg-neutral-900 text-white">Year 02</option>
+                      <option value="3" className="bg-neutral-900 text-white">Year 03</option>
+                      <option value="4" className="bg-neutral-900 text-white">Year 04</option>
                     </select>
                     <FiChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 text-amber-500 pointer-events-none" />
                   </div>
@@ -201,18 +211,18 @@ const User = () => {
               {/* Tech Stack Area */}
               <div className="space-y-3 relative" ref={dropdownRef}>
                 <label className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-gray-500 font-black ml-1">
-                  <FiCpu className="text-amber-500" /> Professional Domains
+                  <FiCpu className="text-amber-500" /> Professional Domains <span className="text-amber-500">*</span>
                 </label>
                 
                 <div 
                   onClick={() => setShowTechDropdown(!showTechDropdown)} 
-                  className="min-h-[60px] w-full bg-white/5 border border-white/10 rounded-2xl p-3 flex flex-wrap gap-2 cursor-pointer hover:border-amber-500/30 transition-all"
+                  className={`min-h-[60px] w-full bg-white/5 border rounded-2xl p-3 flex flex-wrap gap-2 cursor-pointer transition-all ${!formData.techStack ? 'border-white/10' : 'border-amber-500/30'}`}
                 >
                   {formData.techStack ? formData.techStack.split(',').filter(t => t.trim() !== "").map(tech => (
                     <span key={tech} className="bg-amber-500 text-black text-[9px] font-black uppercase px-3 py-1.5 rounded-lg flex items-center gap-2 hover:bg-white transition-colors">
                       {tech.trim()} <FiX className="cursor-pointer" onClick={(e) => { e.stopPropagation(); toggleTech(tech.trim()); }} />
                     </span>
-                  )) : <span className="text-gray-500 text-xs py-2 px-2 uppercase tracking-widest">Select Domain...</span>}
+                  )) : <span className="text-gray-500 text-xs py-2 px-2 uppercase tracking-widest">Select Domain (Required)...</span>}
                   <FiChevronDown className={`ml-auto self-center text-gray-500 transition-transform ${showTechDropdown ? 'rotate-180' : ''}`} />
                 </div>
 
@@ -257,8 +267,16 @@ const User = () => {
               </div>
 
               <div className="space-y-3">
-                <label className="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-black ml-1">Physical Coordinates</label>
-                <textarea name="address" value={formData.address} onChange={handleChange} rows="3" className="w-full bg-white/5 border border-white/10 rounded-3xl py-4 px-6 text-sm focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/5 transition-all resize-none text-white uppercase outline-none" placeholder="Locality // City // Region" />
+                <label className="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-black ml-1">Physical Coordinates <span className="text-amber-500">*</span></label>
+                <textarea 
+                  name="address" 
+                  value={formData.address} 
+                  onChange={handleChange} 
+                  required
+                  rows="3" 
+                  className="w-full bg-white/5 border border-white/10 rounded-3xl py-4 px-6 text-sm focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/5 transition-all resize-none text-white uppercase outline-none" 
+                  placeholder="Locality // City // Region (Required)" 
+                />
               </div>
             </div>
           </div>
@@ -266,10 +284,10 @@ const User = () => {
           {/* Sidebar */}
           <div className="space-y-6">
             <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-8 shadow-2xl">
-              <h3 className="text-[10px] uppercase tracking-[0.3em] text-amber-500 font-black mb-8">Social Uplinks</h3>
-              <SocialInput label="GitHub" icon={<FiGithub />} prefix="github.com/" name="github" value={formData.github} onChange={handleChange} />
+              <h3 className="text-[10px] uppercase tracking-[0.3em] text-amber-500 font-black mb-8">Social Uplinks <span className="text-amber-500">*</span></h3>
+              <SocialInput label="GitHub" icon={<FiGithub />} prefix="github.com/" name="github" value={formData.github} onChange={handleChange} required />
               <div className="h-6" />
-              <SocialInput label="LinkedIn" icon={<FiLinkedin />} prefix="in/" name="linkedin" value={formData.linkedin} onChange={handleChange} />
+              <SocialInput label="LinkedIn" icon={<FiLinkedin />} prefix="in/" name="linkedin" value={formData.linkedin} onChange={handleChange} required />
             </div>
             
             <div className="bg-amber-500 rounded-[2.5rem] p-8 text-black shadow-xl">
@@ -300,7 +318,7 @@ const User = () => {
 const InputField = ({ label, icon, name, value, onChange, required }) => (
   <div className="space-y-3">
     <label className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-gray-500 font-black ml-1">
-      <span className="text-amber-500">{icon}</span> {label}
+      <span className="text-amber-500">{icon}</span> {label} {required && <span className="text-amber-500">*</span>}
     </label>
     <input 
       name={name} 
@@ -314,10 +332,10 @@ const InputField = ({ label, icon, name, value, onChange, required }) => (
   </div>
 );
 
-const SocialInput = ({ label, icon, prefix, name, value, onChange }) => (
+const SocialInput = ({ label, icon, prefix, name, value, onChange, required }) => (
   <div className="space-y-3">
     <label className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-gray-400 font-black ml-1">
-      {icon} {label}
+      {icon} {label} {required && <span className="text-amber-500">*</span>}
     </label>
     <div className="flex bg-white/5 border border-white/10 rounded-2xl overflow-hidden focus-within:border-amber-500/50">
       <span className="bg-white/5 px-4 flex items-center text-[9px] text-gray-600 border-r border-white/5 font-black uppercase">{prefix}</span>
@@ -325,6 +343,7 @@ const SocialInput = ({ label, icon, prefix, name, value, onChange }) => (
         name={name} 
         value={value} 
         onChange={onChange} 
+        required={required}
         className="bg-transparent w-full py-4 px-4 text-xs focus:outline-none text-white font-bold" 
         placeholder="ID" 
       />
