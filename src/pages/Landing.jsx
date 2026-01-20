@@ -28,7 +28,7 @@ const MovingStars = () => {
   );
 };
 
-// --- 2. 3D ROBOT MODEL ---
+// --- 2. 3D ROBOT MODEL (ENLARGED) ---
 const RobotModel = ({ isMobile }) => {
   const groupRef = useRef();
   const headTop = useRef();
@@ -36,8 +36,9 @@ const RobotModel = ({ isMobile }) => {
   const torso = useRef();
   const coreRef = useRef();
   
-  const scale = isMobile ? 0.8 : 1.4; 
-  const posY = isMobile ? -0.8 : -0.5; // Adjusted Y position to match text shift
+  // Increased scale for a more impactful center presence
+  const scale = isMobile ? 1.0 : 2.0; 
+  const posY = isMobile ? -1.0 : -1.8; 
 
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
@@ -294,6 +295,7 @@ const Landing = () => {
 
       <section className="relative min-h-[100vh] lg:h-screen w-full flex-shrink-0 snap-start flex flex-col lg:flex-row items-center justify-center lg:justify-between px-6 lg:px-24 pt-20 lg:pt-0 overflow-hidden z-10 bg-black">
         <div className="absolute inset-0 z-0 pointer-events-none opacity-60 lg:opacity-80">
+          {/* Increased model size in this Canvas */}
           <Canvas camera={{ position: [0, 0, isMobile ? 12 : 8], fov: 45 }}>
             <Suspense fallback={null}>
               <MovingStars />
@@ -304,7 +306,6 @@ const Landing = () => {
           </Canvas>
         </div>
 
-        {/* --- HERO TEXT: SHIFTED DOWNWARDS --- */}
         <div className="relative z-10 w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left mt-10 lg:mt-24">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="space-y-6 md:space-y-8">
             <h1 className="text-4xl md:text-6xl lg:text-8xl font-serif text-white leading-[1.1] tracking-tighter">
