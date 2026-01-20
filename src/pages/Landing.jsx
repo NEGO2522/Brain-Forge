@@ -3,7 +3,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import * as THREE from 'three';
 import { useNavigate } from 'react-router-dom';
-import { FaLinkedinIn, FaDiscord, FaLightbulb, FaHandsHelping, FaSeedling, FaGlobe, FaCubes, FaRocket } from 'react-icons/fa';
+import { FaLinkedinIn, FaDiscord, FaLightbulb, FaHandsHelping, FaSeedling, FaGlobe, FaCubes, FaRocket, FaGithub, FaLinkedin } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
 
 // --- 1. STAR BACKGROUND ---
@@ -183,59 +183,105 @@ const IsometricPhilosophyStack = () => {
 // --- 5. PHILOSOPHY SECTION ---
 const PhilosophySection = () => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: false, amount: 0.2 });
+  const isInView = useInView(ref, { once: false, amount: 0.1 });
 
   const pillars = [
     { icon: <FaGlobe />, title: "Decentralized", desc: "No single point of failure, only community-led progress." },
     { icon: <FaCubes />, title: "Modular", desc: "Built to adapt. Integrate with the tools you already use." },
   ];
 
+  const educators = [
+    { name: "Code With Harry", github: "codewithharry", linkedin: "company/code-with-harry/" },
+    { name: "Kunal Kushwaha", github: "kunal-kushwaha", linkedin: "in/kunal-kushwaha/" },
+    { name: "Hitesh Choudhary", github: "hiteshchoudhary", linkedin: "company/chaicodehq/" },
+    { name: "freeCodeCamp", github: "freeCodeCamp", linkedin: "school/free-code-camp/" },
+    { name: "Krish Naik", github: "krishnaik06", linkedin: "in/naikkrish/" },
+    { name: "Apna College", github: "apna-college", linkedin: "company/apna-college/" }
+  ];
+
   return (
-    <section ref={ref} className="relative min-h-screen w-full flex-shrink-0 snap-start flex flex-col items-center justify-center bg-black z-20 py-24 px-6 lg:px-32 overflow-hidden -mt-[1px]">
-      {/* Background Large Text */}
+    <section ref={ref} className="relative min-h-screen w-full flex-shrink-0 snap-start flex flex-col items-center bg-black z-20 py-24 px-6 lg:px-24 overflow-hidden -mt-[1px]">
+      {/* Background Text Overlay */}
       <motion.div initial={{ opacity: 0 }} animate={isInView ? { opacity: 0.05 } : { opacity: 0 }} className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <h2 className="text-[15vw] font-black text-white uppercase tracking-tighter select-none">LINKAURA</h2>
+        <h2 className="text-[18vw] font-black text-white uppercase tracking-tighter select-none">LINKAURA</h2>
       </motion.div>
 
-      <div className="relative z-30 w-full flex flex-col lg:flex-row items-start gap-16 lg:gap-32">
-        {/* Left Side: Isometric Stack */}
-        <div className="w-full lg:w-1/2 flex justify-center lg:justify-start">
-          <IsometricPhilosophyStack />
+      <div className="relative z-30 w-full max-w-7xl mx-auto">
+        <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-32 mb-24">
+          {/* Left Side: Isometric Stack */}
+          <div className="w-full lg:w-1/2 flex justify-center lg:justify-start">
+            <IsometricPhilosophyStack />
+          </div>
+
+          {/* Right Side: Philosophy Content */}
+          <div className="w-full lg:w-1/2 text-left flex flex-col justify-center">
+            <motion.span initial={{ opacity: 0, x: -20 }} animate={isInView ? { opacity: 1, x: 0 } : {}} className="text-amber-500 tracking-[0.5em] text-xs font-bold mb-6 uppercase block font-mono">Our Core Philosophy</motion.span>
+            
+            <motion.h2 initial={{ opacity: 0, x: -20 }} animate={isInView ? { opacity: 1, x: 0 } : {}} className="text-6xl md:text-8xl lg:text-8xl font-serif text-white uppercase tracking-tight mb-8 leading-[0.85]">
+              The Future is <br/> <span className="text-amber-500 italic">Connected</span>
+            </motion.h2>
+
+            <motion.p initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.2 }} className="text-gray-400 text-lg md:text-xl max-w-xl mb-12 font-light leading-relaxed">
+              Linkaura is more than a platform; it's a living ecosystem designed to bridge the gap between talent and technology through high-signal networks.
+            </motion.p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {pillars.map((p, i) => (
+                <motion.div 
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ delay: 0.3 + (i * 0.1) }}
+                  className="group p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-amber-500/50 transition-all duration-500"
+                >
+                  <div className="text-amber-500 text-2xl mb-4 group-hover:scale-110 transition-transform duration-500">{p.icon}</div>
+                  <h4 className="text-white text-lg font-serif uppercase tracking-widest mb-2">{p.title}</h4>
+                  <p className="text-gray-500 text-sm leading-relaxed">{p.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
         </div>
 
-        {/* Right Side: Philosophy Content (Updated to fill space) */}
-        <div className="w-full lg:w-1/2 text-left flex flex-col justify-center h-full">
-          <motion.span initial={{ opacity: 0, x: -20 }} animate={isInView ? { opacity: 1, x: 0 } : {}} className="text-amber-500 tracking-[0.5em] text-xs font-bold mb-6 uppercase block font-mono">Our Core Philosophy</motion.span>
-          
-          <motion.h2 initial={{ opacity: 0, x: -20 }} animate={isInView ? { opacity: 1, x: 0 } : {}} className="text-6xl md:text-8xl lg:text-9xl font-serif text-white uppercase tracking-tight mb-8 leading-[0.85]">
-            The Future is <br/> <span className="text-amber-500 italic">Connected</span>
-          </motion.h2>
+        {/* --- FULL WIDTH EDUCATOR SECTION (Now outside the grid) --- */}
+        <div className="w-full border-t border-white/5 pt-16 mb-20">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-10 gap-4">
+            <div>
+              <p className="text-amber-500 text-[10px] uppercase tracking-[0.4em] font-bold mb-2 font-mono">Network Core</p>
+              <h3 className="text-4xl md:text-5xl font-serif text-white uppercase italic">Verified Educators</h3>
+            </div>
+            <p className="text-gray-500 text-sm max-w-xs font-light tracking-wide md:text-right">Access knowledge from the masters of the current digital frontier.</p>
+          </div>
 
-          <motion.p initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.2 }} className="text-gray-400 text-lg md:text-xl max-w-xl mb-12 font-light leading-relaxed">
-            Linkaura is more than a platform; it's a living ecosystem designed to bridge the gap between raw talent and groundbreaking technology through a high-signal human network.
-          </motion.p>
-
-          {/* Strategic Pillar Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-            {pillars.map((p, i) => (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 w-full">
+            {educators.map((edu, idx) => (
               <motion.div 
-                key={i}
+                key={idx}
                 initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.3 + (i * 0.1) }}
-                className="group p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-amber-500/50 transition-all duration-500"
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+                className="group relative p-6 rounded-[2rem] bg-white/5 border border-white/10 hover:border-amber-500 transition-all duration-500 flex flex-col items-center text-center h-full"
               >
-                <div className="text-amber-500 text-2xl mb-4 group-hover:scale-110 transition-transform duration-500">{p.icon}</div>
-                <h4 className="text-white text-lg font-serif uppercase tracking-widest mb-2">{p.title}</h4>
-                <p className="text-gray-500 text-sm leading-relaxed">{p.desc}</p>
+                <div className="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 mb-4 group-hover:bg-amber-500 group-hover:text-black transition-all duration-500">
+                  <FaSeedling size={18} />
+                </div>
+                <h5 className="text-white text-[11px] md:text-xs font-black uppercase tracking-widest mb-4 leading-tight group-hover:text-amber-500 transition-colors">
+                  {edu.name}
+                </h5>
+                <div className="flex gap-4 mt-auto">
+                  <a href={`https://github.com/${edu.github}`} target="_blank" rel="noreferrer" className="text-gray-500 hover:text-white transition-colors"><FaGithub size={16}/></a>
+                  <a href={`https://linkedin.com/${edu.linkedin}`} target="_blank" rel="noreferrer" className="text-gray-500 hover:text-white transition-colors"><FaLinkedin size={16}/></a>
+                </div>
               </motion.div>
             ))}
           </div>
+        </div>
 
-          <div className="flex flex-col sm:flex-row items-center lg:items-start gap-6 pt-12 border-t border-white/5">
-            <a href="https://discord.com" target="_blank" rel="noreferrer" className="w-full sm:w-auto flex items-center justify-center gap-4 px-8 py-4 bg-amber-500 text-black rounded-full font-black hover:bg-amber-400 transition-all uppercase tracking-[0.2em] text-[10px]"><FaDiscord /> Join Discord</a>
-            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="w-full sm:w-auto flex items-center justify-center gap-4 px-8 py-4 border border-white/20 text-white rounded-full font-black hover:bg-white hover:text-black transition-all uppercase tracking-[0.2em] text-[10px]"><FaLinkedinIn /> Join LinkedIn</a>
-          </div>
+        {/* --- COMMUNITY CTAs --- */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-12">
+          <a href="https://discord.com" target="_blank" rel="noreferrer" className="w-full sm:w-64 flex items-center justify-center gap-4 px-10 py-5 bg-amber-500 text-black rounded-full font-black hover:bg-amber-400 transition-all uppercase tracking-[0.2em] text-[11px] shadow-2xl shadow-amber-500/20"><FaDiscord size={18}/> Join Discord</a>
+          <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="w-full sm:w-64 flex items-center justify-center gap-4 px-10 py-5 border border-white/20 text-white rounded-full font-black hover:bg-white hover:text-black transition-all uppercase tracking-[0.2em] text-[11px]"><FaLinkedinIn size={18}/> Join LinkedIn</a>
         </div>
       </div>
     </section>
