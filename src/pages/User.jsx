@@ -209,7 +209,7 @@ const User = () => {
               </div>
 
               {/* Tech Stack Area */}
-              <div className="space-y-3 relative" ref={dropdownRef}>
+              <div className="space-y-3 relative" ref ={dropdownRef}>
                 <label className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-gray-500 font-black ml-1">
                   <FiCpu className="text-amber-500" /> Professional Domains <span className="text-amber-500">*</span>
                 </label>
