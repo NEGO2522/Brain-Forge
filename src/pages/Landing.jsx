@@ -5,8 +5,8 @@ import * as THREE from 'three';
 import { useNavigate } from 'react-router-dom';
 import { 
   FaLinkedinIn, FaDiscord, FaLightbulb, FaHandsHelping, 
-  FaGlobe, FaCubes, FaRocket, FaGithub, FaLinkedin, 
-  FaUserGraduate // Imported for the educator profile icon
+  FaGlobe, FaCubes, FaGithub, FaLinkedin, 
+  FaUserGraduate 
 } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
 
@@ -32,7 +32,7 @@ const MovingStars = () => {
   );
 };
 
-// --- 2. 3D ROBOT MODEL (ENLARGED) ---
+// --- 2. 3D ROBOT MODEL ---
 const RobotModel = ({ isMobile }) => {
   const groupRef = useRef();
   const headTop = useRef();
@@ -97,7 +97,75 @@ const RobotModel = ({ isMobile }) => {
   );
 };
 
-// --- 3. COMMUNITY TAG SCROLLER ---
+// --- 3. LIVE MISSION FEED (NEW REPLACEMENT) ---
+const LiveMissionFeed = () => {
+  const activities = [
+    "The 2026 Expansion",
+    "Aura Protocol: Active"
+  ];
+  
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev + 1) % activities.length);
+    }, 3500);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0, scale: 0.9, x: 20 }} 
+      animate={{ opacity: 1, scale: 1, x: 0 }}
+      className="w-full max-w-sm bg-gradient-to-br from-white/10 to-transparent border border-white/20 backdrop-blur-3xl p-8 rounded-[2.5rem] relative overflow-hidden"
+    >
+      {/* Scanning Line Animation */}
+      <motion.div 
+        animate={{ y: [0, 280, 0] }} 
+        transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
+        className="absolute top-0 left-0 w-full h-[1px] bg-amber-500/40 blur-[2px] z-0"
+      />
+
+      <div className="relative z-10">
+        <div className="flex justify-between items-center mb-6">
+          <span className="text-amber-500 text-[10px] font-black uppercase tracking-[0.4em] font-mono">System Pulse</span>
+          <div className="flex gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-white/20" />
+          </div>
+        </div>
+
+        <h4 className="text-white text-2xl font-serif italic mb-2 tracking-tight">Current Objective</h4>
+        
+        <div className="h-16 flex items-center">
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={index}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="text-gray-400 font-mono text-[11px] md:text-xs leading-relaxed"
+            >
+              <span className="text-amber-500 mr-2 font-bold">{`>>`}</span>
+              {activities[index]}
+            </motion.p>
+          </AnimatePresence>
+        </div>
+
+        <div className="mt-6 pt-6 border-t border-white/10 flex justify-between items-center">
+          <div>
+            <p className="text-white text-xl font-serif">75% Complete</p>
+          </div>
+          <div className="text-right">
+            <p className="text-white text-xl font-serif">On Track</p>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+// --- 4. COMMUNITY TAG SCROLLER ---
 const CommunityScroller = () => {
   const tags = ["Web3 Developers", "AI Researchers", "UI/UX Designers", "SaaS Founders", "Creative Directors", "Data Scientists"];
   return (
@@ -121,7 +189,7 @@ const CommunityScroller = () => {
   );
 };
 
-// --- 4. DYNAMIC ISOMETRIC STACK ---
+// --- 5. DYNAMIC ISOMETRIC STACK ---
 const IsometricPhilosophyStack = () => {
   const initialPillars = [
     { id: 1, title: "Innovate", icon: <FaLightbulb />, color: "bg-white/10", tagline: "Build the Future", details: "Access cutting-edge resources and AI frameworks to scale your vision." },
@@ -134,7 +202,6 @@ const IsometricPhilosophyStack = () => {
   const handleCardClick = (clickedId) => {
     const clickedIndex = stack.findIndex(item => item.id === clickedId);
     if (clickedIndex === 0) return; 
-
     const newStack = [...stack];
     const [selectedItem] = newStack.splice(clickedIndex, 1);
     newStack.unshift(selectedItem);
@@ -183,7 +250,7 @@ const IsometricPhilosophyStack = () => {
   );
 };
 
-// --- 5. PHILOSOPHY SECTION ---
+// --- 6. PHILOSOPHY SECTION ---
 const PhilosophySection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: false, amount: 0.1 });
@@ -258,7 +325,6 @@ const PhilosophySection = () => {
                 key={idx}
                 className="group relative p-4 md:p-6 rounded-[2rem] bg-white/5 border border-white/10 hover:border-amber-500 transition-all duration-500 flex flex-col items-center text-center"
               >
-                {/* Updated Icon from FaSeedling to FaUserGraduate */}
                 <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 mb-4 group-hover:bg-amber-500 group-hover:text-black transition-all">
                   <FaUserGraduate size={16} />
                 </div>
@@ -281,7 +347,7 @@ const PhilosophySection = () => {
   );
 };
 
-// --- 6. MAIN LANDING ---
+// --- 7. MAIN LANDING ---
 const Landing = () => {
   const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate(); 
@@ -329,16 +395,9 @@ const Landing = () => {
               KSHITIJ JAIN <br className="hidden md:block"/> & MANISH KUMAR
             </h3>
           </motion.div>
-          <motion.div className="w-full max-w-sm bg-white/5 border border-white/10 backdrop-blur-3xl p-6 md:p-8 rounded-[2rem]">
-            <span className="text-amber-500 text-[9px] md:text-[10px] uppercase block mb-1 font-bold">Impact</span>
-            <h4 className="text-white text-lg md:text-xl font-serif mb-6">Linkaura Network</h4>
-            {[{ val: "10+", label: "Communities" }, { val: "200+", label: "Members" }, { val: "500+", label: "Connections" }].map((stat, i) => (
-              <div key={i} className="flex justify-between border-b border-white/5 pb-3 mb-3 last:border-0 last:mb-0 last:pb-0">
-                <p className="text-xl md:text-2xl font-serif text-white">{stat.val}</p>
-                <p className="text-[9px] text-white/40 uppercase tracking-widest flex items-center">{stat.label}</p>
-              </div>
-            ))}
-          </motion.div>
+          
+          {/* NEW LIVE MISSION FEED REPLACES THE STATS CARD */}
+          <LiveMissionFeed />
         </div>
       </section>
 
