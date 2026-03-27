@@ -12,29 +12,25 @@ import {
     writeBatch,
 } from 'firebase/firestore';
 import { app } from '../firebase/firebase';
-import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaBell, FaUserCircle } from 'react-icons/fa';
-import { FiMessageSquare, FiCheck, FiTrash2, FiCheckCircle } from 'react-icons/fi';
+import { FiCheck, FiTrash2, FiCheckCircle } from 'react-icons/fi';
 
 const Notification = () => {
     const [currentUser, setCurrentUser] = useState(undefined);
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
 
     const db = getFirestore(app);
     const auth = getAuth(app);
 
-    // Wait for auth
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, (user) => {
             setCurrentUser(user);
         });
         return () => unsub();
-    }, []);
+    }, [auth]);
 
-    // Real-time notifications listener
     useEffect(() => {
         if (!currentUser) {
             setLoading(false);
@@ -49,7 +45,7 @@ const Notification = () => {
             setLoading(false);
         });
         return () => unsub();
-    }, [currentUser]);
+    }, [currentUser, db]);
 
     const markRead = async (notifId) => {
         if (!currentUser) return;
@@ -73,14 +69,6 @@ const Notification = () => {
                 batch.update(ref, { read: true });
             });
         await batch.commit();
-    };
-
-    const handleNotifClick = (notif) => {
-        markRead(notif.id);
-        // Navigate back to the chat with that sender
-        if (notif.senderId) {
-            navigate(`/chat/${notif.senderId}`);
-        }
     };
 
     const formatTime = (timestamp) => {
@@ -110,12 +98,6 @@ const Notification = () => {
                 <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl px-8 py-8 text-center max-w-sm">
                     <FaBell className="text-amber-500 mx-auto mb-3 text-3xl" />
                     <p className="text-amber-500 font-bold mb-1">Sign in to see notifications</p>
-                    <button
-                        onClick={() => navigate('/login')}
-                        className="mt-4 px-5 py-2 bg-amber-500 text-black text-xs font-black uppercase tracking-widest rounded-xl hover:bg-amber-400 transition-colors"
-                    >
-                        Go to Login
-                    </button>
                 </div>
             </div>
         );
@@ -123,18 +105,14 @@ const Notification = () => {
 
     return (
         <div className="min-h-screen w-full bg-black text-white">
-            {/* Ambient BG */}
             <div className="fixed inset-0 z-0 opacity-5 pointer-events-none">
                 <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 via-black to-black" />
             </div>
 
             <div className="relative z-10 max-w-2xl mx-auto px-4 pt-28 pb-16">
-                {/* Header */}
                 <div className="flex items-center justify-between mb-8">
                     <div>
-                        <h1 className="text-3xl font-serif italic text-white">
-                            Notifications
-                        </h1>
+                        <h1 className="text-3xl font-serif italic text-white">Notifications</h1>
                         <p className="text-[10px] uppercase tracking-widest text-amber-500/60 font-black mt-1">
                             {unreadCount > 0 ? `${unreadCount} unread` : 'All caught up'}
                         </p>
@@ -149,7 +127,6 @@ const Notification = () => {
                     )}
                 </div>
 
-                {/* Notifications list */}
                 {notifications.length === 0 ? (
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}
@@ -176,27 +153,24 @@ const Notification = () => {
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, x: -20 }}
                                     transition={{ duration: 0.18 }}
-                                    className={`relative flex items-start gap-4 p-4 rounded-2xl border cursor-pointer transition-all ${notif.read
-                                            ? 'bg-white/3 border-white/5 hover:border-white/10'
-                                            : 'bg-amber-500/5 border-amber-500/20 hover:border-amber-500/40'
-                                        }`}
-                                    onClick={() => handleNotifClick(notif)}
+                                    className={`relative flex items-start gap-4 p-4 rounded-2xl border cursor-default transition-all ${
+                                        notif.read
+                                            ? 'bg-white/3 border-white/5'
+                                            : 'bg-amber-500/5 border-amber-500/20'
+                                    }`}
                                 >
-                                    {/* Unread dot */}
                                     {!notif.read && (
                                         <span className="absolute top-4 right-4 w-2 h-2 rounded-full bg-amber-500" />
                                     )}
 
-                                    {/* Avatar */}
+                                    {/* Default User Icon */}
                                     <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 flex-shrink-0">
-                                        {/* This now displays the User Circle icon for every notification */}
                                         <FaUserCircle size={22} />
                                     </div>
 
-                                    {/* Content */}
                                     <div className="flex-1 min-w-0">
                                         <p className="text-[10px] uppercase tracking-widest text-amber-500/70 font-black mb-0.5">
-                                            {notif.senderName}
+                                            {notif.senderName || "Unknown User"}
                                         </p>
                                         <p className="text-sm text-gray-200 leading-relaxed truncate">
                                             {notif.text}
@@ -206,15 +180,11 @@ const Notification = () => {
                                         </p>
                                     </div>
 
-                                    {/* Actions */}
-                                    <div
-                                        className="flex gap-1 flex-shrink-0"
-                                        onClick={(e) => e.stopPropagation()}
-                                    >
+                                    <div className="flex gap-1 flex-shrink-0">
                                         {!notif.read && (
                                             <button
                                                 onClick={() => markRead(notif.id)}
-                                                className="p-1.5 rounded-lg bg-white/5 hover:bg-amber-500/20 text-gray-500 hover:text-amber-500 transition-colors"
+                                                className="p-1.5 rounded-lg bg-white/5 hover:bg-amber-500/20 text-gray-500 hover:text-amber-500 transition-colors pointer-events-auto"
                                                 title="Mark as read"
                                             >
                                                 <FiCheck size={13} />
@@ -222,7 +192,7 @@ const Notification = () => {
                                         )}
                                         <button
                                             onClick={() => deleteNotif(notif.id)}
-                                            className="p-1.5 rounded-lg bg-white/5 hover:bg-red-500/20 text-gray-500 hover:text-red-400 transition-colors"
+                                            className="p-1.5 rounded-lg bg-white/5 hover:bg-red-500/20 text-gray-500 hover:text-red-400 transition-colors pointer-events-auto"
                                             title="Delete"
                                         >
                                             <FiTrash2 size={13} />
