@@ -4,6 +4,7 @@ import { app } from '../firebase/firebase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiGithub, FiLinkedin, FiCpu, FiMapPin, FiUser, FiSearch, FiCalendar, FiMessageSquare } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
+import { getAuth } from 'firebase/auth';
 import Navbar from '../components/Navbar';
 
 const Profiles = () => {
@@ -104,6 +105,7 @@ const Profiles = () => {
 
 const ProfileCard = ({ profile, index }) => {
   const navigate = useNavigate();
+  const auth = getAuth(app);
   const techStackArray = profile.techStack ? profile.techStack.split(',').map(t => t.trim()) : [];
 
   const linkedinUrl = profile.linkedin?.startsWith('http') 
@@ -113,6 +115,15 @@ const ProfileCard = ({ profile, index }) => {
   const githubUrl = profile.github?.startsWith('http') 
     ? profile.github 
     : `https://github.com/${profile.github}`;
+
+  const handleChatClick = () => {
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      navigate(`/chat/${profile.id}`, { state: { profile } });
+    } else {
+      navigate('/login');
+    }
+  };
 
   return (
     <motion.div
@@ -181,7 +192,7 @@ const ProfileCard = ({ profile, index }) => {
         </div>
 
         <button
-          onClick={() => navigate(`/chat/${profile.id}`, { state: { profile } })}
+          onClick={handleChatClick}
           className="w-full mt-8 py-4 rounded-xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] group-hover:bg-amber-500 group-hover:text-black transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-lg"
         >
           Chat <FiMessageSquare />
