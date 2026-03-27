@@ -24,6 +24,7 @@ const Notification = () => {
     const db = getFirestore(app);
     const auth = getAuth(app);
 
+    // Auth state listener
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, (user) => {
             setCurrentUser(user);
@@ -31,6 +32,7 @@ const Notification = () => {
         return () => unsub();
     }, [auth]);
 
+    // Firestore listener
     useEffect(() => {
         if (!currentUser) {
             setLoading(false);
@@ -47,6 +49,16 @@ const Notification = () => {
         return () => unsub();
     }, [currentUser, db]);
 
+    // --- NEW LOGIC: AUTO-MARK AS READ ---
+    // This removes the "1 2 3" badge count as soon as the user sees the list
+    useEffect(() => {
+        const unreadNotifications = notifications.filter((n) => !n.read);
+        if (unreadNotifications.length > 0) {
+            markAllRead();
+        }
+    }, [notifications]); 
+    // -------------------------------------
+
     const markRead = async (notifId) => {
         if (!currentUser) return;
         const ref = doc(db, 'notifications', currentUser.uid, 'items', notifId);
@@ -60,15 +72,21 @@ const Notification = () => {
     };
 
     const markAllRead = async () => {
-        if (!currentUser) return;
+        if (!currentUser || notifications.length === 0) return;
         const batch = writeBatch(db);
+        let hasUnread = false;
+
         notifications
             .filter((n) => !n.read)
             .forEach((n) => {
+                hasUnread = true;
                 const ref = doc(db, 'notifications', currentUser.uid, 'items', n.id);
                 batch.update(ref, { read: true });
             });
-        await batch.commit();
+
+        if (hasUnread) {
+            await batch.commit();
+        }
     };
 
     const formatTime = (timestamp) => {
@@ -163,7 +181,6 @@ const Notification = () => {
                                         <span className="absolute top-4 right-4 w-2 h-2 rounded-full bg-amber-500" />
                                     )}
 
-                                    {/* Default User Icon */}
                                     <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 flex-shrink-0">
                                         <FaUserCircle size={22} />
                                     </div>
