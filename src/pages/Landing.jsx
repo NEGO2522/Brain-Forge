@@ -390,7 +390,7 @@ const Landing = () => {
 
         <div className="relative z-10 w-full lg:w-1/2 flex flex-col items-center lg:items-end mt-12 lg:mt-24 pb-10 lg:pb-0">
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="mb-6 md:mb-8 text-center lg:text-right">
-            <span className="text-amber-500 text-[9px] md:text-[10px] font-bold tracking-[0.4em] uppercase block mb-2">Organized By</span>
+            <span className="text-amber-500 text-[9px] md:text-[10px] font-bold tracking-[0.4em] uppercase block mb-2">Developed By</span>
             <h3 className="text-white text-lg md:text-2xl font-serif tracking-widest uppercase leading-tight">
               KSHITIJ JAIN <br className="hidden md:block"/> & MANISH KUMAR
             </h3>

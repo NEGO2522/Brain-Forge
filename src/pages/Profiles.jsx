@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import { app } from '../firebase/firebase';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiGithub, FiLinkedin, FiCpu, FiMapPin, FiUser, FiExternalLink, FiSearch, FiCalendar } from 'react-icons/fi';
+import { FiGithub, FiLinkedin, FiCpu, FiMapPin, FiUser, FiSearch, FiCalendar, FiMessageSquare } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 
 const Profiles = () => {
@@ -79,7 +80,7 @@ const Profiles = () => {
         {loading ? (
           <div className="flex flex-col justify-center items-start h-64 gap-4 ml-1">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.3)]"></div>
-            <p className="text-[10px] uppercase tracking-widest text-amber-500/50">Initializing Uplink...</p>
+            <p className="text-[10px] uppercase tracking-widest text-amber-500/50">Loading Profiles...</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -102,6 +103,7 @@ const Profiles = () => {
 };
 
 const ProfileCard = ({ profile, index }) => {
+  const navigate = useNavigate();
   const techStackArray = profile.techStack ? profile.techStack.split(',').map(t => t.trim()) : [];
 
   const linkedinUrl = profile.linkedin?.startsWith('http') 
@@ -178,23 +180,12 @@ const ProfileCard = ({ profile, index }) => {
           </div>
         </div>
 
-        {profile.linkedin ? (
-          <a 
-            href={linkedinUrl} 
-            target="_blank" 
-            rel="noreferrer"
-            className="w-full mt-8 py-4 rounded-xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] group-hover:bg-amber-500 group-hover:text-black transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-lg"
-          >
-            View Detailed Uplink <FiExternalLink />
-          </a>
-        ) : (
-          <button 
-            disabled
-            className="w-full mt-8 py-4 rounded-xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] opacity-30 cursor-not-allowed flex items-center justify-center gap-2"
-          >
-            Uplink Unavailable <FiExternalLink />
-          </button>
-        )}
+        <button
+          onClick={() => navigate(`/chat/${profile.id}`, { state: { profile } })}
+          className="w-full mt-8 py-4 rounded-xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] group-hover:bg-amber-500 group-hover:text-black transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+        >
+          Chat <FiMessageSquare />
+        </button>
       </div>
     </motion.div>
   );

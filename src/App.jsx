@@ -9,6 +9,7 @@ import Profiles from './pages/Profiles';
 import User from './pages/User';
 import Explore from './pages/Roadmap';
 import AdminPannel from './pages/AdminPannel';
+import Chat from './pages/Chat';
 
 
 // Layout component that includes the Navbar
@@ -63,6 +64,7 @@ function App() {
             <Explore />
           </Layout>
         } />
+        <Route path="/chat/:id" element={<Chat />} />
       </Routes>
       </MenuProvider>
     </div>
