@@ -125,6 +125,9 @@ const ProfileCard = ({ profile, index }) => {
     }
   };
 
+  // Check if the current user is viewing their own profile
+  const isOwnProfile = auth.currentUser && auth.currentUser.uid === profile.userId;
+
   return (
     <motion.div
       layout
@@ -191,12 +194,15 @@ const ProfileCard = ({ profile, index }) => {
           </div>
         </div>
 
-        <button
-          onClick={handleChatClick}
-          className="w-full mt-8 py-4 rounded-xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] group-hover:bg-amber-500 group-hover:text-black transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-lg"
-        >
-          Chat <FiMessageSquare />
-        </button>
+        {/* Only show chat button if it's not the user's own profile */}
+        {!isOwnProfile && (
+          <button
+            onClick={handleChatClick}
+            className="w-full mt-8 py-4 rounded-xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] group-hover:bg-amber-500 group-hover:text-black transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+          >
+            Chat <FiMessageSquare />
+          </button>
+        )}
       </div>
     </motion.div>
   );

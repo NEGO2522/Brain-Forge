@@ -51,8 +51,8 @@ const Chat = () => {
   }, []);
 
   // Derive a stable chat room ID from the two user IDs (sorted so it's symmetric)
-  const chatRoomId = currentUser
-    ? [currentUser.uid, id].sort().join('_')
+  const chatRoomId = currentUser && profile?.userId
+    ? [currentUser.uid, profile.userId].sort().join('_')
     : null;
 
   // Subscribe to messages in Firestore
@@ -90,8 +90,8 @@ const Chat = () => {
         createdAt: serverTimestamp(),
       });
 
-      // 2. Write a notification for the receiver (the other person, id from URL params)
-      const receiverId = id; // id comes from useParams()
+      // 2. Write a notification for the receiver (the other person, profile.userId)
+      const receiverId = profile?.userId; // Use profile.userId instead of URL param id
       if (receiverId && receiverId !== currentUser.uid) {
         const notifRef = doc(
           collection(db, 'notifications', receiverId, 'items')
@@ -112,6 +112,9 @@ const Chat = () => {
       }
     } catch (err) {
       console.error('Failed to send message:', err);
+      console.error('Chat room ID:', chatRoomId);
+      console.error('Receiver ID:', profile?.userId);
+      console.error('Current user ID:', currentUser?.uid);
     } finally {
       setSending(false);
     }

@@ -365,13 +365,25 @@ const Landing = () => {
 
       <section className="relative min-h-[100vh] lg:h-screen w-full flex-shrink-0 snap-start flex flex-col lg:flex-row items-center justify-center lg:justify-between px-6 lg:px-24 pt-20 lg:pt-0 overflow-hidden z-10 bg-black">
         <div className="absolute inset-0 z-0 pointer-events-none opacity-60 lg:opacity-80">
-          <Canvas camera={{ position: [0, 0, isMobile ? 12 : 8], fov: 45 }}>
+          <Canvas 
+            camera={{ position: [0, 0, isMobile ? 12 : 8], fov: 45 }}
+            gl={{ 
+              preserveDrawingBuffer: true,
+              powerPreference: "high-performance",
+              antialias: true,
+              alpha: false
+            }}
+            onCreated={({ gl }) => {
+              gl.setClearColor(0x000000, 1);
+              gl.shadowMap.enabled = false;
+            }}
+          >
             <Suspense fallback={null}>
               <MovingStars />
               <RobotModel isMobile={isMobile} />
             </Suspense>
-            <ambientLight intensity={0.4} />
-            <pointLight position={[5, 2, 5]} intensity={50} color="#00d4ff" />
+            <ambientLight intensity={0.3} />
+            <pointLight position={[5, 2, 5]} intensity={20} color="#00d4ff" />
           </Canvas>
         </div>
 
