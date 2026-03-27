@@ -1,8 +1,16 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  onSnapshot,
+} from 'firebase/firestore';
+import { app } from '../firebase/firebase';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { RotatingFanIcon } from './RotatingFanIcon';
-import { FaUserCircle } from 'react-icons/fa';
+import { FaUserCircle, FaBell } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const MenuContext = createContext({
@@ -23,13 +31,33 @@ const Navbar = () => {
   const { isMenuOpen, setIsMenuOpen } = useContext(MenuContext);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    const auth = getAuth();
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    let notifUnsub = null;
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setIsLoggedIn(!!user);
+
+      // Clean up previous listener
+      if (notifUnsub) notifUnsub();
+
+      if (user) {
+        // Real-time unread notifications count
+        const q = query(
+          collection(db, 'notifications', user.uid, 'items'),
+          where('read', '==', false)
+        );
+        notifUnsub = onSnapshot(q, (snap) => {
+          setUnreadCount(snap.size);
+        });
+      } else {
+        setUnreadCount(0);
+      }
     });
     
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -37,6 +65,7 @@ const Navbar = () => {
     
     return () => {
       unsubscribe();
+      if (notifUnsub) notifUnsub();
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
@@ -60,6 +89,11 @@ const Navbar = () => {
 
   const handleProfileClick = () => {
     navigate('/user');
+    setIsMenuOpen(false);
+  };
+
+  const handleNotificationClick = () => {
+    navigate('/notification');
     setIsMenuOpen(false);
   };
 
@@ -116,9 +150,22 @@ const Navbar = () => {
         {/* RIGHT SECTION */}
         <div className="flex items-center gap-2 md:gap-4 z-[110]">
           {isLoggedIn ? (
-            <button onClick={handleProfileClick} className="p-1 border border-white/10 rounded-full hover:border-amber-500/50 transition-all">
-              <FaUserCircle className="w-7 h-7 md:w-8 md:h-8 text-white/80 hover:text-amber-500 transition-colors" />
-            </button>
+            <>
+              <button 
+                onClick={handleNotificationClick} 
+                className="hidden md:block relative p-1 border border-white/10 rounded-full hover:border-amber-500/50 transition-all"
+              >
+                <FaBell className="w-6 h-6 md:w-7 md:h-7 text-white/80 hover:text-amber-500 transition-colors" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-amber-500 rounded-full border-2 border-black flex items-center justify-center text-black text-[9px] font-black px-0.5">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                )}
+              </button>
+              <button onClick={handleProfileClick} className="hidden md:block p-1 border border-white/10 rounded-full hover:border-amber-500/50 transition-all">
+                <FaUserCircle className="w-7 h-7 md:w-8 md:h-8 text-white/80 hover:text-amber-500 transition-colors" />
+              </button>
+            </>
           ) : (
             <Link to="/login" className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] px-3 md:px-6 py-2 md:py-2.5 bg-white text-black rounded-xl hover:bg-amber-500 transition-colors whitespace-nowrap">
               Sign In
@@ -177,9 +224,17 @@ const Navbar = () => {
                   className="pt-10 border-t border-white/10 mt-6"
                 >
                   {isLoggedIn ? (
-                    <button onClick={handleProfileClick} className="text-amber-500 font-bold uppercase tracking-widest text-xs flex items-center gap-3">
-                      <FaUserCircle className="text-xl" /> View Account
-                    </button>
+                    <div className="space-y-4">
+                      <button 
+                        onClick={handleNotificationClick} 
+                        className="text-amber-500 font-bold uppercase tracking-widest text-xs flex items-center gap-3 w-full"
+                      >
+                        <FaBell className="text-xl" /> Notifications
+                      </button>
+                      <button onClick={handleProfileClick} className="text-amber-500 font-bold uppercase tracking-widest text-xs flex items-center gap-3">
+                        <FaUserCircle className="text-xl" /> View Account
+                      </button>
+                    </div>
                   ) : (
                     <Link to="/login" onClick={() => setIsMenuOpen(false)} className="text-amber-500 font-bold uppercase tracking-widest text-xs">
                       Join the Network &rarr;

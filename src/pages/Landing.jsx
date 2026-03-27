@@ -40,8 +40,8 @@ const RobotModel = ({ isMobile }) => {
   const torso = useRef();
   const coreRef = useRef();
   
-  const scale = isMobile ? 1.0 : 2.0; 
-  const posY = isMobile ? -1.0 : -1.8; 
+  const scale = isMobile ? 1.0 : 1.8; 
+  const posY = isMobile ? -1.0 : -1.2; 
 
   useFrame((state) => {
     const t = state.clock.getElapsedTime();

@@ -8,6 +8,9 @@ import {
   query,
   orderBy,
   serverTimestamp,
+  doc,
+  setDoc,
+  getDoc,
 } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { app } from '../firebase/firebase';
@@ -79,12 +82,34 @@ const Chat = () => {
       textareaRef.current.style.height = 'auto';
     }
     try {
+      // 1. Save the message
       await addDoc(collection(db, 'chats', chatRoomId, 'messages'), {
         text,
         senderId: currentUser.uid,
         senderName: currentUser.displayName || currentUser.email?.split('@')[0] || 'You',
         createdAt: serverTimestamp(),
       });
+
+      // 2. Write a notification for the receiver (the other person, id from URL params)
+      const receiverId = id; // id comes from useParams()
+      if (receiverId && receiverId !== currentUser.uid) {
+        const notifRef = doc(
+          collection(db, 'notifications', receiverId, 'items')
+        );
+        await setDoc(notifRef, {
+          type: 'message',
+          senderId: currentUser.uid,
+          senderName:
+            currentUser.displayName ||
+            currentUser.email?.split('@')[0] ||
+            'Someone',
+          senderPhoto: currentUser.photoURL || null,
+          text: text.length > 60 ? text.slice(0, 60) + '…' : text,
+          chatRoomId,
+          read: false,
+          createdAt: serverTimestamp(),
+        });
+      }
     } catch (err) {
       console.error('Failed to send message:', err);
     } finally {
