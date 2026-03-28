@@ -100,8 +100,8 @@ const Navbar = () => {
   // UPDATED: Explore changed to Roadmap
   const navLinks = [
     { to: "/", text: "Home" },
-    { to: "/roadmap", text: "Roadmap" },
     { to: "/profiles", text: "Profiles" },
+    { to: "/educators", text: "Educators" },
     { to: "/about", text: "About" },
     { to: "/connect", text: "Connect" },
   ];

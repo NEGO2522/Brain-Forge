@@ -1,10 +1,11 @@
 import React from 'react';
 import useSEO from '../hooks/useSEO';
 import { motion } from 'framer-motion';
-import { FaLightbulb, FaRocket, FaUserFriends, FaQuoteLeft } from 'react-icons/fa';
+import { FiUsers, FiMessageSquare, FiSearch, FiBookOpen } from 'react-icons/fi';
+import { FaQuoteLeft } from 'react-icons/fa';
 
 const InfoCard = ({ icon: Icon, title, text, delay }) => (
-  <motion.div 
+  <motion.div
     initial={{ opacity: 0, x: 20 }}
     whileInView={{ opacity: 1, x: 0 }}
     viewport={{ once: true }}
@@ -26,41 +27,37 @@ const InfoCard = ({ icon: Icon, title, text, delay }) => (
 const About = () => {
   useSEO({
     title: 'About',
-    description: 'Learn about Linkaura and our core philosophy of connecting the world\'s most ambitious talent.',
-    keywords: 'about linkaura, linkaura platform, ambitious talent, creators network'
+    description: 'Learn about Linkaura — a community platform where students and developers connect, chat, and grow together.',
+    keywords: 'about linkaura, community platform, developer networking, student community',
   });
 
   return (
     <div className="min-h-screen lg:h-screen w-full bg-black text-white relative overflow-x-hidden flex flex-col pt-32 lg:pt-24 pb-12 lg:pb-8 px-6">
-      
+
       {/* Background Ambience */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute top-[20%] left-[-5%] w-[50%] lg:w-[35%] h-[35%] bg-amber-500/5 rounded-full blur-[80px] lg:blur-[120px]" />
-        <div className="absolute bottom-[10%] right-[-5%] w-[50%] lg:w-[35%] h-[35%] bg-blue-500/5 rounded-full blur-[80px] lg:blur-[120px]" />
+        <div className="absolute bottom-[10%] right-[-5%] w-[50%] lg:w-[35%] h-[35%] bg-amber-500/5 rounded-full blur-[80px] lg:blur-[120px]" />
       </div>
 
       <div className="max-w-7xl mx-auto w-full h-full flex flex-col lg:flex-row gap-16 lg:gap-12 relative z-10">
-        
-        {/* LEFT SIDE: Branding & Mission */}
+
+        {/* LEFT: Branding & Quote */}
         <div className="w-full lg:w-1/2 flex flex-col justify-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-6"
-          >
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
             <span className="text-amber-500 font-bold tracking-[0.5em] text-[10px] uppercase block">
-              Manifesto / 01
+              About / 01
             </span>
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif leading-tight">
-              Link<span className="text-amber-500 italic">ora</span>. <br /> 
-              The Bridge.
+              Link<span className="text-amber-500 italic">aura</span>. <br />
+              Where Builders Meet.
             </h1>
             <div className="h-1 w-24 bg-amber-500 shadow-[0_0_15px_#fbbf24] mb-8" />
-            
+
             <div className="relative p-6 lg:p-8 bg-white/5 border-l-2 border-amber-500 rounded-r-2xl max-w-md">
               <FaQuoteLeft className="text-amber-500/20 text-3xl lg:text-4xl absolute top-4 left-4" />
               <p className="text-gray-300 italic text-base lg:text-lg relative z-10 pl-6">
-                "Building a space where passion meets professional excellence, one connection at a time."
+                "We built Linkaura because finding the right people to learn and build with shouldn't be hard."
               </p>
               <p className="mt-4 text-amber-500 font-bold text-[10px] lg:text-xs tracking-widest uppercase pl-6">
                 — Kshitij Jain, Founder
@@ -69,45 +66,44 @@ const About = () => {
           </motion.div>
         </div>
 
-        {/* RIGHT SIDE: Content Cards */}
-        <div className="w-full lg:w-1/2 flex flex-col justify-center space-y-4 lg:overflow-y-auto pr-2 custom-scrollbar">
-          <InfoCard 
-            icon={FaUserFriends}
+        {/* RIGHT: Info Cards */}
+        <div className="w-full lg:w-1/2 flex flex-col justify-center space-y-4 lg:overflow-y-auto pr-2">
+          <InfoCard
+            icon={FiUsers}
             title="Who We Are"
-            text="Linkaura is a community-driven platform built for the curious and the motivated. We provide a digital sanctuary where ideas are shared, and meaningful connections are established through the power of a global network."
+            text="Linkaura is a community platform built for students, developers, and creators. We bring people together so you can find others who share your interests, tech stack, and goals — without the noise."
             delay={0.1}
           />
-          
-          <InfoCard 
-            icon={FaRocket}
-            title="The Mission"
-            text="We exist to eliminate the noise. By organizing interest-based communities into one high-vibrancy hub, we facilitate thoughtful, value-driven interactions for the next generation of global leaders."
+          <InfoCard
+            icon={FiSearch}
+            title="Discover Profiles"
+            text="Browse real profiles of people in our community. Filter by tech stack, location, and year. Every profile is someone you can actually reach out to and collaborate with."
             delay={0.2}
           />
-
-          <InfoCard 
-            icon={FaLightbulb}
-            title="The Vision"
-            text="Designed for students, developers, and creators who refuse to be average. Linkaura is the ecosystem where you don't just learn—you evolve alongside a network of elite like-minded peers."
+          <InfoCard
+            icon={FiMessageSquare}
+            title="Chat Directly"
+            text="Found someone interesting? Message them directly on the platform — no middlemen, no email required. Just a simple real-time conversation to start building something together."
             delay={0.3}
           />
+          <InfoCard
+            icon={FiBookOpen}
+            title="Learn Together"
+            text="We curate top educators in development and design so you always know where to learn next. From DSA to full stack to AI — the community recommends the best resources."
+            delay={0.4}
+          />
 
-          {/* Bottom Branding */}
-          <motion.div 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            className="pt-6 text-center lg:text-left"
-          >
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="pt-4 text-center lg:text-left">
             <p className="text-[9px] tracking-[0.6em] text-white/20 uppercase font-bold">
-              EST. 2026 • Linkaura Ecosystem
+              EST. 2026 • Linkaura Community Platform
             </p>
           </motion.div>
         </div>
       </div>
 
-      {/* Global Signature */}
+      {/* Signature */}
       <div className="mt-12 lg:mt-0 lg:absolute lg:bottom-6 lg:left-1/2 lg:-translate-x-1/2 opacity-10 pointer-events-none text-center">
-        <p className="text-[8px] tracking-[1em] uppercase font-black">Organized By Kshitij Jain & Manish Kumar</p>
+        <p className="text-[8px] tracking-[1em] uppercase font-black">Built by Kshitij Jain & Manish Kumar</p>
       </div>
     </div>
   );

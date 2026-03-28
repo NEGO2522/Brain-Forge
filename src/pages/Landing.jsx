@@ -5,7 +5,7 @@ import { motion, useInView, AnimatePresence } from 'framer-motion';
 import * as THREE from 'three';
 import { useNavigate } from 'react-router-dom';
 import { 
-  FaLinkedinIn, FaDiscord, FaLightbulb, FaHandsHelping, 
+  FaLinkedinIn, FaInstagram, FaHandsHelping, 
   FaGlobe, FaCubes, FaGithub, FaLinkedin, 
   FaUserGraduate 
 } from 'react-icons/fa';
@@ -193,9 +193,9 @@ const CommunityScroller = () => {
 // --- 5. DYNAMIC ISOMETRIC STACK ---
 const IsometricPhilosophyStack = () => {
   const initialPillars = [
-    { id: 1, title: "Innovate", icon: <FaLightbulb />, color: "bg-white/10", tagline: "Build the Future", details: "Access cutting-edge resources and AI frameworks to scale your vision." },
-    { id: 2, title: "Connect", icon: <FaHandsHelping />, color: "bg-amber-500/10", tagline: "Unite with Peers", details: "Join high-signal networks and collaborate with top-tier developers." },
-    { id: 3, title: "Evolve", icon: <FaUserGraduate />, color: "bg-white/5", tagline: "Continuous Growth", details: "Stay ahead with exclusive workshops and community-led mentorship." },
+    { id: 1, title: "Discover", icon: <FaGlobe />, color: "bg-white/10", tagline: "Find Your People", details: "Browse real profiles of developers, designers, and builders. Filter by tech stack and location." },
+    { id: 2, title: "Connect", icon: <FaHandsHelping />, color: "bg-amber-500/10", tagline: "Reach Out Directly", details: "Send messages, start conversations, and build genuine relationships with the right people." },
+    { id: 3, title: "Grow", icon: <FaUserGraduate />, color: "bg-white/5", tagline: "Learn Together", details: "Follow top educators, join our Discord community, and stay updated on the roadmap." },
   ];
 
   const [stack, setStack] = useState(initialPillars);
@@ -257,8 +257,8 @@ const PhilosophySection = () => {
   const isInView = useInView(ref, { once: false, amount: 0.1 });
 
   const pillars = [
-    { icon: <FaGlobe />, title: "Decentralized", desc: "No single point of failure, only community-led progress." },
-    { icon: <FaCubes />, title: "Modular", desc: "Built to adapt. Integrate with the tools you already use." },
+    { icon: <FaGlobe />, title: "Real Profiles", desc: "Every profile is a real builder. Browse by tech stack, location, and year to find the right person." },
+    { icon: <FaCubes />, title: "Direct Chat", desc: "No middlemen. Message anyone on the platform and start collaborating instantly." },
   ];
 
   const educators = [
@@ -283,14 +283,14 @@ const PhilosophySection = () => {
           </div>
 
           <div className="w-full lg:w-1/2 text-left flex flex-col justify-center">
-            <motion.span initial={{ opacity: 0, x: -20 }} animate={isInView ? { opacity: 1, x: 0 } : {}} className="text-amber-500 tracking-[0.5em] text-[10px] md:text-xs font-bold mb-4 md:mb-6 uppercase block font-mono">Our Core Philosophy</motion.span>
+            <motion.span initial={{ opacity: 0, x: -20 }} animate={isInView ? { opacity: 1, x: 0 } : {}} className="text-amber-500 tracking-[0.5em] text-[10px] md:text-xs font-bold mb-4 md:mb-6 uppercase block font-mono">How It Works</motion.span>
             
             <motion.h2 initial={{ opacity: 0, x: -20 }} animate={isInView ? { opacity: 1, x: 0 } : {}} className="text-5xl md:text-7xl lg:text-8xl font-serif text-white uppercase tracking-tight mb-6 md:mb-8 leading-[0.9]">
-              The Future is <br/> <span className="text-amber-500 italic">Connected</span>
+              Where Builders <br/> <span className="text-amber-500 italic">Meet</span>
             </motion.h2>
 
             <motion.p initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.2 }} className="text-gray-400 text-sm md:text-lg max-w-xl mb-8 md:mb-12 font-light leading-relaxed">
-              Linkaura is more than a platform; it's a living ecosystem designed to bridge the gap between talent and technology through high-signal networks.
+              Linkaura is a community platform for students, developers, and creators. Browse real profiles, chat directly, and connect with people who share your interests and tech stack.
             </motion.p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
@@ -314,14 +314,14 @@ const PhilosophySection = () => {
         <div className="w-full border-t border-white/5 pt-12 md:pt-16 mb-16 md:mb-20">
           <div className="flex flex-col md:flex-row justify-between items-end mb-8 md:mb-10 gap-4">
             <div className="group">
-              <p className="text-amber-500 text-[9px] md:text-[10px] uppercase tracking-[0.4em] font-bold mb-2 font-mono">Network Core</p>
-              <h3 className="text-3xl md:text-5xl font-serif text-white uppercase italic">Verified Educators</h3>
+              <p className="text-amber-500 text-[9px] md:text-[10px] uppercase tracking-[0.4em] font-bold mb-2 font-mono">Community Picks</p>
+              <h3 className="text-3xl md:text-5xl font-serif text-white uppercase italic">Top Educators</h3>
             </div>
-            <p className="text-gray-500 text-xs md:text-sm max-w-xs font-light tracking-wide md:text-right">Access knowledge from the masters of the current digital frontier.</p>
+            <p className="text-gray-500 text-xs md:text-sm max-w-xs font-light tracking-wide md:text-right">Learn from educators our community follows and recommends most.</p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6 w-full">
-            {educators.map((edu, idx) => (
+            {educators.slice(0, 6).map((edu, idx) => (
               <motion.div 
                 key={idx}
                 className="group relative p-4 md:p-6 rounded-[2rem] bg-white/5 border border-white/10 hover:border-amber-500 transition-all duration-500 flex flex-col items-center text-center"
@@ -337,11 +337,19 @@ const PhilosophySection = () => {
               </motion.div>
             ))}
           </div>
+          <div className="mt-8 flex justify-center">
+            <a
+              href="/educators"
+              className="text-amber-500 text-[10px] uppercase tracking-[0.3em] font-black border border-amber-500/30 px-6 py-3 rounded-full hover:bg-amber-500/10 hover:border-amber-500 transition-all flex items-center gap-2"
+            >
+              View all educators &rarr;
+            </a>
+          </div>
         </div>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6 pb-12">
-          <a href="https://discord.com" target="_blank" rel="noreferrer" className="w-full sm:w-60 flex items-center justify-center gap-4 px-8 py-4 bg-amber-500 text-black rounded-full font-black hover:bg-amber-400 transition-all uppercase tracking-[0.2em] text-[10px] shadow-xl shadow-amber-500/10"><FaDiscord size={16}/> Join Discord</a>
-          <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="w-full sm:w-60 flex items-center justify-center gap-4 px-8 py-4 border border-white/20 text-white rounded-full font-black hover:bg-white hover:text-black transition-all uppercase tracking-[0.2em] text-[10px]"><FaLinkedinIn size={16}/> Join LinkedIn</a>
+          <a href="https://instagram.com/brainforge" target="_blank" rel="noreferrer" className="w-full sm:w-60 flex items-center justify-center gap-4 px-8 py-4 bg-amber-500 text-black rounded-full font-black hover:bg-amber-400 transition-all uppercase tracking-[0.2em] text-[10px] shadow-xl shadow-amber-500/10"><FaInstagram size={16}/> Follow on Instagram</a>
+          <a href="https://linkedin.com/company/brainforge16" target="_blank" rel="noreferrer" className="w-full sm:w-60 flex items-center justify-center gap-4 px-8 py-4 border border-white/20 text-white rounded-full font-black hover:bg-white hover:text-black transition-all uppercase tracking-[0.2em] text-[10px]"><FaLinkedinIn size={16}/> Join LinkedIn</a>
         </div>
       </div>
     </section>

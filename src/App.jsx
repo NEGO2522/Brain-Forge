@@ -7,10 +7,9 @@ import About from './pages/About';
 import Login from './auth/Login';
 import Profiles from './pages/Profiles';
 import User from './pages/User';
-import Explore from './pages/Roadmap';
-import AdminPannel from './pages/AdminPannel';
 import Chat from './pages/Chat';
 import Notification from './pages/Notification';
+import Educators from './pages/Educators';
 
 
 // Layout component that includes the Navbar
@@ -44,11 +43,6 @@ function App() {
           </Layout>
         } />
         <Route path="/login" element={<Login />} />
-        <Route path="/adminpannel" element={
-          <Layout>
-            <AdminPannel />
-          </Layout>
-        } />
         <Route path="/user" element={
           <Layout>
             <User />
@@ -60,15 +54,15 @@ function App() {
             <Profiles />
           </Layout>
         } />
-        <Route path="/roadmap" element={
-          <Layout>
-            <Explore />
-          </Layout>
-        } />
         <Route path="/chat/:id" element={<Chat />} />
         <Route path="/notification" element={
           <Layout>
             <Notification />
+          </Layout>
+        } />
+        <Route path="/educators" element={
+          <Layout>
+            <Educators />
           </Layout>
         } />
       </Routes>
