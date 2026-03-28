@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import useSEO from '../hooks/useSEO';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import { app } from '../firebase/firebase';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -8,6 +9,12 @@ import { getAuth } from 'firebase/auth';
 import Navbar from '../components/Navbar';
 
 const Profiles = () => {
+  useSEO({
+    title: 'Directory',
+    description: 'Explore the Linkaura neural directory. Find developers, designers, and creators to connect with.',
+    keywords: 'directory, user profiles, tech stack, developers network, linkaura'
+  });
+
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");

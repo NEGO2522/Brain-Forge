@@ -1,4 +1,5 @@
 import React from 'react';
+import useSEO from '../hooks/useSEO';
 import { motion } from 'framer-motion';
 import { FaLightbulb, FaRocket, FaUserFriends, FaQuoteLeft } from 'react-icons/fa';
 
@@ -23,6 +24,12 @@ const InfoCard = ({ icon: Icon, title, text, delay }) => (
 );
 
 const About = () => {
+  useSEO({
+    title: 'About',
+    description: 'Learn about Linkaura and our core philosophy of connecting the world\'s most ambitious talent.',
+    keywords: 'about linkaura, linkaura platform, ambitious talent, creators network'
+  });
+
   return (
     <div className="min-h-screen lg:h-screen w-full bg-black text-white relative overflow-x-hidden flex flex-col pt-32 lg:pt-24 pb-12 lg:pb-8 px-6">
       

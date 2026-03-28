@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import useSEO from '../hooks/useSEO';
 import { getFirestore, collection, addDoc, getDocs, query, where, serverTimestamp, updateDoc, doc } from 'firebase/firestore';
 import { getAuth, signOut, onAuthStateChanged } from 'firebase/auth';
 import { app } from '../firebase/firebase';
@@ -30,6 +31,12 @@ const TECH_DOMAINS = [
 ];
 
 const User = () => {
+  useSEO({
+    title: 'Profile Scanner',
+    description: 'Manage your Linkaura identity, update your domain, physical coordinates, and socials.',
+    keywords: 'profile, user settings, linkaura identity, tech stack'
+  });
+
   const navigate = useNavigate();
   const auth = getAuth();
   const dropdownRef = useRef(null);

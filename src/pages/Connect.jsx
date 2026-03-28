@@ -1,4 +1,5 @@
 import React from 'react';
+import useSEO from '../hooks/useSEO';
 import { motion } from 'framer-motion';
 import { FaDiscord, FaLinkedin, FaEnvelope, FaMapMarkerAlt, FaPhone, FaChevronRight, FaTerminal, FaUsers, FaLayerGroup } from 'react-icons/fa';
 import { RotatingFanIcon } from '../components/RotatingFanIcon';
@@ -26,6 +27,12 @@ const ContactItem = ({ icon: Icon, title, content, link }) => (
 );
 
 const Connect = () => {
+  useSEO({
+    title: 'Connect',
+    description: 'Connect with the Linkaura community, join our Discord, and network with elite professionals.',
+    keywords: 'connect linkaura, contact us, community hub, discord, linkedin'
+  });
+
   const DISCORD_LINK = "https://discord.com/invite/7CSFqfaxMp";
   const LINKEDIN_LINK = "https://www.linkedin.com/company/brainforge16"; 
 

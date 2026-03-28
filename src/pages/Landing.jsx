@@ -1,4 +1,5 @@
 import React, { useRef, useState, Suspense, useMemo, useEffect } from 'react';
+import useSEO from '../hooks/useSEO';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import * as THREE from 'three';
@@ -349,6 +350,12 @@ const PhilosophySection = () => {
 
 // --- 7. MAIN LANDING ---
 const Landing = () => {
+  useSEO({
+    title: 'Home',
+    description: 'Begin your Linkaura journey. Linking the world\'s most ambitious talent to the future of technology.',
+    keywords: 'linkaura, home, developers, creators, tech ecosystem, bio link'
+  });
+
   const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate(); 
   

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import useSEO from '../hooks/useSEO';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiPlus, FiTrash2, FiSend, FiDatabase, 
@@ -11,6 +12,12 @@ import { db } from '../firebase/firebase';
 import { ref, push, set, onValue, remove } from "firebase/database";
 
 const AdminPanel = () => {
+  useSEO({
+    title: 'Admin Panel',
+    description: 'Manage Linkaura content and broadcasts from the central node.',
+    keywords: 'admin panel, linkaura admin, content management, roadmap nodes'
+  });
+
   const [loading, setLoading] = useState(false);
   const [milestones, setMilestones] = useState([]);
   

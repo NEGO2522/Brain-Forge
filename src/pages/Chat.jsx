@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import useSEO from '../hooks/useSEO';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import {
   getFirestore,
@@ -27,6 +28,12 @@ import {
 } from 'react-icons/fi';
 
 const Chat = () => {
+  useSEO({
+    title: 'Chat',
+    description: 'Connect and chat with ambitious talent on the Linkaura platform.',
+    keywords: 'chat, linkaura message, network, collaboration'
+  });
+
   const { id } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();

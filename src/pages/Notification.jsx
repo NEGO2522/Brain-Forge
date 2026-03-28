@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import useSEO from '../hooks/useSEO';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import {
     getFirestore,
@@ -17,6 +18,12 @@ import { FaBell, FaUserCircle } from 'react-icons/fa';
 import { FiCheck, FiTrash2, FiCheckCircle } from 'react-icons/fi';
 
 const Notification = () => {
+    useSEO({
+        title: 'Notifications',
+        description: 'Check your latest notifications, alerts, and messages from the Linkaura community.',
+        keywords: 'notifications, alerts, linkaura messages'
+    });
+
     const [currentUser, setCurrentUser] = useState(undefined);
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);

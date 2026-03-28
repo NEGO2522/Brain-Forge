@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import useSEO from '../hooks/useSEO';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FaGoogle } from 'react-icons/fa';
 import { FiMail, FiSend, FiArrowLeft, FiShield } from 'react-icons/fi';
@@ -7,6 +8,12 @@ import { signInWithGoogle, sendLoginLink, completeSignInWithEmailLink } from '..
 import { RotatingFanIcon } from '../components/RotatingFanIcon';
 
 const Login = () => {
+  useSEO({
+    title: 'Login',
+    description: 'Sign in to Linkaura to manage your developer profile, roadmaps, and chat with members.',
+    keywords: 'login, sign in, linkaura login, identity link'
+  });
+
   const [formData, setFormData] = useState({ email: '' });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);

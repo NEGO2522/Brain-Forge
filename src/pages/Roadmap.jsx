@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import useSEO from '../hooks/useSEO';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import { 
@@ -13,6 +14,12 @@ import { db } from '../firebase/firebase';
 import { ref, onValue } from "firebase/database";
 
 const Roadmap = () => {
+  useSEO({
+    title: 'Roadmap',
+    description: 'Follow the Linkaura learning pathways and community roadmaps for web3, AI, and more.',
+    keywords: 'roadmap, learning path, tech roadmap, linkaura paths'
+  });
+
   const [selectedPhase, setSelectedPhase] = useState("Web3 & Crypto");
   const [milestones, setMilestones] = useState([]);
   const [loading, setLoading] = useState(true);
