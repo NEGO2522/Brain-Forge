@@ -222,7 +222,7 @@ const Connect = () => {
         {/* Footer */}
         <div className="flex-shrink-0 text-center pb-2">
           <p className="text-[8px] md:text-[9px] tracking-[0.6em] text-white/20 uppercase font-bold">
-            Developed By Kshitij Jain & Manish Kumar
+            Developed By Kshitij Jain & Prabha Trivedi
           </p>
         </div>
       </div>

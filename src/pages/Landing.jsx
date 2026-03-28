@@ -349,8 +349,6 @@ const PhilosophySection = () => {
         </div>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6 pb-12">
-          <a href="https://instagram.com/brainforge" target="_blank" rel="noreferrer" className="w-full sm:w-60 flex items-center justify-center gap-4 px-8 py-4 bg-amber-500 text-black rounded-full font-black hover:bg-amber-400 transition-all uppercase tracking-[0.2em] text-[10px] shadow-xl shadow-amber-500/10"><FaInstagram size={16}/> Follow on Instagram</a>
-          <a href="https://linkedin.com/company/brainforge16" target="_blank" rel="noreferrer" className="w-full sm:w-60 flex items-center justify-center gap-4 px-8 py-4 border border-white/20 text-white rounded-full font-black hover:bg-white hover:text-black transition-all uppercase tracking-[0.2em] text-[10px]"><FaLinkedinIn size={16}/> Join LinkedIn</a>
         </div>
       </div>
     </section>
@@ -411,16 +409,13 @@ const Landing = () => {
             <p className="text-gray-400 max-w-sm mx-auto lg:mx-0 text-sm md:text-base">Linking the world's most ambitious talent to the future of technology.</p>
             <button onClick={() => navigate('/profiles')} className="bg-amber-500 hover:bg-amber-400 transition-colors text-black px-8 py-4 rounded-full font-bold uppercase tracking-widest text-[10px] md:text-xs cursor-pointer">Explore Ecosystem</button>
           </motion.div>
-          <div className="mt-12 md:mt-16 w-full flex justify-center lg:justify-start">
-            <CommunityScroller />
-          </div>
         </div>
 
         <div className="relative z-10 w-full lg:w-1/2 flex flex-col items-center lg:items-end mt-12 lg:mt-24 pb-10 lg:pb-0">
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="mb-6 md:mb-8 text-center lg:text-right">
             <span className="text-amber-500 text-[9px] md:text-[10px] font-bold tracking-[0.4em] uppercase block mb-2">Developed By</span>
             <h3 className="text-white text-lg md:text-2xl font-serif tracking-widest uppercase leading-tight">
-              KSHITIJ JAIN <br className="hidden md:block"/> & MANISH KUMAR
+              KSHITIJ JAIN <br className="hidden md:block"/> & PRABHA TRIVEDI
             </h3>
           </motion.div>
           

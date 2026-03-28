@@ -103,7 +103,7 @@ const About = () => {
 
       {/* Signature */}
       <div className="mt-12 lg:mt-0 lg:absolute lg:bottom-6 lg:left-1/2 lg:-translate-x-1/2 opacity-10 pointer-events-none text-center">
-        <p className="text-[8px] tracking-[1em] uppercase font-black">Built by Kshitij Jain & Manish Kumar</p>
+        <p className="text-[8px] tracking-[1em] uppercase font-black">Built by Kshitij Jain & Prabha Trivedi</p>
       </div>
     </div>
   );
