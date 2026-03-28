@@ -1,15 +1,14 @@
 # https://www.robotstxt.org/robotstxt.html
 
-# Allow all search engines to crawl the site
 User-agent: *
 Allow: /
 
-# Block sensitive or private paths
-Disallow: /admin/
-Disallow: /settings/
-Disallow: /api/
+# Block sensitive crawler paths
+Disallow: /adminpannel
+Disallow: /user
+Disallow: /chat
+Disallow: /notification
 Disallow: /login
-Disallow: /register
 
-# Tell search engines where your sitemap is
-Sitemap: https://linkaura.com/sitemap.xml
+# Tell search engines where the official sitemap is
+Sitemap: https://linkaura.in/sitemap.xml
