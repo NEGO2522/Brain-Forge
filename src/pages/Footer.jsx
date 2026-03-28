@@ -55,7 +55,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-black border-t border-white/10">
+    <footer className="bg-black">
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
           
@@ -116,18 +116,10 @@ const Footer = () => {
         </div>
 
         {/* Bottom Section */}
-        <div className="border-t border-white/10 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="mt-12 pt-8 flex justify-center">
           <p className="text-gray-400 text-sm">
-            © {currentYear} LinkAura. All rights reserved.
+            {currentYear} LinkAura. All rights reserved.
           </p>
-          <div className="flex gap-6 text-sm">
-            <Link to="/privacy" className="text-gray-400 hover:text-amber-500 transition-colors">
-              Privacy Policy
-            </Link>
-            <Link to="/terms" className="text-gray-400 hover:text-amber-500 transition-colors">
-              Terms of Service
-            </Link>
-          </div>
         </div>
       </div>
     </footer>

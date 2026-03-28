@@ -12,7 +12,7 @@ import Navbar from '../components/Navbar';
 const Profiles = () => {
   useSEO({
     title: 'Directory',
-    description: 'Explore the Linkaura neural directory. Find developers, designers, and creators to connect with.',
+    description: 'Explore the Linkaura aura directory. Find developers, designers, and creators to connect with.',
     keywords: 'directory, user profiles, tech stack, developers network, linkaura'
   });
 
@@ -65,7 +65,7 @@ const Profiles = () => {
             animate={{ opacity: 1, x: 0 }}
             className="text-4xl md:text-6xl font-serif italic mb-4"
           >
-            Neural <span className="text-amber-500">Directory</span>
+            Aura <span className="text-amber-500">Directory</span>
           </motion.h1>
           <div className="w-24 h-1 bg-amber-500 mb-8 shadow-[0_0_15px_rgba(245,158,11,0.5)]"></div>
           

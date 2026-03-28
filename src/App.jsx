@@ -1,7 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Fragment, useContext } from 'react';
 import Navbar, { MenuProvider, MenuContext } from './components/Navbar';
-import Footer from './pages/Footer';
 import Landing from './pages/Landing';
 import Connect from './pages/Connect';
 import About from './pages/About';
@@ -13,7 +12,7 @@ import Notification from './pages/Notification';
 import Educators from './pages/Educators';
 
 
-// Layout component that includes the Navbar and Footer
+// Layout component that includes the Navbar
 const Layout = ({ children }) => {
   const { isMenuOpen } = useContext(MenuContext);
   
@@ -23,7 +22,6 @@ const Layout = ({ children }) => {
       <main className={`flex-1 transition-all duration-300 ${isMenuOpen ? 'blur-sm' : ''}`}>
         {children}
       </main>
-      <Footer />
     </div>
   );
 };

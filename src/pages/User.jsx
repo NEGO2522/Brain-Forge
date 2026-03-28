@@ -146,7 +146,7 @@ const User = () => {
         userData.createdAt = serverTimestamp();
         await addDoc(collection(db, 'userProfiles'), userData);
       }
-      setSubmitStatus({ success: true, message: 'Neural Profile Updated' });
+      setSubmitStatus({ success: true, message: 'Aura Profile Updated' });
     } catch (error) { 
       setSubmitStatus({ success: false, message: error.message }); 
     } finally { 
