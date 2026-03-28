@@ -25,8 +25,9 @@ const Footer = () => {
     {
       title: "Account",
       links: [
-        { to: "/login", text: "Sign In" },
         { to: "/user", text: "Profile" },
+        { to: "/connect", text: "Connect" },
+        { to: "/about", text: "About" },
       ]
     }
   ];

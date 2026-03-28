@@ -76,8 +76,8 @@ const Connect = () => {
                       <div className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse" />
                       Get in Touch
                     </h2>
-                    <ContactItem icon={FaMapMarkerAlt} title="Location" content="Jaipur, Rajasthan" />
-                    <ContactItem icon={FaEnvelope} title="Email" content="nextgenova28@gmail.com" link="mailto:nextgenova28@gmail.com" />
+                    <ContactItem icon={FaMapMarkerAlt} title="Physical Coordinates" content="Jaipur, Rajasthan" />
+                    <ContactItem icon={FaEnvelope} title="Network Node" content="nextgenova28@gmail.com" link="mailto:nextgenova28@gmail.com" />
                     <ContactItem icon={FaPhone} title="Phone" content="+91 94139 73399" link="tel:+919413973399" />
                   </div>
 
