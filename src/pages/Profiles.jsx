@@ -277,7 +277,7 @@ const ProfileCard = ({ profile, index }) => {
               onClick={handleChatClick}
               className="w-full py-4 rounded-xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-amber-500 hover:text-black transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-lg"
             >
-              Secure Link <FiMessageSquare />
+              Start Chat <FiMessageSquare />
             </button>
           )}
         </div>
