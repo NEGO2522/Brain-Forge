@@ -10,6 +10,7 @@ import {
   FaUserGraduate 
 } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
+import Footer from './Footer';
 
 // --- 1. STAR BACKGROUND ---
 const MovingStars = () => {
@@ -430,19 +431,7 @@ const Landing = () => {
 
       <PhilosophySection />
 
-      <footer className="relative w-full bg-black border-t border-white/5 py-10 px-6 lg:px-24 flex-shrink-0 z-30">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
-          <p className="text-[10px] text-gray-500 uppercase tracking-[0.4em] font-mono">
-            © 2026 LINKAURA ECOSYSTEM
-          </p>
-          <div className="flex flex-col items-center md:items-end">
-            <span className="text-white/20 text-[8px] uppercase tracking-[0.6em] font-bold mb-1">Founders</span>
-            <span className="text-white/50 text-[10px] uppercase tracking-[0.2em] font-black italic">
-              Kshitij Jain & Manish Kumar
-            </span>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

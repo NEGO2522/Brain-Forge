@@ -102,8 +102,6 @@ const Navbar = () => {
     { to: "/", text: "Home" },
     { to: "/profiles", text: "Profiles" },
     { to: "/educators", text: "Educators" },
-    { to: "/about", text: "About" },
-    { to: "/connect", text: "Connect" },
   ];
 
   return (
@@ -138,7 +136,7 @@ const Navbar = () => {
                 key={link.to}
                 to={link.to}
                 className={`px-4 xl:px-5 py-2 rounded-xl text-[10px] uppercase tracking-[0.2em] font-bold transition-all duration-300 ${
-                  isActive ? 'bg-amber-500 text-black shadow-[0_0_15px_rgba(245,158,11,0.4)]' : 'text-gray-400 hover:text-white hover:bg-white/5'
+                  isActive ? 'bg-amber-500 text-black shadow-[0_0_20px_rgba(245,158,11,0.6)] shadow-amber-500/30 ring-2 ring-amber-500/50' : 'text-gray-400 hover:text-white hover:bg-white/5'
                 }`}
               >
                 {link.text}
