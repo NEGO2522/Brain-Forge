@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import useSEO from '../hooks/useSEO';
-import { getFirestore, collection, getDocs } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, updateDoc, doc } from 'firebase/firestore';
 import { app } from '../firebase/firebase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiGithub, FiLinkedin, FiCpu, FiMapPin, FiUser, FiSearch, FiCalendar, FiMessageSquare } from 'react-icons/fi';
+import { FaStar } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
 import Navbar from '../components/Navbar';
@@ -135,6 +136,49 @@ const ProfileCard = ({ profile, index }) => {
   // Check if the current user is viewing their own profile
   const isOwnProfile = auth.currentUser && auth.currentUser.uid === profile.userId;
 
+  // Rating Logic
+  const [userRating, setUserRating] = useState(0);
+  const [avgRating, setAvgRating] = useState(0);
+  const [ratingCount, setRatingCount] = useState(0);
+
+  useEffect(() => {
+    if (profile.ratings) {
+      const ratingsArray = Object.values(profile.ratings);
+      if (ratingsArray.length > 0) {
+        setAvgRating(ratingsArray.reduce((a, b) => a + b, 0) / ratingsArray.length);
+        setRatingCount(ratingsArray.length);
+      }
+      if (auth.currentUser && profile.ratings[auth.currentUser.uid]) {
+        setUserRating(profile.ratings[auth.currentUser.uid]);
+      }
+    }
+  }, [profile.ratings, auth.currentUser]);
+
+  const handleRate = async (rateValue) => {
+    if (!auth.currentUser) return navigate('/login');
+    if (isOwnProfile) return;
+    
+    setUserRating(rateValue); // Optimistic UI
+    
+    try {
+      const db = getFirestore(app);
+      const profileRef = doc(db, 'userProfiles', profile.id);
+      await updateDoc(profileRef, {
+        [`ratings.${auth.currentUser.uid}`]: rateValue
+      });
+      
+      // Update local average without re-fetching
+      const newCount = userRating === 0 ? ratingCount + 1 : ratingCount;
+      const currentTotal = avgRating * ratingCount;
+      const newTotal = currentTotal - userRating + rateValue;
+      setAvgRating(newTotal / newCount);
+      setRatingCount(newCount);
+
+    } catch (e) {
+      console.error("Error rating profile:", e);
+    }
+  };
+
   return (
     <motion.div
       layout
@@ -148,8 +192,16 @@ const ProfileCard = ({ profile, index }) => {
 
       <div className="relative z-10 flex flex-col h-full">
         <div className="flex justify-between items-start mb-6">
-          <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-2xl text-amber-500 shadow-inner">
-            <FiUser />
+          <div className="flex gap-4 items-center">
+            <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-2xl text-amber-500 shadow-inner">
+              <FiUser />
+            </div>
+            <div className="flex flex-col justify-center">
+              <div className="flex items-center gap-1.5 text-amber-500 text-sm">
+                <FaStar /> <span className="font-bold">{ratingCount > 0 ? avgRating.toFixed(1) : 'New'}</span>
+              </div>
+              <span className="text-[8px] uppercase tracking-widest text-gray-500 font-bold">{ratingCount} Ratings</span>
+            </div>
           </div>
           
           {profile.year && (
@@ -201,15 +253,34 @@ const ProfileCard = ({ profile, index }) => {
           </div>
         </div>
 
-        {/* Only show chat button if it's not the user's own profile */}
-        {!isOwnProfile && (
-          <button
-            onClick={handleChatClick}
-            className="w-full mt-8 py-4 rounded-xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] group-hover:bg-amber-500 group-hover:text-black transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-lg"
-          >
-            Chat <FiMessageSquare />
-          </button>
-        )}
+        {/* Rating & Chat Controls */}
+        <div className="mt-6 pt-4 border-t border-white/5 flex flex-col gap-4">
+          {!isOwnProfile && (
+            <div className="flex items-center justify-between">
+              <span className="text-[9px] uppercase tracking-[0.2em] text-gray-500 font-black">Rate Operator:</span>
+              <div className="flex gap-1.5">
+                {[1, 2, 3, 4, 5].map(star => (
+                  <button 
+                    key={star} 
+                    onClick={() => handleRate(star)}
+                    className={`transition-colors hover:scale-110 active:scale-90 ${userRating >= star ? 'text-amber-500' : 'text-gray-600 hover:text-amber-500/50'}`}
+                  >
+                    <FaStar size={16} />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {!isOwnProfile && (
+            <button
+              onClick={handleChatClick}
+              className="w-full py-4 rounded-xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-amber-500 hover:text-black transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+            >
+              Secure Link <FiMessageSquare />
+            </button>
+          )}
+        </div>
       </div>
     </motion.div>
   );
