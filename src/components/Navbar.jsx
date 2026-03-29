@@ -10,7 +10,7 @@ import {
 import { app } from '../firebase/firebase';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { RotatingFanIcon } from './RotatingFanIcon';
-import { FaUserCircle, FaBell } from 'react-icons/fa';
+import { FaUserCircle, FaBell, FaComments } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const MenuContext = createContext({
@@ -97,6 +97,11 @@ const Navbar = () => {
     setIsMenuOpen(false);
   };
 
+  const handleChatsClick = () => {
+    navigate('/chats');
+    setIsMenuOpen(false);
+  };
+
   // UPDATED: Explore changed to Roadmap
   const navLinks = [
     { to: "/", text: "Home" },
@@ -149,6 +154,9 @@ const Navbar = () => {
         <div className="flex items-center gap-2 md:gap-4 z-[110]">
           {isLoggedIn ? (
             <>
+              <button onClick={handleChatsClick} className="hidden md:block p-1 border border-white/10 rounded-full hover:border-amber-500/50 transition-all">
+                <FaComments className="w-6 h-6 md:w-7 md:h-7 text-white/80 hover:text-amber-500 transition-colors" />
+              </button>
               <button 
                 onClick={handleNotificationClick} 
                 className="hidden md:block relative p-1 border border-white/10 rounded-full hover:border-amber-500/50 transition-all"
@@ -223,6 +231,12 @@ const Navbar = () => {
                 >
                   {isLoggedIn ? (
                     <div className="space-y-4">
+                      <button 
+                        onClick={handleChatsClick} 
+                        className="text-amber-500 font-bold uppercase tracking-widest text-xs flex items-center gap-3 w-full"
+                      >
+                        <FaComments className="text-xl" /> Chats
+                      </button>
                       <button 
                         onClick={handleNotificationClick} 
                         className="text-amber-500 font-bold uppercase tracking-widest text-xs flex items-center gap-3 w-full"

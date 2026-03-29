@@ -19,6 +19,7 @@ const Profiles = () => {
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const auth = getAuth(app);
 
   useEffect(() => {
     const fetchProfiles = async () => {
@@ -42,8 +43,9 @@ const Profiles = () => {
   }, []);
 
   const filteredProfiles = profiles.filter(p => 
-    p.name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    p.techStack?.toLowerCase().includes(searchQuery.toLowerCase())
+    (p.name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+     p.techStack?.toLowerCase().includes(searchQuery.toLowerCase())) &&
+    p.userId !== auth.currentUser?.uid
   );
 
   return (

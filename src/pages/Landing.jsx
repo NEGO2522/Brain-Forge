@@ -102,8 +102,8 @@ const RobotModel = ({ isMobile }) => {
 // --- 3. LIVE MISSION FEED (NEW REPLACEMENT) ---
 const LiveMissionFeed = () => {
   const activities = [
-    "The 2026 Expansion",
-    "Aura Protocol: Active"
+    "Building Connections",
+    "Linkaura Network: Active"
   ];
   
   const [index, setIndex] = useState(0);
@@ -130,14 +130,14 @@ const LiveMissionFeed = () => {
 
       <div className="relative z-10">
         <div className="flex justify-between items-center mb-6">
-          <span className="text-amber-500 text-[10px] font-black uppercase tracking-[0.4em] font-mono">System Pulse</span>
+          <span className="text-amber-500 text-[10px] font-black uppercase tracking-[0.4em] font-mono">Linkaura Status</span>
           <div className="flex gap-1.5">
             <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
             <span className="w-2 h-2 rounded-full bg-white/20" />
           </div>
         </div>
 
-        <h4 className="text-white text-2xl font-serif italic mb-2 tracking-tight">Current Objective</h4>
+        <h4 className="text-white text-2xl font-serif italic mb-2 tracking-tight">Network Activity</h4>
         
         <div className="h-16 flex items-center">
           <AnimatePresence mode="wait">
@@ -156,10 +156,10 @@ const LiveMissionFeed = () => {
 
         <div className="mt-6 pt-6 border-t border-white/10 flex justify-between items-center">
           <div>
-            <p className="text-white text-xl font-serif">75% Complete</p>
+            <p className="text-white text-xl font-serif">Active</p>
           </div>
           <div className="text-right">
-            <p className="text-white text-xl font-serif">On Track</p>
+            <p className="text-white text-xl font-serif">Growing</p>
           </div>
         </div>
       </div>

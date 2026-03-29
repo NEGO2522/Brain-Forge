@@ -124,7 +124,7 @@ const User = () => {
     e.preventDefault();
     
     // STRICT VALIDATION: Check if every field in formData is filled
-    const isAnyFieldEmpty = Object.values(formData).some(value => value.trim() === '');
+    const isAnyFieldEmpty = Object.values(formData).some(value => !value || (typeof value === 'string' && value.trim() === ''));
     
     if (isAnyFieldEmpty) {
       setSubmitStatus({ success: false, message: 'All fields are mandatory!' });
@@ -170,8 +170,8 @@ const User = () => {
               <FiUser className="text-amber-500" />
             </div>
             <div>
-              <h1 className="text-3xl md:text-5xl font-serif italic">Profile <span className="text-amber-500">Terminal</span></h1>
-              <p className="text-gray-500 text-[10px] uppercase tracking-[0.4em] font-black mt-2">Forge Identity Matrix</p>
+              <h1 className="text-3xl md:text-5xl font-serif italic">Profile <span className="text-amber-500">Settings</span></h1>
+              <p className="text-gray-500 text-[10px] uppercase tracking-[0.4em] font-black mt-2">Manage Your Information</p>
             </div>
           </div>
           <button 
@@ -179,7 +179,7 @@ const User = () => {
             onClick={() => signOut(auth).then(() => navigate('/login'))} 
             className="flex items-center gap-3 px-6 py-3 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 text-[10px] font-bold uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all"
           >
-            <FiLogOut /> Terminate Session
+            <FiLogOut /> Sign Out
           </button>
         </div>
 
@@ -188,14 +188,14 @@ const User = () => {
             <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-6 md:p-10 space-y-8 shadow-2xl">
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <InputField label="Identity Name" icon={<FiUser />} name="name" value={formData.name} onChange={handleChange} required />
-                <InputField label="Network Node" icon={<FiMail />} name="email" value={formData.email} onChange={handleChange} required />
+                <InputField label="Name" icon={<FiUser />} name="name" value={formData.name} onChange={handleChange} required />
+                <InputField label="Email" icon={<FiMail />} name="email" value={formData.email} onChange={handleChange} required />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-3">
                   <label className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-gray-500 font-black ml-1">
-                    <FiCalendar className="text-amber-500" /> Academic Phase <span className="text-amber-500">*</span>
+                    <FiCalendar className="text-amber-500" /> Year <span className="text-amber-500">*</span>
                   </label>
                   <div className="relative">
                     <select 
@@ -218,7 +218,7 @@ const User = () => {
               {/* Tech Stack Area */}
               <div className="space-y-3 relative" ref ={dropdownRef}>
                 <label className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-gray-500 font-black ml-1">
-                  <FiCpu className="text-amber-500" /> Professional Domains <span className="text-amber-500">*</span>
+                  <FiCpu className="text-amber-500" /> Skills <span className="text-amber-500">*</span>
                 </label>
                 
                 <div 
@@ -229,7 +229,7 @@ const User = () => {
                     <span key={tech} className="bg-amber-500 text-black text-[9px] font-black uppercase px-3 py-1.5 rounded-lg flex items-center gap-2 hover:bg-white transition-colors">
                       {tech.trim()} <FiX className="cursor-pointer" onClick={(e) => { e.stopPropagation(); toggleTech(tech.trim()); }} />
                     </span>
-                  )) : <span className="text-gray-500 text-xs py-2 px-2 uppercase tracking-widest">Select Domain (Required)...</span>}
+                  )) : <span className="text-gray-500 text-xs py-2 px-2 uppercase tracking-widest">Select Skills (Required)...</span>}
                   <FiChevronDown className={`ml-auto self-center text-gray-500 transition-transform ${showTechDropdown ? 'rotate-180' : ''}`} />
                 </div>
 
@@ -238,7 +238,7 @@ const User = () => {
                     <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="absolute z-50 w-full mt-2 bg-[#0A0A0A] border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
                       <div className="p-3 border-b border-white/5 flex items-center gap-3 bg-white/5">
                         <FiSearch className="text-amber-500" />
-                        <input className="bg-transparent border-none outline-none text-xs w-full uppercase tracking-widest text-white" placeholder="Filter Domains..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} autoFocus />
+                        <input className="bg-transparent border-none outline-none text-xs w-full uppercase tracking-widest text-white" placeholder="Filter Skills..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} autoFocus />
                       </div>
                       <div className="max-h-64 overflow-y-auto p-2 grid grid-cols-1 md:grid-cols-2 gap-1">
                         {TECH_DOMAINS.filter(o => o.toLowerCase().includes(searchTerm.toLowerCase())).map(option => (
@@ -261,7 +261,7 @@ const User = () => {
                     <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} className="mt-4 flex gap-2">
                       <input 
                         className="flex-1 bg-white/5 border border-amber-500/30 rounded-xl px-4 py-3 text-xs uppercase tracking-widest text-white focus:outline-none focus:border-amber-500" 
-                        placeholder="Type specific tech (e.g. Python, Rust)..." 
+                        placeholder="Type specific skill (e.g. Python, Rust)..." 
                         value={customTech} 
                         onChange={(e) => setCustomTech(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddCustomTech())}
@@ -274,7 +274,7 @@ const User = () => {
               </div>
 
               <div className="space-y-3">
-                <label className="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-black ml-1">Physical Coordinates <span className="text-amber-500">*</span></label>
+                <label className="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-black ml-1">Location <span className="text-amber-500">*</span></label>
                 <textarea 
                   name="address" 
                   value={formData.address} 
@@ -282,7 +282,7 @@ const User = () => {
                   required
                   rows="3" 
                   className="w-full bg-white/5 border border-white/10 rounded-3xl py-4 px-6 text-sm focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/5 transition-all resize-none text-white uppercase outline-none" 
-                  placeholder="Locality // City // Region (Required)" 
+                  placeholder="City, Country" 
                 />
               </div>
             </div>
@@ -291,17 +291,17 @@ const User = () => {
           {/* Sidebar */}
           <div className="space-y-6">
             <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-8 shadow-2xl">
-              <h3 className="text-[10px] uppercase tracking-[0.3em] text-amber-500 font-black mb-8">Social Uplinks <span className="text-amber-500">*</span></h3>
+              <h3 className="text-[10px] uppercase tracking-[0.3em] text-amber-500 font-black mb-8">Social Links <span className="text-amber-500">*</span></h3>
               <SocialInput label="GitHub" icon={<FiGithub />} prefix="github.com/" name="github" value={formData.github} onChange={handleChange} required />
               <div className="h-6" />
               <SocialInput label="LinkedIn" icon={<FiLinkedin />} prefix="in/" name="linkedin" value={formData.linkedin} onChange={handleChange} required />
             </div>
             
             <div className="bg-amber-500 rounded-[2.5rem] p-8 text-black shadow-xl">
-              <h4 className="font-serif italic text-2xl mb-2">Finalize</h4>
-              <p className="text-[9px] font-black uppercase tracking-widest opacity-70 mb-6">Commit changes to forge servers.</p>
+              <h4 className="font-serif italic text-2xl mb-2">Save</h4>
+              <p className="text-[9px] font-black uppercase tracking-widest opacity-70 mb-6">Update your profile information.</p>
               <button type="submit" disabled={isSubmitting} className="w-full bg-black text-white py-4 rounded-2xl flex items-center justify-center gap-3 font-black text-xs uppercase tracking-widest hover:bg-neutral-900 transition-all">
-                {isSubmitting ? "Syncing..." : <><FiSave /> Sync Profile</>}
+                {isSubmitting ? "Saving..." : <><FiSave /> Save Profile</>}
               </button>
             </div>
           </div>
