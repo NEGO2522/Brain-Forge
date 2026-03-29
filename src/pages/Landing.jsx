@@ -34,6 +34,48 @@ const MovingStars = () => {
   );
 };
 
+// --- 1.1 FALLING STARS ANIMATION ---
+const FallingStars = () => {
+  const starsRef = useRef();
+  const count = 200;
+  
+  useFrame((state) => {
+    if (starsRef.current) {
+      const positions = starsRef.current.geometry.attributes.position.array;
+      for (let i = 0; i < count; i++) {
+        const i3 = i * 3;
+        positions[i3 + 1] -= 0.1; // Move down
+        
+        // Reset position when star goes off screen
+        if (positions[i3 + 1] < -30) {
+          positions[i3 + 1] = 30;
+          positions[i3] = (Math.random() - 0.5) * 100;
+        }
+      }
+      starsRef.current.geometry.attributes.position.needsUpdate = true;
+    }
+  });
+
+  const positions = useMemo(() => {
+    const pos = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      pos[i * 3] = (Math.random() - 0.5) * 100; // x
+      pos[i * 3 + 1] = Math.random() * 60 - 30; // y
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 20; // z
+    }
+    return pos;
+  }, []);
+
+  return (
+    <points ref={starsRef}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} />
+      </bufferGeometry>
+      <pointsMaterial size={0.05} color="#00d4ff" transparent opacity={0.8} sizeAttenuation={true} />
+    </points>
+  );
+};
+
 // --- 2. 3D ROBOT MODEL ---
 const RobotModel = ({ isMobile }) => {
   const groupRef = useRef();
@@ -121,13 +163,6 @@ const LiveMissionFeed = () => {
       animate={{ opacity: 1, scale: 1, x: 0 }}
       className="w-full max-w-sm bg-gradient-to-br from-white/10 to-transparent border border-white/20 backdrop-blur-3xl p-8 rounded-[2.5rem] relative overflow-hidden"
     >
-      {/* Scanning Line Animation */}
-      <motion.div 
-        animate={{ y: [0, 280, 0] }} 
-        transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
-        className="absolute top-0 left-0 w-full h-[1px] bg-amber-500/40 blur-[2px] z-0"
-      />
-
       <div className="relative z-10">
         <div className="flex justify-between items-center mb-6">
           <span className="text-amber-500 text-[10px] font-black uppercase tracking-[0.4em] font-mono">Linkaura Status</span>
@@ -348,7 +383,7 @@ const PhilosophySection = () => {
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6 pb-12">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
         </div>
       </div>
     </section>
@@ -394,6 +429,7 @@ const Landing = () => {
           >
             <Suspense fallback={null}>
               <MovingStars />
+              <FallingStars />
               <RobotModel isMobile={isMobile} />
             </Suspense>
             <ambientLight intensity={0.3} />
