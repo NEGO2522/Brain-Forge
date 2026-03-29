@@ -180,7 +180,7 @@ const Navbar = () => {
 
           {/* MOBILE TOGGLE */}
           <button 
-            className="lg:hidden w-10 h-10 flex flex-col items-center justify-center bg-white/5 border border-white/10 rounded-xl hover:border-amber-500/50 transition-all"
+            className="lg:hidden w-10 h-10 flex flex-col items-center justify-center bg-white/5 border border-white/10 rounded-xl hover:border-amber-500/50 transition-all cursor-pointer"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle Menu"
           >

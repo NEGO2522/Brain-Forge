@@ -10,6 +10,7 @@ import User from './pages/User';
 import Chat from './pages/Chat';
 import Notification from './pages/Notification';
 import Educators from './pages/Educators';
+import Chats from './pages/Chats';
 
 
 // Layout component that includes the Navbar
@@ -54,7 +55,16 @@ function App() {
             <Profiles />
           </Layout>
         } />
-        <Route path="/chat/:id" element={<Chat />} />
+        <Route path="/chat/:id" element={
+          <Layout>
+            <Chat />
+          </Layout>
+        } />
+        <Route path="/chats" element={
+          <Layout>
+            <Chats />
+          </Layout>
+        } />
         <Route path="/notification" element={
           <Layout>
             <Notification />
