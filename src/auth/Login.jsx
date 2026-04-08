@@ -48,6 +48,7 @@ const Login = () => {
     const newErrors = {};
     if (!formData.email) newErrors.email = 'Identity Link required';
     else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Invalid link format';
+    else if (!formData.email.endsWith('@poornima.edu.in')) newErrors.email = 'Only college email IDs allowed (@poornima.edu.in)';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -72,7 +73,16 @@ const Login = () => {
     try {
       setIsLoading(true);
       setAuthError('');
-      await signInWithGoogle();
+      const result = await signInWithGoogle();
+      
+      // Check if the Google account email ends with @poornima.edu.in
+      if (result && result.user && result.user.email) {
+        if (!result.user.email.endsWith('@poornima.edu.in')) {
+          setAuthError('Only college email IDs allowed (@poornima.edu.in)');
+          return;
+        }
+      }
+      
       navigate('/user');
     } catch (error) {
       setAuthError(error.message || 'Google Auth Failed.');
@@ -130,7 +140,7 @@ const Login = () => {
                       type="email"
                       value={formData.email}
                       onChange={handleChange}
-                      placeholder="user@linkaura.com"
+                      placeholder="user@poornima.edu.in"
                       className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm focus:outline-none focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/5 transition-all"
                     />
                   </div>
