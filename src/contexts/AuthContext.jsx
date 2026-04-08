@@ -1,37 +1,31 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { auth } from '../firebase/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
+import { supabase } from '../supabaseClient';
 
-// Create the authentication context
 const AuthContext = createContext();
 
-// Custom hook to use the auth context
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading]         = useState(true);
 
   useEffect(() => {
-    // Set up the auth state observer
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setCurrentUser(session?.user ?? null);
       setLoading(false);
     });
 
-    // Cleanup subscription on unmount
-    return () => unsubscribe();
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setCurrentUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const value = {
-    currentUser,
-    loading
-  };
-
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{ currentUser, loading }}>
       {!loading && children}
     </AuthContext.Provider>
   );

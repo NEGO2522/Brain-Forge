@@ -5,6 +5,7 @@ import Landing from './pages/Landing';
 import Connect from './pages/Connect';
 import About from './pages/About';
 import Login from './auth/Login';
+import Signup from './auth/Signup';
 import Profiles from './pages/Profiles';
 import User from './pages/User';
 import Chat from './pages/Chat';
@@ -44,6 +45,7 @@ function App() {
           </Layout>
         } />
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/user" element={
           <Layout>
             <User />

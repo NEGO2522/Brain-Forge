@@ -1,27 +1,58 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
+import { FiMail, FiLock, FiEye, FiEyeOff, FiUser } from 'react-icons/fi';
 import Navbar from '../components/Navbar';
 import { supabase } from '../supabaseClient.js';
 
-const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const Signup = () => {
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
 
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSignup = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
-    const { error: supabaseError } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
-      password,
+    // Basic validation
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      setLoading(false);
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters");
+      setLoading(false);
+      return;
+    }
+
+    const { error: supabaseError } = await supabase.auth.signUp({
+      email: formData.email.trim(),
+      password: formData.password,
+      options: {
+        data: {
+          full_name: formData.fullName,
+        },
+      },
     });
 
     setLoading(false);
@@ -31,8 +62,11 @@ const Login = () => {
       return;
     }
 
-    // Login successful → redirect
-    navigate('/profiles');
+    setSuccess(true);
+    // You can redirect after a delay or let user check email
+    setTimeout(() => {
+      navigate('/login');
+    }, 2500);
   };
 
   return (
@@ -40,7 +74,7 @@ const Login = () => {
       <Navbar />
 
       <div className="flex min-h-screen pt-16">
-        {/* LEFT SIDE - Image */}
+        {/* LEFT SIDE - Same beautiful image as Login */}
         <div className="hidden lg:flex lg:w-1/2 p-8 relative">
           <div className="relative w-full h-full overflow-hidden rounded-3xl shadow-2xl">
             <img
@@ -60,16 +94,15 @@ const Login = () => {
                 >
                   <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 backdrop-blur-md rounded-full mb-6">
                     <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                    <span className="text-xs font-mono tracking-widest">LIVE COMMUNITY</span>
+                    <span className="text-xs font-mono tracking-widest">JOIN THE COMMUNITY</span>
                   </div>
 
                   <h2 className="text-5xl font-serif tracking-tighter leading-tight mb-6">
-                    Freshers connect with<br />
-                    <span className="text-amber-500">Seniors</span>
+                    Start your journey with<br />
+                    <span className="text-amber-500">Linkaura</span>
                   </h2>
                   <p className="text-xl text-zinc-300 leading-relaxed">
-                    First-year students participating in events, hackathons, and study sessions with seniors. 
-                    Learning, growing, and building lifelong bonds together.
+                    Connect with seniors, participate in events, and grow together with thousands of Indian tech students.
                   </p>
                 </motion.div>
               </div>
@@ -81,7 +114,7 @@ const Login = () => {
           </div>
         </div>
 
-        {/* RIGHT SIDE - Login Form */}
+        {/* RIGHT SIDE - Signup Form */}
         <div className="flex-1 flex items-center justify-center p-6 lg:p-12 bg-zinc-950">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -90,8 +123,8 @@ const Login = () => {
             className="w-full max-w-md"
           >
             <div className="mb-10 text-center lg:text-left">
-              <h1 className="text-4xl font-serif tracking-tight mb-3">Welcome back</h1>
-              <p className="text-zinc-400">Sign in to your tech community</p>
+              <h1 className="text-4xl font-serif tracking-tight mb-3">Create your account</h1>
+              <p className="text-zinc-400">Join the Linkaura community today</p>
             </div>
 
             {error && (
@@ -100,7 +133,33 @@ const Login = () => {
               </div>
             )}
 
-            <form onSubmit={handleLogin} className="space-y-6">
+            {success && (
+              <div className="mb-6 p-4 bg-green-500/10 border border-green-500/30 rounded-2xl text-green-400 text-sm">
+                Account created successfully! Please check your email to verify.
+              </div>
+            )}
+
+            <form onSubmit={handleSignup} className="space-y-6">
+              {/* Full Name */}
+              <div>
+                <label className="block text-sm text-zinc-400 mb-2">Full Name</label>
+                <div className="relative">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500">
+                    <FiUser size={20} />
+                  </div>
+                  <input
+                    type="text"
+                    name="fullName"
+                    value={formData.fullName}
+                    onChange={handleChange}
+                    required
+                    className="w-full bg-zinc-900 border border-zinc-700 focus:border-amber-500 rounded-2xl py-4 pl-12 pr-4 text-white placeholder-zinc-500 focus:outline-none transition"
+                    placeholder="John Doe"
+                  />
+                </div>
+              </div>
+
+              {/* Email */}
               <div>
                 <label className="block text-sm text-zinc-400 mb-2">Email Address</label>
                 <div className="relative">
@@ -109,8 +168,9 @@ const Login = () => {
                   </div>
                   <input
                     type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
                     required
                     className="w-full bg-zinc-900 border border-zinc-700 focus:border-amber-500 rounded-2xl py-4 pl-12 pr-4 text-white placeholder-zinc-500 focus:outline-none transition"
                     placeholder="you@example.com"
@@ -118,6 +178,7 @@ const Login = () => {
                 </div>
               </div>
 
+              {/* Password */}
               <div>
                 <label className="block text-sm text-zinc-400 mb-2">Password</label>
                 <div className="relative">
@@ -126,8 +187,9 @@ const Login = () => {
                   </div>
                   <input
                     type={showPassword ? "text" : "password"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
                     required
                     className="w-full bg-zinc-900 border border-zinc-700 focus:border-amber-500 rounded-2xl py-4 pl-12 pr-12 text-white placeholder-zinc-500 focus:outline-none transition"
                     placeholder="••••••••"
@@ -142,6 +204,32 @@ const Login = () => {
                 </div>
               </div>
 
+              {/* Confirm Password */}
+              <div>
+                <label className="block text-sm text-zinc-400 mb-2">Confirm Password</label>
+                <div className="relative">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500">
+                    <FiLock size={20} />
+                  </div>
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    required
+                    className="w-full bg-zinc-900 border border-zinc-700 focus:border-amber-500 rounded-2xl py-4 pl-12 pr-12 text-white placeholder-zinc-500 focus:outline-none transition"
+                    placeholder="••••••••"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition"
+                  >
+                    {showConfirmPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+                  </button>
+                </div>
+              </div>
+
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -149,17 +237,17 @@ const Login = () => {
                 disabled={loading}
                 className="w-full bg-amber-500 hover:bg-amber-400 disabled:bg-amber-600 disabled:cursor-not-allowed text-black font-bold py-4 rounded-2xl text-lg tracking-wider transition-all duration-200 flex items-center justify-center"
               >
-                {loading ? "Signing in..." : "Sign In"}
+                {loading ? "Creating account..." : "Create Account"}
               </motion.button>
             </form>
 
             <p className="text-center mt-8 text-zinc-400">
-              Don't have an account?{' '}
+              Already have an account?{' '}
               <button
-                onClick={() => navigate('/signup')}
+                onClick={() => navigate('/login')}
                 className="text-amber-500 hover:text-amber-400 font-medium transition"
               >
-                Create one free
+                Sign in
               </button>
             </p>
 
@@ -173,4 +261,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;
