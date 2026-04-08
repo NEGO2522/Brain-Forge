@@ -418,7 +418,7 @@ const FeatureCard = ({ icon, title, desc, accent, delay }) => {
       transition={{ delay, duration: 0.5 }}
       className="group p-7 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl transition-all hover:border-amber-400/30 hover:-translate-y-1">
       <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 text-xl group-hover:scale-110 transition-transform"
-        style={{ backgroundColor: accent + '18', color: accent }}>{icon}</div>
+        style={{ backgroundColor: 'rgba(255,255,255,0.1)', color: '#9ca3af' }}>{icon}</div>
       <h4 className="text-lg font-bold mb-2 text-white">{title}</h4>
       <p className="text-sm leading-relaxed text-zinc-400">{desc}</p>
     </motion.div>
@@ -459,15 +459,15 @@ const IsometricStack = () => {
     const next = [...stack]; const [sel] = next.splice(idx, 1); next.unshift(sel); setStack(next);
   };
   return (
-    <div className="relative h-[420px] md:h-[560px] w-full flex items-center justify-center" style={{ perspective: '1800px' }}>
+    <div className="relative h-[520px] md:h-[680px] w-full flex items-center justify-center" style={{ perspective: '1800px' }}>
       <AnimatePresence mode="popLayout">
         {stack.map((item, i) => (
           <motion.div key={item.id} layout
             initial={{ opacity: 0, x: -80, rotateX: 45, rotateZ: -45 }}
-            animate={{ opacity: 1, x: 0, y: i * 82 - 82, rotateX: 48, rotateZ: -42, scale: i === 0 ? 1 : 0.87, zIndex: stack.length - i }}
+            animate={{ opacity: 1, x: 0, y: i * 100 - 100, rotateX: 48, rotateZ: -42, scale: i === 0 ? 1 : 0.87, zIndex: stack.length - i }}
             onClick={() => click(item.id)}
             transition={{ type: 'spring', stiffness: 75, damping: 22 }}
-            className="absolute cursor-pointer w-64 md:w-[340px] h-64 md:h-[340px] rounded-[2.75rem] backdrop-blur-2xl flex flex-col items-center justify-center p-8 text-center border"
+            className="absolute cursor-pointer w-80 md:w-[420px] h-80 md:h-[420px] rounded-[2.75rem] backdrop-blur-2xl flex flex-col items-center justify-center p-8 text-center border"
             style={{
               borderColor: i === 0 ? ACCENT : 'rgba(255,255,255,0.1)',
               backgroundColor: i === 0 ? 'rgba(245,158,11,0.1)' : 'rgba(255,255,255,0.035)',
@@ -622,21 +622,7 @@ const Landing = () => {
           </div>
       </section>
 
-      {/* STATS BAR */}
-      <div className="border-y border-white/10 bg-black/80 backdrop-blur-md py-12">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-            className="flex flex-wrap justify-center lg:justify-between gap-x-16 gap-y-10">
-            {[
-              { value: '50+',  label: 'Colleges'              },
-              { value: '500+', label: 'Senior Mentors'        },
-              { value: '2K+',  label: 'Mentorship Sessions'   },
-              { value: '₹99',  label: 'Starting Consultation' },
-            ].map((s, i) => <StatItem key={i} {...s} />)}
-          </motion.div>
-        </div>
-      </div>
-
+      
       {/* FEATURES */}
       <section className="py-24 md:py-32 px-6 lg:px-12 bg-black">
         <div className="max-w-7xl mx-auto">

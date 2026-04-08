@@ -27,10 +27,21 @@ const Signup = () => {
     });
   };
 
+  const isCollegeEmail = (email) => {
+    return email.trim().toLowerCase().endsWith('.edu.in');
+  };
+
   const handleSignup = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+
+    // College email validation
+    if (!isCollegeEmail(formData.email)) {
+      setError('Only college email addresses ending with .edu.in are allowed. Personal emails like Gmail are not permitted.');
+      setLoading(false);
+      return;
+    }
 
     // Basic validation
     if (formData.password !== formData.confirmPassword) {
@@ -173,7 +184,7 @@ const Signup = () => {
                     onChange={handleChange}
                     required
                     className="w-full bg-zinc-900 border border-zinc-700 focus:border-amber-500 rounded-2xl py-4 pl-12 pr-4 text-white placeholder-zinc-500 focus:outline-none transition"
-                    placeholder="you@example.com"
+                    placeholder="you@college.edu.in"
                   />
                 </div>
               </div>

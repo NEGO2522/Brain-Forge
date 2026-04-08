@@ -14,10 +14,20 @@ const Login = () => {
 
   const navigate = useNavigate();
 
+  const isCollegeEmail = (email) => {
+    return email.trim().toLowerCase().endsWith('.edu.in');
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+
+    if (!isCollegeEmail(email)) {
+      setError('Only college email addresses ending with .edu.in are allowed. Personal emails like Gmail are not permitted.');
+      setLoading(false);
+      return;
+    }
 
     const { error: supabaseError } = await supabase.auth.signInWithPassword({
       email: email.trim(),
@@ -113,7 +123,7 @@ const Login = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     className="w-full bg-zinc-900 border border-zinc-700 focus:border-amber-500 rounded-2xl py-4 pl-12 pr-4 text-white placeholder-zinc-500 focus:outline-none transition"
-                    placeholder="you@example.com"
+                    placeholder="you@college.edu.in"
                   />
                 </div>
               </div>
