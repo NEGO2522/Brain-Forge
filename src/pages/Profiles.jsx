@@ -3,288 +3,502 @@ import useSEO from '../hooks/useSEO';
 import { getFirestore, collection, getDocs, updateDoc, doc } from 'firebase/firestore';
 import { app } from '../firebase/firebase';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiGithub, FiLinkedin, FiCpu, FiMapPin, FiUser, FiSearch, FiCalendar, FiMessageSquare } from 'react-icons/fi';
+import {
+  FiGithub, FiLinkedin, FiMapPin, FiSearch,
+  FiMessageSquare, FiCalendar, FiCode, FiUser
+} from 'react-icons/fi';
 import { FaStar } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
 import Navbar from '../components/Navbar';
 
-const Profiles = () => {
-  useSEO({
-    title: 'Directory',
-    description: 'Explore the Linkaura aura directory. Find developers, designers, and creators to connect with.',
-    keywords: 'directory, user profiles, tech stack, developers network, linkaura'
-  });
+/* ── Colour palette helper ── */
+const AVATAR_PALETTES = [
+  ['#f59e0b', '#92400e'],
+  ['#06b6d4', '#164e63'],
+  ['#8b5cf6', '#4c1d95'],
+  ['#10b981', '#064e3b'],
+  ['#ef4444', '#7f1d1d'],
+  ['#f97316', '#7c2d12'],
+];
 
-  const [profiles, setProfiles] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
-  const auth = getAuth(app);
-
-  useEffect(() => {
-    const fetchProfiles = async () => {
-      try {
-        const db = getFirestore(app);
-        // Direct fetch: No authentication check here
-        const querySnapshot = await getDocs(collection(db, 'userProfiles'));
-        const profileData = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-        setProfiles(profileData);
-      } catch (error) {
-        console.error("Error fetching profiles:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProfiles();
-  }, []);
-
-  const filteredProfiles = profiles.filter(p => 
-    (p.name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
-     p.techStack?.toLowerCase().includes(searchQuery.toLowerCase())) &&
-    p.userId !== auth.currentUser?.uid
-  );
-
-  return (
-    <div className="min-h-screen w-full bg-black text-white relative overflow-x-hidden pt-32 pb-20 px-4 md:px-10">
-      <Navbar />
-      
-      {/* Background Ambience */}
-      <div className="fixed inset-0 z-0 opacity-20 pointer-events-none">
-        <img src="/Profile.jpg" className="w-full h-full object-cover" alt="bg" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
-      </div>
-
-      <div className="max-w-7xl mx-auto relative z-10">
-        
-        {/* Header Section */}
-        <div className="mb-12 text-left">
-          <motion.h1 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="text-4xl md:text-6xl font-serif italic mb-4"
-          >
-            Aura <span className="text-amber-500">Directory</span>
-          </motion.h1>
-          <div className="w-24 h-1 bg-amber-500 mb-8 shadow-[0_0_15px_rgba(245,158,11,0.5)]"></div>
-          
-          {/* Search Bar */}
-          <div className="max-w-md relative mb-8">
-            <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-amber-500/50" />
-            <input 
-              type="text"
-              placeholder="Search by name or tech stack..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 px-12 outline-none focus:border-amber-500/50 transition-all text-sm uppercase tracking-widest font-bold placeholder:text-gray-600"
-            />
-          </div>
-
-          <p className="text-gray-500 text-[10px] uppercase tracking-[0.5em] font-black ml-1">
-            Total Operators Detected: {filteredProfiles.length}
-          </p>
-        </div>
-
-        {loading ? (
-          <div className="flex flex-col justify-center items-start h-64 gap-4 ml-1">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.3)]"></div>
-            <p className="text-[10px] uppercase tracking-widest text-amber-500/50">Loading Profiles...</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <AnimatePresence mode='popLayout'>
-              {filteredProfiles.map((profile, index) => (
-                <ProfileCard key={profile.id} profile={profile} index={index} />
-              ))}
-            </AnimatePresence>
-          </div>
-        )}
-
-        {!loading && filteredProfiles.length === 0 && (
-          <div className="py-20 opacity-30 italic font-serif text-left">
-            No operators found in this sector.
-          </div>
-        )}
-      </div>
-    </div>
-  );
+const avatarPalette = (name = '') => {
+  const idx = (name.charCodeAt(0) || 0) % AVATAR_PALETTES.length;
+  return AVATAR_PALETTES[idx];
 };
 
+const initials = (name = '') =>
+  name.split(' ').slice(0, 2).map(w => w[0]?.toUpperCase() || '').join('') || '?';
+
+/* ════════════════════════════════════════════
+   PROFILE CARD
+════════════════════════════════════════════ */
 const ProfileCard = ({ profile, index }) => {
-  const navigate = useNavigate();
-  const auth = getAuth(app);
-  const techStackArray = profile.techStack ? profile.techStack.split(',').map(t => t.trim()) : [];
+  const navigate  = useNavigate();
+  const auth      = getAuth(app);
+  const techStack = profile.techStack ? profile.techStack.split(',').map(t => t.trim()).filter(Boolean) : [];
 
-  const linkedinUrl = profile.linkedin?.startsWith('http') 
-    ? profile.linkedin 
-    : `https://linkedin.com/in/${profile.linkedin}`;
+  const linkedinUrl = profile.linkedin?.startsWith('http')
+    ? profile.linkedin : `https://linkedin.com/in/${profile.linkedin}`;
+  const githubUrl   = profile.github?.startsWith('http')
+    ? profile.github   : `https://github.com/${profile.github}`;
 
-  const githubUrl = profile.github?.startsWith('http') 
-    ? profile.github 
-    : `https://github.com/${profile.github}`;
+  const isOwnProfile = auth.currentUser?.uid === profile.userId;
 
-  const handleChatClick = () => {
-    const currentUser = auth.currentUser;
-    if (currentUser) {
-      navigate(`/chat/${profile.id}`, { state: { profile } });
-    } else {
-      navigate('/login');
-    }
-  };
-
-  // Check if the current user is viewing their own profile
-  const isOwnProfile = auth.currentUser && auth.currentUser.uid === profile.userId;
-
-  // Rating Logic
   const [userRating, setUserRating] = useState(0);
-  const [avgRating, setAvgRating] = useState(0);
-  const [ratingCount, setRatingCount] = useState(0);
+  const [avgRating,  setAvgRating]  = useState(0);
+  const [ratingCount,setRatingCount]= useState(0);
+  const [hovered,    setHovered]    = useState(0);
 
   useEffect(() => {
     if (profile.ratings) {
-      const ratingsArray = Object.values(profile.ratings);
-      if (ratingsArray.length > 0) {
-        setAvgRating(ratingsArray.reduce((a, b) => a + b, 0) / ratingsArray.length);
-        setRatingCount(ratingsArray.length);
+      const vals = Object.values(profile.ratings);
+      if (vals.length) {
+        setAvgRating(vals.reduce((a, b) => a + b, 0) / vals.length);
+        setRatingCount(vals.length);
       }
-      if (auth.currentUser && profile.ratings[auth.currentUser.uid]) {
+      if (auth.currentUser && profile.ratings[auth.currentUser.uid])
         setUserRating(profile.ratings[auth.currentUser.uid]);
-      }
     }
-  }, [profile.ratings, auth.currentUser]);
+  }, [profile.ratings]);
 
-  const handleRate = async (rateValue) => {
+  const handleRate = async (val) => {
     if (!auth.currentUser) return navigate('/login');
-    if (isOwnProfile) return;
-    
-    setUserRating(rateValue); // Optimistic UI
-    
+    if (isOwnProfile)       return;
+    setUserRating(val);
     try {
-      const db = getFirestore(app);
-      const profileRef = doc(db, 'userProfiles', profile.id);
-      await updateDoc(profileRef, {
-        [`ratings.${auth.currentUser.uid}`]: rateValue
-      });
-      
-      // Update local average without re-fetching
+      const db  = getFirestore(app);
+      const ref = doc(db, 'userProfiles', profile.id);
+      await updateDoc(ref, { [`ratings.${auth.currentUser.uid}`]: val });
       const newCount = userRating === 0 ? ratingCount + 1 : ratingCount;
-      const currentTotal = avgRating * ratingCount;
-      const newTotal = currentTotal - userRating + rateValue;
-      setAvgRating(newTotal / newCount);
+      setAvgRating((avgRating * ratingCount - userRating + val) / newCount);
       setRatingCount(newCount);
-
-    } catch (e) {
-      console.error("Error rating profile:", e);
-    }
+    } catch (e) { console.error(e); }
   };
+
+  const handleChat = () => {
+    if (auth.currentUser) navigate(`/chat/${profile.id}`, { state: { profile } });
+    else navigate('/login');
+  };
+
+  const [fg, bg] = avatarPalette(profile.name);
+
+  /* theme tokens */
+  const card   = 'rgba(255,255,255,0.04)';
+  const border  = 'rgba(255,255,255,0.08)';
+  const muted   = 'rgba(255,255,255,0.35)';
+  const faint   = 'rgba(255,255,255,0.06)';
+  const faintB  = 'rgba(255,255,255,0.08)';
+  const textPri = '#ffffff';
+  const tagText = 'rgba(255,255,255,0.65)';
 
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.9 }}
-      transition={{ delay: index * 0.05 }}
-      className="group bg-white/5 backdrop-blur-xl border border-white/10 rounded-[2.5rem] p-8 hover:border-amber-500/40 transition-all duration-500 relative overflow-hidden flex flex-col h-full"
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ delay: index * 0.04, duration: 0.35 }}
+      className="group relative flex flex-col rounded-3xl overflow-hidden transition-all duration-500"
+      style={{
+        backgroundColor: card,
+        border: `1px solid ${border}`,
+        backdropFilter: 'blur(20px)',
+        boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
+      }}
+      whileHover={{
+        y: -4,
+        boxShadow: '0 16px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(245,158,11,0.2)',
+      }}
     >
-      <div className="absolute -inset-1 bg-gradient-to-r from-amber-500 to-amber-600 rounded-[2.5rem] blur opacity-0 group-hover:opacity-10 transition duration-500 pointer-events-none"></div>
+      {/* ── Amber hover border glow ── */}
+      <div
+        className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+        style={{ border: '1px solid rgba(245,158,11,0.30)' }}
+      />
 
-      <div className="relative z-10 flex flex-col h-full">
-        <div className="flex justify-between items-start mb-6">
-          <div className="flex gap-4 items-center">
-            <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-2xl text-amber-500 shadow-inner">
-              <FiUser />
-            </div>
-            <div className="flex flex-col justify-center">
-              <div className="flex items-center gap-1.5 text-amber-500 text-sm">
-                <FaStar /> <span className="font-bold">{ratingCount > 0 ? avgRating.toFixed(1) : 'New'}</span>
-              </div>
-              <span className="text-[8px] uppercase tracking-widest text-gray-500 font-bold">{ratingCount} Ratings</span>
-            </div>
+      {/* ── TOP STRIP with avatar ── */}
+      <div
+        className="relative h-28 flex-shrink-0 overflow-hidden"
+        style={{
+          background: `linear-gradient(135deg, ${bg}55, rgba(0,0,0,0) 80%)`,
+        }}
+      >
+        {/* Subtle grid lines */}
+        <div
+          className="absolute inset-0 opacity-10"
+          style={{
+            backgroundImage: `repeating-linear-gradient(0deg, ${fg}22 0px, transparent 1px, transparent 40px), repeating-linear-gradient(90deg, ${fg}22 0px, transparent 1px, transparent 40px)`,
+            backgroundSize: '40px 40px',
+          }}
+        />
+
+        {/* Year badge */}
+        {profile.year && (
+          <div
+            className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest"
+            style={{
+              backgroundColor: 'rgba(245,158,11,0.15)',
+              border: '1px solid rgba(245,158,11,0.35)',
+              color: '#f59e0b',
+            }}
+          >
+            <FiCalendar size={9} />
+            Year {profile.year}
           </div>
-          
-          {profile.year && (
-            <div className="px-3 py-1.5 bg-amber-500/10 border border-amber-500/30 rounded-lg flex items-center gap-2">
-              <FiCalendar className="text-amber-500 text-[10px]" />
-              <span className="text-[9px] font-black text-amber-500 uppercase tracking-widest">Year 0{profile.year}</span>
-            </div>
-          )}
+        )}
 
-          <div className="flex gap-2">
+        {/* Avatar */}
+        <div
+          className="absolute -bottom-7 left-6 w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-black shadow-xl ring-4"
+          style={{
+            background: `linear-gradient(135deg, ${fg}, ${bg})`,
+            color: '#fff',
+            ringColor: '#000',
+            boxShadow: `0 0 0 4px #0a0a0a, 0 8px 24px ${fg}55`,
+          }}
+        >
+          {initials(profile.name)}
+        </div>
+      </div>
+
+      {/* ── BODY ── */}
+      <div className="flex flex-col flex-grow px-6 pt-10 pb-6 gap-4">
+
+        {/* Name row */}
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0">
+            <h3
+              className="text-xl font-serif font-semibold truncate leading-tight"
+              style={{ color: textPri }}
+            >
+              {profile.name || 'Anonymous'}
+            </h3>
+            {profile.address && (
+              <p
+                className="flex items-center gap-1 text-[10px] uppercase tracking-widest font-bold mt-0.5"
+                style={{ color: '#f59e0b' }}
+              >
+                <FiMapPin size={9} /> {profile.address}
+              </p>
+            )}
+          </div>
+
+          {/* Social links */}
+          <div className="flex gap-1.5 flex-shrink-0">
             {profile.github && (
-              <a href={githubUrl} target="_blank" rel="noreferrer" className="text-gray-500 hover:text-white transition-colors p-2 bg-white/5 rounded-lg">
-                <FiGithub size={16} />
+              <a
+                href={githubUrl} target="_blank" rel="noreferrer"
+                className="flex items-center justify-center w-8 h-8 rounded-xl transition-all duration-200 hover:scale-110"
+                style={{ backgroundColor: faint, border: `1px solid ${faintB}`, color: muted }}
+                onMouseEnter={e => e.currentTarget.style.color = '#f59e0b'}
+                onMouseLeave={e => e.currentTarget.style.color = muted}
+              >
+                <FiGithub size={14} />
               </a>
             )}
             {profile.linkedin && (
-              <a href={linkedinUrl} target="_blank" rel="noreferrer" className="text-gray-500 hover:text-white transition-colors p-2 bg-white/5 rounded-lg">
-                <FiLinkedin size={16} />
+              <a
+                href={linkedinUrl} target="_blank" rel="noreferrer"
+                className="flex items-center justify-center w-8 h-8 rounded-xl transition-all duration-200 hover:scale-110"
+                style={{ backgroundColor: faint, border: `1px solid ${faintB}`, color: muted }}
+                onMouseEnter={e => e.currentTarget.style.color = '#f59e0b'}
+                onMouseLeave={e => e.currentTarget.style.color = muted}
+              >
+                <FiLinkedin size={14} />
               </a>
             )}
           </div>
         </div>
 
-        <h3 className="text-2xl font-serif italic text-white mb-1 truncate">{profile.name || "Anonymous User"}</h3>
-        
-        <div className="flex flex-col gap-1 mb-4">
-          <p className="text-amber-500/60 text-[10px] uppercase tracking-widest font-black flex items-center gap-2">
-            <FiMapPin className="text-[12px]" /> {profile.address || "Unknown Coordinates"}
-          </p>
+        {/* Rating display */}
+        <div className="flex items-center gap-2">
+          <div className="flex gap-0.5">
+            {[1,2,3,4,5].map(s => (
+              <FaStar key={s} size={10} color={s <= Math.round(avgRating) ? '#f59e0b' : '#2d2d2d'} />
+            ))}
+          </div>
+          <span className="text-[10px] font-bold" style={{ color: muted }}>
+            {ratingCount > 0 ? `${avgRating.toFixed(1)} · ${ratingCount} rating${ratingCount !== 1 ? 's' : ''}` : 'No ratings yet'}
+          </span>
         </div>
 
-        <hr className="border-white/5 mb-6" />
+        {/* Divider */}
+        <div style={{ height: 1, backgroundColor: faintB }} />
 
-        <div className="space-y-3 flex-grow">
-          <label className="flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] text-gray-500 font-black">
-            <FiCpu className="text-amber-500" /> Core Matrix
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {techStackArray.length > 0 ? techStackArray.map((tech, i) => (
-              <span 
-                key={i} 
-                className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-[9px] font-black uppercase tracking-tighter text-gray-300 group-hover:border-amber-500/20 transition-colors"
+        {/* Tech stack */}
+        <div className="flex flex-col gap-2 flex-grow">
+          <p
+            className="flex items-center gap-1.5 text-[9px] uppercase tracking-[0.25em] font-black"
+            style={{ color: muted }}
+          >
+            <FiCode size={10} style={{ color: '#f59e0b' }} /> Tech Stack
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            {techStack.length > 0 ? techStack.map((tech, i) => (
+              <span
+                key={i}
+                className="px-2.5 py-1 rounded-lg text-[9px] font-bold uppercase tracking-wide"
+                style={{
+                  backgroundColor: faint,
+                  border: `1px solid ${faintB}`,
+                  color: tagText,
+                }}
               >
                 {tech}
               </span>
             )) : (
-              <span className="text-gray-600 text-[10px] italic">No modules loaded</span>
+              <span style={{ color: muted, fontSize: 11 }} className="italic">Not specified</span>
             )}
           </div>
         </div>
 
-        {/* Rating & Chat Controls */}
-        <div className="mt-6 pt-4 border-t border-white/5 flex flex-col gap-4">
-          {!isOwnProfile && (
+        {/* ── FOOTER ── */}
+        {!isOwnProfile && (
+          <div className="flex flex-col gap-3 pt-2 border-t" style={{ borderColor: faintB }}>
+
+            {/* Star rating */}
             <div className="flex items-center justify-between">
-              <span className="text-[9px] uppercase tracking-[0.2em] text-gray-500 font-black">Rate Operator:</span>
-              <div className="flex gap-1.5">
-                {[1, 2, 3, 4, 5].map(star => (
-                  <button 
-                    key={star} 
-                    onClick={() => handleRate(star)}
-                    className={`transition-colors hover:scale-110 active:scale-90 ${userRating >= star ? 'text-amber-500' : 'text-gray-600 hover:text-amber-500/50'}`}
+              <span className="text-[9px] uppercase tracking-[0.2em] font-black" style={{ color: muted }}>
+                Your Rating
+              </span>
+              <div className="flex gap-1">
+                {[1,2,3,4,5].map(s => (
+                  <button
+                    key={s}
+                    onClick={() => handleRate(s)}
+                    onMouseEnter={() => setHovered(s)}
+                    onMouseLeave={() => setHovered(0)}
+                    className="transition-transform hover:scale-125 active:scale-90"
                   >
-                    <FaStar size={16} />
+                    <FaStar
+                      size={15}
+                      color={s <= (hovered || userRating) ? '#f59e0b' : '#2d2d2d'}
+                    />
                   </button>
                 ))}
               </div>
             </div>
-          )}
 
-          {!isOwnProfile && (
+            {/* Chat CTA */}
             <button
-              onClick={handleChatClick}
-              className="w-full py-4 rounded-xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-amber-500 hover:text-black transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+              onClick={handleChat}
+              className="w-full py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 group/btn"
+              style={{
+                backgroundColor: 'rgba(245,158,11,0.10)',
+                border: '1px solid rgba(245,158,11,0.25)',
+                color: '#f59e0b',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.backgroundColor = '#f59e0b';
+                e.currentTarget.style.color = '#000';
+                e.currentTarget.style.borderColor = '#f59e0b';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.backgroundColor = 'rgba(245,158,11,0.10)';
+                e.currentTarget.style.color = '#f59e0b';
+                e.currentTarget.style.borderColor = 'rgba(245,158,11,0.25)';
+              }}
             >
-              Start Chat <FiMessageSquare />
+              <FiMessageSquare size={13} /> Start Conversation
             </button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </motion.div>
+  );
+};
+
+/* ════════════════════════════════════════════
+   MAIN PAGE
+════════════════════════════════════════════ */
+const Profiles = () => {
+  useSEO({
+    title: 'Directory',
+    description: 'Explore the Linkaura aura directory. Find developers, designers, and creators to connect with.',
+    keywords: 'directory, user profiles, tech stack, developers network, linkaura',
+  });
+
+  const [profiles,  setProfiles]  = useState([]);
+  const [loading,   setLoading]   = useState(true);
+  const [searchQuery, setSearch]  = useState('');
+  const auth = getAuth(app);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const db   = getFirestore(app);
+        const snap = await getDocs(collection(db, 'userProfiles'));
+        setProfiles(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      } catch (e) { console.error(e); }
+      finally     { setLoading(false); }
+    })();
+  }, []);
+
+  const filtered = profiles.filter(p =>
+    (p.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+     p.techStack?.toLowerCase().includes(searchQuery.toLowerCase())) &&
+    p.userId !== auth.currentUser?.uid
+  );
+
+  /* theme tokens */
+  const pageBg   = '#000000';
+  const textPri  = '#ffffff';
+  const textMut  = 'rgba(255,255,255,0.40)';
+  const inputBg  = 'rgba(255,255,255,0.05)';
+  const inputBd  = 'rgba(255,255,255,0.10)';
+
+  return (
+    <div
+      className="min-h-screen w-full relative overflow-x-hidden"
+      style={{ backgroundColor: pageBg, color: textPri }}
+    >
+      <Navbar />
+
+      {/* ── Background decoration ── */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        {/* Top-right amber orb */}
+        <div
+          className="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full"
+          style={{
+            background: 'radial-gradient(circle, rgba(245,158,11,0.06) 0%, transparent 70%)',
+          }}
+        />
+        {/* Bottom-left cyan orb */}
+        <div
+          className="absolute -bottom-32 -left-32 w-[500px] h-[500px] rounded-full"
+          style={{
+            background: 'radial-gradient(circle, rgba(6,182,212,0.04) 0%, transparent 70%)',
+          }}
+        />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 md:px-10 pt-36 pb-24 relative z-10">
+
+        {/* ── PAGE HEADER ── */}
+        <div className="mb-14">
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-[0.3em] mb-6"
+            style={{
+              backgroundColor: 'rgba(245,158,11,0.10)',
+              border: '1px solid rgba(245,158,11,0.25)',
+              color: '#f59e0b',
+            }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+            Aura Directory
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="text-5xl md:text-7xl font-serif tracking-tight leading-[0.95] mb-4"
+            style={{ color: textPri }}
+          >
+            Find Your <br />
+            <span className="text-amber-500 italic">People</span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.15 }}
+            className="text-sm md:text-base font-light max-w-md mb-10"
+            style={{ color: textMut }}
+          >
+            Browse real profiles of developers, designers and builders. Connect directly.
+          </motion.p>
+
+          {/* Search */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="max-w-lg relative"
+          >
+            <FiSearch
+              className="absolute left-4 top-1/2 -translate-y-1/2"
+              size={16}
+              style={{ color: '#f59e0b' }}
+            />
+            <input
+              type="text"
+              placeholder="Search by name or tech stack…"
+              value={searchQuery}
+              onChange={e => setSearch(e.target.value)}
+              className="w-full rounded-2xl py-4 pl-11 pr-5 outline-none text-sm font-medium transition-all duration-300"
+              style={{
+                backgroundColor: inputBg,
+                border: `1px solid ${inputBd}`,
+                color: textPri,
+                boxShadow: 'none',
+              }}
+              onFocus={e => e.currentTarget.style.borderColor = 'rgba(245,158,11,0.50)'}
+              onBlur={e  => e.currentTarget.style.borderColor = inputBd}
+            />
+          </motion.div>
+
+          {/* Count */}
+          {!loading && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="mt-5 text-[10px] uppercase tracking-[0.4em] font-black"
+              style={{ color: textMut }}
+            >
+              {filtered.length} {filtered.length === 1 ? 'Profile' : 'Profiles'} Found
+            </motion.p>
+          )}
+        </div>
+
+        {/* ── GRID ── */}
+        {loading ? (
+          <div className="flex flex-col items-start gap-4 py-16">
+            <div
+              className="w-10 h-10 rounded-full border-t-2 border-b-2 border-amber-500 animate-spin"
+              style={{ boxShadow: '0 0 12px rgba(245,158,11,0.3)' }}
+            />
+            <p className="text-[10px] uppercase tracking-widest" style={{ color: '#f59e0b' }}>
+              Loading profiles…
+            </p>
+          </div>
+        ) : (
+          <AnimatePresence mode="popLayout">
+            {filtered.length > 0 ? (
+              <motion.div
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                layout
+              >
+                {filtered.map((profile, i) => (
+                  <ProfileCard
+                    key={profile.id}
+                    profile={profile}
+                    index={i}
+                  />
+                ))}
+              </motion.div>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="py-24 flex flex-col items-center gap-4"
+              >
+                <FiUser size={40} style={{ color: textMut, opacity: 0.4 }} />
+                <p className="font-serif italic text-xl" style={{ color: textMut }}>
+                  No profiles found.
+                </p>
+                <p className="text-[11px] uppercase tracking-widest" style={{ color: textMut, opacity: 0.5 }}>
+                  Try a different search term
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        )}
+      </div>
+    </div>
   );
 };
 

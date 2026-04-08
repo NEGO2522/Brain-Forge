@@ -1,43 +1,127 @@
 @import "tailwindcss";
 
-/* Hide scrollbar for all elements */
-.scrollbar-hide {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+/* ── Theme CSS Variables ── */
+:root {
+  --color-bg:           #ffffff;
+  --color-bg-card:      rgba(0,0,0,0.04);
+  --color-bg-input:     rgba(0,0,0,0.04);
+  --color-border:       rgba(0,0,0,0.10);
+  --color-text:         #111111;
+  --color-text-muted:   #6b7280;
+  --color-text-faint:   rgba(0,0,0,0.20);
+  --color-glow:         rgba(245,158,11,0.08);
+  --color-navbar-bg:    rgba(255,255,255,0.90);
+  --color-menu-bg:      #ffffff;
+  --color-invert-img:   invert(1) hue-rotate(180deg);
+  --transition-theme:   background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;  /* Chrome, Safari, Opera */
+.dark {
+  --color-bg:           #000000;
+  --color-bg-card:      rgba(255,255,255,0.05);
+  --color-bg-input:     rgba(255,255,255,0.05);
+  --color-border:       rgba(255,255,255,0.10);
+  --color-text:         #ffffff;
+  --color-text-muted:   #9ca3af;
+  --color-text-faint:   rgba(255,255,255,0.20);
+  --color-glow:         rgba(245,158,11,0.05);
+  --color-navbar-bg:    rgba(0,0,0,0.90);
+  --color-menu-bg:      #000000;
+  --color-invert-img:   none;
 }
 
-/* Hide scrollbar specifically for chat main element */
-.chat-scrollbar-hide::-webkit-scrollbar {
-  display: none !important;
-  width: 0 !important;
-  height: 0 !important;
+/* ── Apply theme to everything automatically ── */
+html, body, #root {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  transition: var(--transition-theme);
 }
 
-.chat-scrollbar-hide {
-  -ms-overflow-style: none !important;
-  scrollbar-width: none !important;
+/* Utility theme classes */
+.theme-bg          { background-color: var(--color-bg) !important; transition: var(--transition-theme); }
+.theme-bg-card     { background-color: var(--color-bg-card) !important; transition: var(--transition-theme); }
+.theme-text        { color: var(--color-text) !important; transition: color 0.3s ease; }
+.theme-text-muted  { color: var(--color-text-muted) !important; transition: color 0.3s ease; }
+.theme-border      { border-color: var(--color-border) !important; transition: border-color 0.3s ease; }
+.theme-navbar      { background-color: var(--color-navbar-bg) !important; backdrop-filter: blur(20px); transition: var(--transition-theme); }
+.theme-menu        { background-color: var(--color-menu-bg) !important; transition: var(--transition-theme); }
+
+/* ── Light mode overrides for pages/content that use dark-first Tailwind classes ── */
+
+/* Page backgrounds */
+html:not(.dark) .bg-black    { background-color: var(--color-bg) !important; }
+
+/* Cards / panels */
+html:not(.dark) .bg-white\/5  { background-color: rgba(0,0,0,0.04) !important; }
+html:not(.dark) .bg-white\/10 { background-color: rgba(0,0,0,0.06) !important; }
+
+/* Borders */
+html:not(.dark) .border-white\/10 { border-color: rgba(0,0,0,0.10) !important; }
+html:not(.dark) .border-white\/5  { border-color: rgba(0,0,0,0.06) !important; }
+html:not(.dark) .border-white\/20 { border-color: rgba(0,0,0,0.12) !important; }
+
+/* ── Text overrides for light mode ──
+   IMPORTANT: Exclude buttons and elements with colored backgrounds
+   so that white text on dark/amber buttons stays white & readable. */
+html:not(.dark) .text-white:not(button):not(a):not([class*="bg-gray"]):not([class*="bg-amber"]):not([class*="bg-black"]) {
+  color: #111111 !important;
+}
+/* Also exclude text-white that lives *inside* a colored button/link */
+html:not(.dark) button .text-white,
+html:not(.dark) a .text-white,
+html:not(.dark) [class*="bg-gray-900"] .text-white,
+html:not(.dark) [class*="bg-amber"] .text-white,
+html:not(.dark) [class*="bg-black"] .text-white {
+  color: #ffffff !important;
 }
 
-/* Also target any main element within Chat component */
-main::-webkit-scrollbar {
-  display: none !important;
+html:not(.dark) .text-white\/20   { color: rgba(0,0,0,0.20) !important; }
+html:not(.dark) .text-white\/70   { color: rgba(0,0,0,0.60) !important; }
+html:not(.dark) .text-white\/80   { color: rgba(0,0,0,0.70) !important; }
+html:not(.dark) .text-gray-400    { color: #4b5563 !important; }
+html:not(.dark) .text-gray-500    { color: #6b7280 !important; }
+html:not(.dark) .text-gray-600    { color: #9ca3af !important; }
+html:not(.dark) .text-gray-300    { color: #374151 !important; }
+
+/* ── Sign In / action buttons: always keep white text on dark bg ── */
+html:not(.dark) a.bg-gray-900,
+html:not(.dark) button.bg-gray-900 {
+  color: #ffffff !important;
 }
 
-main {
-  -ms-overflow-style: none !important;
-  scrollbar-width: none !important;
+/* Input fields */
+html:not(.dark) input,
+html:not(.dark) textarea,
+html:not(.dark) select {
+  background-color: rgba(0,0,0,0.04) !important;
+  color: #111111 !important;
+  border-color: rgba(0,0,0,0.12) !important;
 }
+html:not(.dark) input::placeholder,
+html:not(.dark) textarea::placeholder { color: #9ca3af !important; }
 
-/* Additional targeting for any scrollable content */
-*::-webkit-scrollbar {
-  display: none !important;
-}
+/* Dropdown menus */
+html:not(.dark) .bg-\[#0A0A0A\] { background-color: #f9fafb !important; }
 
-* {
-  -ms-overflow-style: none !important;
-  scrollbar-width: none !important;
-}
+/* Profile & educator cards */
+html:not(.dark) .bg-black\/40 { background-color: rgba(0,0,0,0.05) !important; }
+
+/* Ambient glows */
+html:not(.dark) .bg-amber-500\/5  { background-color: rgba(245,158,11,0.05) !important; }
+html:not(.dark) .bg-amber-500\/10 { background-color: rgba(245,158,11,0.08) !important; }
+
+/* Background images — desaturate in light mode */
+html:not(.dark) .fixed img { filter: var(--color-invert-img); opacity: 0.08 !important; }
+
+/* ── Hero section canvas wrapper: must stay transparent, never grey ── */
+html:not(.dark) canvas { background: transparent !important; }
+
+/* ── Scrollbar hide ── */
+.scrollbar-hide           { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.chat-scrollbar-hide::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
+.chat-scrollbar-hide      { -ms-overflow-style: none !important; scrollbar-width: none !important; }
+main::-webkit-scrollbar   { display: none !important; }
+main                      { -ms-overflow-style: none !important; scrollbar-width: none !important; }
+*::-webkit-scrollbar      { display: none !important; }
+*                         { -ms-overflow-style: none !important; scrollbar-width: none !important; }

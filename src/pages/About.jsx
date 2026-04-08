@@ -59,9 +59,7 @@ const About = () => {
               <p className="text-gray-300 italic text-base lg:text-lg relative z-10 pl-6">
                 "We built Linkaura because finding the right people to learn and build with shouldn't be hard."
               </p>
-              <p className="mt-4 text-amber-500 font-bold text-[10px] lg:text-xs tracking-widest uppercase pl-6">
-                — Kshitij Jain, Founder
-              </p>
+
             </div>
           </motion.div>
         </div>
@@ -101,10 +99,7 @@ const About = () => {
         </div>
       </div>
 
-      {/* Signature */}
-      <div className="mt-12 lg:mt-0 lg:absolute lg:bottom-6 lg:left-1/2 lg:-translate-x-1/2 opacity-10 pointer-events-none text-center">
-        <p className="text-[8px] tracking-[1em] uppercase font-black">Built by Kshitij Jain & Prabha Trivedi</p>
-      </div>
+
     </div>
   );
 };

@@ -42,12 +42,8 @@ const Navbar = () => {
 
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setIsLoggedIn(!!user);
-
-      // Clean up previous listener
       if (notifUnsub) notifUnsub();
-
       if (user) {
-        // Real-time unread notifications count
         const q = query(
           collection(db, 'notifications', user.uid, 'items'),
           where('read', '==', false)
@@ -59,10 +55,10 @@ const Navbar = () => {
         setUnreadCount(0);
       }
     });
-    
+
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll, { passive: true });
-    
+
     return () => {
       unsubscribe();
       if (notifUnsub) notifUnsub();
@@ -87,37 +83,28 @@ const Navbar = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, [setIsMenuOpen]);
 
-  const handleProfileClick = () => {
-    navigate('/user');
-    setIsMenuOpen(false);
-  };
+  const handleProfileClick = () => { navigate('/user'); setIsMenuOpen(false); };
+  const handleNotificationClick = () => { navigate('/notification'); setIsMenuOpen(false); };
+  const handleChatsClick = () => { navigate('/chats'); setIsMenuOpen(false); };
 
-  const handleNotificationClick = () => {
-    navigate('/notification');
-    setIsMenuOpen(false);
-  };
-
-  const handleChatsClick = () => {
-    navigate('/chats');
-    setIsMenuOpen(false);
-  };
-
-  // UPDATED: Explore changed to Roadmap
   const navLinks = [
     { to: "/", text: "Home" },
     { to: "/profiles", text: "Profiles" },
     { to: "/educators", text: "Educators" },
   ];
 
+  // Fixed dark mode navbar background
+  const scrolledBg = 'bg-black/90 backdrop-blur-xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)]';
+
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 px-4 md:px-8 ${
-      scrolled 
-        ? 'py-3 bg-black/90 backdrop-blur-xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)]' 
-        : 'py-5 md:py-8 bg-transparent'
-    }`}>
+    <nav
+      className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 px-4 md:px-8 ${
+        scrolled ? `py-3 ${scrolledBg}` : 'py-5 md:py-8 bg-transparent'
+      }`}
+    >
       <div className="max-w-7xl mx-auto flex items-center justify-between relative">
-        
-        {/* LOGO SECTION */}
+
+        {/* LOGO */}
         <Link to="/" className="flex items-center gap-2 md:gap-3 group z-[110]" onClick={() => setIsMenuOpen(false)}>
           <RotatingFanIcon>
             <div className="p-1.5 md:p-2 bg-amber-500/10 rounded-lg border border-amber-500/20 group-hover:border-amber-500/50 transition-colors">
@@ -127,13 +114,22 @@ const Navbar = () => {
               </svg>
             </div>
           </RotatingFanIcon>
-          <span className="text-lg md:text-2xl font-serif tracking-tighter text-white group-hover:text-amber-500 transition-colors uppercase italic">
+          <span
+            className="text-lg md:text-2xl font-serif tracking-tighter group-hover:text-amber-500 transition-colors uppercase italic"
+            style={{ color: '#ffffff' }}
+          >
             LINK<span className="font-light text-amber-500 not-italic">AURA</span>
           </span>
         </Link>
 
-        {/* DESKTOP MENU */}
-        <div className="hidden lg:flex items-center bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl px-2 py-1.5 absolute left-1/2 -translate-x-1/2 shadow-2xl">
+        {/* DESKTOP NAV PILL */}
+        <div
+          className="hidden lg:flex items-center backdrop-blur-md border rounded-2xl px-2 py-1.5 absolute left-1/2 -translate-x-1/2 shadow-2xl"
+          style={{
+            backgroundColor: 'rgba(255,255,255,0.05)',
+            borderColor: 'rgba(255,255,255,0.10)',
+          }}
+        >
           {navLinks.map((link) => {
             const isActive = location.pathname === link.to;
             return (
@@ -141,8 +137,11 @@ const Navbar = () => {
                 key={link.to}
                 to={link.to}
                 className={`px-4 xl:px-5 py-2 rounded-xl text-[10px] uppercase tracking-[0.2em] font-bold transition-all duration-300 ${
-                  isActive ? 'bg-amber-500 text-black shadow-[0_0_20px_rgba(245,158,11,0.6)] shadow-amber-500/30 ring-2 ring-amber-500/50' : 'text-gray-400 hover:text-white hover:bg-white/5'
+                  isActive
+                    ? 'bg-amber-500 text-black shadow-[0_0_20px_rgba(245,158,11,0.6)] ring-2 ring-amber-500/50'
+                    : ''
                 }`}
+                style={!isActive ? { color: '#9ca3af' } : {}}
               >
                 {link.text}
               </Link>
@@ -152,42 +151,74 @@ const Navbar = () => {
 
         {/* RIGHT SECTION */}
         <div className="flex items-center gap-2 md:gap-4 z-[110]">
+
+
           {isLoggedIn ? (
             <>
-              <button onClick={handleChatsClick} className="hidden md:block p-1 border border-white/10 rounded-full hover:border-amber-500/50 transition-all">
-                <FaComments className="w-6 h-6 md:w-7 md:h-7 text-white/80 hover:text-amber-500 transition-colors" />
-              </button>
-              <button 
-                onClick={handleNotificationClick} 
-                className="hidden md:block relative p-1 border border-white/10 rounded-full hover:border-amber-500/50 transition-all"
+              <button
+                onClick={handleChatsClick}
+                className="hidden md:block p-1 border rounded-full hover:border-amber-500/50 transition-all"
+                style={{ borderColor: 'rgba(255,255,255,0.10)' }}
               >
-                <FaBell className="w-6 h-6 md:w-7 md:h-7 text-white/80 hover:text-amber-500 transition-colors" />
+                <FaComments
+                  className="w-6 h-6 md:w-7 md:h-7 hover:text-amber-500 transition-colors"
+                  style={{ color: 'rgba(255,255,255,0.80)' }}
+                />
+              </button>
+              <button
+                onClick={handleNotificationClick}
+                className="hidden md:block relative p-1 border rounded-full hover:border-amber-500/50 transition-all"
+                style={{ borderColor: 'rgba(255,255,255,0.10)' }}
+              >
+                <FaBell
+                  className="w-6 h-6 md:w-7 md:h-7 hover:text-amber-500 transition-colors"
+                  style={{ color: 'rgba(255,255,255,0.80)' }}
+                />
                 {unreadCount > 0 && (
                   <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-amber-500 rounded-full border-2 border-black flex items-center justify-center text-black text-[9px] font-black px-0.5">
                     {unreadCount > 9 ? '9+' : unreadCount}
                   </span>
                 )}
               </button>
-              <button onClick={handleProfileClick} className="hidden md:block p-1 border border-white/10 rounded-full hover:border-amber-500/50 transition-all">
-                <FaUserCircle className="w-7 h-7 md:w-8 md:h-8 text-white/80 hover:text-amber-500 transition-colors" />
+              <button
+                onClick={handleProfileClick}
+                className="hidden md:block p-1 border rounded-full hover:border-amber-500/50 transition-all"
+                style={{ borderColor: 'rgba(255,255,255,0.10)' }}
+              >
+                <FaUserCircle
+                  className="w-7 h-7 md:w-8 md:h-8 hover:text-amber-500 transition-colors"
+                  style={{ color: 'rgba(255,255,255,0.80)' }}
+                />
               </button>
             </>
           ) : (
-            <Link to="/login" className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] px-3 md:px-6 py-2 md:py-2.5 bg-white text-black rounded-xl hover:bg-amber-500 transition-colors whitespace-nowrap">
+            // Sign In button — use inline style for color to guarantee CSS can't override it
+            <Link
+              to="/login"
+              className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] px-3 md:px-6 py-2 md:py-2.5 rounded-xl hover:bg-amber-500 transition-colors whitespace-nowrap"
+              style={{
+                backgroundColor: '#ffffff',
+                color: '#000000',
+              }}
+            >
               Sign In
             </Link>
           )}
 
-          {/* MOBILE TOGGLE */}
-          <button 
-            className="lg:hidden w-10 h-10 flex flex-col items-center justify-center bg-white/5 border border-white/10 rounded-xl hover:border-amber-500/50 transition-all cursor-pointer"
+          {/* MOBILE HAMBURGER */}
+          <button
+            className="lg:hidden w-10 h-10 flex flex-col items-center justify-center border rounded-xl hover:border-amber-500/50 transition-all cursor-pointer"
+            style={{
+              backgroundColor: 'rgba(255,255,255,0.05)',
+              borderColor: 'rgba(255,255,255,0.10)',
+            }}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle Menu"
           >
             <div className="flex flex-col gap-1.5">
-                <div className={`w-5 h-0.5 bg-amber-500 transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
-                <div className={`w-5 h-0.5 bg-amber-500 transition-all duration-300 ${isMenuOpen ? 'opacity-0' : ''}`} />
-                <div className={`w-5 h-0.5 bg-amber-500 transition-all duration-300 ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+              <div className={`w-5 h-0.5 bg-amber-500 transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
+              <div className={`w-5 h-0.5 bg-amber-500 transition-all duration-300 ${isMenuOpen ? 'opacity-0' : ''}`} />
+              <div className={`w-5 h-0.5 bg-amber-500 transition-all duration-300 ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
             </div>
           </button>
         </div>
@@ -196,12 +227,13 @@ const Navbar = () => {
       {/* MOBILE OVERLAY MENU */}
       <AnimatePresence>
         {isMenuOpen && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 w-full h-[100dvh] bg-black z-[105] flex flex-col lg:hidden"
+            className="fixed inset-0 w-full h-[100dvh] z-[105] flex flex-col lg:hidden"
+            style={{ backgroundColor: '#000000' }}
           >
             <div className="flex flex-col h-full justify-center px-8 sm:px-12">
               <div className="space-y-6">
@@ -212,35 +244,31 @@ const Navbar = () => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.05 }}
                   >
-                    <Link 
-                      to={link.to} 
+                    <Link
+                      to={link.to}
                       onClick={() => setIsMenuOpen(false)}
-                      className="text-4xl sm:text-5xl font-serif text-white hover:text-amber-500 transition-colors flex items-center gap-4 group"
+                      className="text-4xl sm:text-5xl font-serif hover:text-amber-500 transition-colors flex items-center gap-4 group"
+                      style={{ color: '#ffffff' }}
                     >
-                      <span className="text-[10px] font-mono text-amber-500/50">0{i+1}</span>
+                      <span className="text-[10px] font-mono text-amber-500/50">0{i + 1}</span>
                       {link.text}
                     </Link>
                   </motion.div>
                 ))}
-                
-                <motion.div 
-                  initial={{ opacity: 0 }} 
-                  animate={{ opacity: 1 }} 
+
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
                   transition={{ delay: 0.4 }}
-                  className="pt-10 border-t border-white/10 mt-6"
+                  className="pt-10 border-t mt-6"
+                  style={{ borderColor: 'rgba(255,255,255,0.10)' }}
                 >
                   {isLoggedIn ? (
                     <div className="space-y-4">
-                      <button 
-                        onClick={handleChatsClick} 
-                        className="text-amber-500 font-bold uppercase tracking-widest text-xs flex items-center gap-3 w-full"
-                      >
+                      <button onClick={handleChatsClick} className="text-amber-500 font-bold uppercase tracking-widest text-xs flex items-center gap-3 w-full">
                         <FaComments className="text-xl" /> Chats
                       </button>
-                      <button 
-                        onClick={handleNotificationClick} 
-                        className="text-amber-500 font-bold uppercase tracking-widest text-xs flex items-center gap-3 w-full"
-                      >
+                      <button onClick={handleNotificationClick} className="text-amber-500 font-bold uppercase tracking-widest text-xs flex items-center gap-3 w-full">
                         <FaBell className="text-xl" /> Notifications
                       </button>
                       <button onClick={handleProfileClick} className="text-amber-500 font-bold uppercase tracking-widest text-xs flex items-center gap-3">
