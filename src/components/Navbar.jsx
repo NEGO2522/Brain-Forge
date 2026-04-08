@@ -24,6 +24,35 @@ const Navbar = () => {
   const navigate  = useNavigate();
   const location  = useLocation();
 
+  // Check if we're on the user profile page with an incomplete profile
+  const isOnUserPage = location.pathname === '/user';
+  const [profileLocked, setProfileLocked] = useState(false);
+
+  useEffect(() => {
+    if (!isOnUserPage) { setProfileLocked(false); return; }
+    // Check if profile is complete by querying Supabase
+    const checkProfile = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+      const { data } = await supabase
+        .from('user_profiles')
+        .select('name, email, address, github, linkedin, tech_stack, year')
+        .eq('user_id', session.user.id)
+        .single();
+      if (!data) { setProfileLocked(true); return; }
+      const allFilled = Object.values(data).every(v => v && String(v).trim());
+      setProfileLocked(!allFilled);
+    };
+    checkProfile();
+  }, [isOnUserPage]);
+
+  // Guard navigation — block all nav when profile is locked
+  const guardedNavigate = (path) => {
+    if (profileLocked) return; // do nothing
+    navigate(path);
+    setIsMenuOpen(false);
+  };
+
   /* ── Auth + unread notification count ── */
   useEffect(() => {
     let notifChannel = null;
@@ -90,9 +119,15 @@ const Navbar = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, [setIsMenuOpen]);
 
-  const handleProfileClick     = () => { navigate('/user');         setIsMenuOpen(false); };
-  const handleNotificationClick = () => { navigate('/notification'); setIsMenuOpen(false); };
-  const handleChatsClick       = () => { navigate('/chats');        setIsMenuOpen(false); };
+  const handleProfileClick     = () => guardedNavigate('/user');
+  const handleNotificationClick = () => guardedNavigate('/notification');
+  const handleChatsClick       = () => guardedNavigate('/chats');
+
+  // Wrap Link clicks to block navigation when locked
+  const handleNavLinkClick = (e) => {
+    if (profileLocked) e.preventDefault();
+    else setIsMenuOpen(false);
+  };
 
   const navLinks = [
     { to: '/',          text: 'Home'      },
@@ -109,7 +144,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto flex items-center justify-between relative">
 
         {/* LOGO */}
-        <Link to="/" className="flex items-center gap-2 md:gap-3 group z-[110]" onClick={() => setIsMenuOpen(false)}>
+        <Link to="/" className="flex items-center gap-2 md:gap-3 group z-[110]" onClick={(e) => { if (profileLocked) { e.preventDefault(); return; } setIsMenuOpen(false); }}>
           <RotatingFanIcon>
             <div className="p-1.5 md:p-2 bg-amber-500/10 rounded-lg border border-amber-500/20 group-hover:border-amber-500/50 transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-500 md:w-5 md:h-5">
@@ -130,9 +165,10 @@ const Navbar = () => {
             const isActive = location.pathname === link.to;
             return (
               <Link key={link.to} to={link.to}
+                onClick={handleNavLinkClick}
                 className={`px-4 xl:px-5 py-2 rounded-xl text-[10px] uppercase tracking-[0.2em] font-bold transition-all duration-300 ${
                   isActive ? 'bg-amber-500 text-black shadow-[0_0_20px_rgba(245,158,11,0.6)] ring-2 ring-amber-500/50' : ''
-                }`}
+                } ${profileLocked ? 'opacity-40 cursor-not-allowed' : ''}`}
                 style={!isActive ? { color: '#9ca3af' } : {}}>
                 {link.text}
               </Link>
@@ -204,8 +240,8 @@ const Navbar = () => {
               <div className="space-y-6">
                 {navLinks.map((link, i) => (
                   <motion.div key={link.to} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}>
-                    <Link to={link.to} onClick={() => setIsMenuOpen(false)}
-                      className="text-4xl sm:text-5xl font-serif hover:text-amber-500 transition-colors flex items-center gap-4 group"
+                    <Link to={link.to} onClick={handleNavLinkClick}
+                      className={`text-4xl sm:text-5xl font-serif hover:text-amber-500 transition-colors flex items-center gap-4 group ${profileLocked ? 'opacity-40 cursor-not-allowed pointer-events-none' : ''}`}
                       style={{ color: '#ffffff' }}>
                       <span className="text-[10px] font-mono text-amber-500/50">0{i + 1}</span>
                       {link.text}

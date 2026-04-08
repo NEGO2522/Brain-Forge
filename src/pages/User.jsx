@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import useSEO from '../hooks/useSEO';
 import { supabase } from '../supabaseClient';
 import { useNavigate } from 'react-router-dom';
@@ -6,26 +6,21 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   FiUser, FiMail, FiGithub, FiLinkedin, FiMapPin,
   FiCpu, FiLogOut, FiSave, FiCheckCircle,
-  FiAlertCircle, FiX, FiChevronDown, FiSearch, FiPlus, FiCalendar
+  FiAlertCircle, FiX, FiChevronDown, FiSearch, FiPlus, FiCalendar,
+  FiPhone, FiClock, FiToggleLeft, FiToggleRight, FiVideo
 } from 'react-icons/fi';
 
 const TECH_DOMAINS = [
-  "Beginner",
-  "Frontend Developer",
-  "Backend Developer",
-  "Full Stack Developer",
-  "Mobile App Developer",
-  "UI/UX Designer",
-  "DevOps Engineer",
-  "Data Scientist",
-  "AI / ML Engineer",
-  "Blockchain Developer",
-  "Cloud Architect",
-  "Cybersecurity Analyst",
-  "Game Developer",
-  "Embedded Systems",
-  "Others"
+  "Beginner", "Frontend Developer", "Backend Developer", "Full Stack Developer",
+  "Mobile App Developer", "UI/UX Designer", "DevOps Engineer", "Data Scientist",
+  "AI / ML Engineer", "Blockchain Developer", "Cloud Architect",
+  "Cybersecurity Analyst", "Game Developer", "Embedded Systems", "Others"
 ];
+
+/* ── Floating orb background ── */
+const Orb = ({ style }) => (
+  <div className="absolute rounded-full pointer-events-none" style={style} />
+);
 
 const User = () => {
   useSEO({
@@ -36,45 +31,104 @@ const User = () => {
 
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
+  const locationInputRef = useRef(null);
 
   const [currentUser, setCurrentUser] = useState(null);
-  const [profileId,   setProfileId]   = useState(null); // Supabase row id
+  const [profileId, setProfileId] = useState(null);
   const [formData, setFormData] = useState({
-    name: '', email: '', address: '', github: '', linkedin: '', tech_stack: '', year: '1'
+    name: '', email: '', address: '', github: '', linkedin: '', tech_stack: '', year: '2'
   });
-  const [isSubmitting,  setIsSubmitting]  = useState(false);
-  const [submitStatus,  setSubmitStatus]  = useState({ success: null, message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState({ success: null, message: '' });
+  const [profileComplete, setProfileComplete] = useState(false);
   const [showTechDropdown, setShowTechDropdown] = useState(false);
-  const [searchTerm,    setSearchTerm]    = useState('');
-  const [customTech,    setCustomTech]    = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [customTech, setCustomTech] = useState('');
   const [showCustomInput, setShowCustomInput] = useState(false);
 
-  /* ── Auth + load profile ── */
+  // ── 1-on-1 call states ──
+  const [callEnabled, setCallEnabled] = useState(false);
+  const [showCallForm, setShowCallForm] = useState(false);
+  const [callData, setCallData] = useState({
+    phone: '',
+    timeFrom: '',
+    timeTo: '',
+    days: [],
+  });
+  const [callSaved, setCallSaved] = useState(false);
+
+  const WORKING_DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  const toggleCallDay = (day) => {
+    setCallData(prev => ({
+      ...prev,
+      days: prev.days.includes(day) ? prev.days.filter(d => d !== day) : [...prev.days, day],
+    }));
+  };
+
+  const handleCallChange = (e) => {
+    const { name, value } = e.target;
+    setCallData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleCallSubmit = async () => {
+    const { phone, timeFrom, timeTo, days } = callData;
+    if (!phone || !timeFrom || !timeTo || days.length === 0) {
+      setSubmitStatus({ success: false, message: 'Fill all call availability fields!' });
+      setTimeout(() => setSubmitStatus({ success: null, message: '' }), 4000);
+      return;
+    }
+    if (!profileId) {
+      setSubmitStatus({ success: false, message: 'Save your profile first!' });
+      setTimeout(() => setSubmitStatus({ success: null, message: '' }), 4000);
+      return;
+    }
+    try {
+      const { error } = await supabase.from('user_profiles').update({
+        call_phone: phone,
+        call_time_from: timeFrom,
+        call_time_to: timeTo,
+        call_days: days.join(','),
+        call_enabled: true,
+      }).eq('id', profileId);
+      if (error) throw error;
+      setCallSaved(true);
+      setShowCallForm(false);
+      setSubmitStatus({ success: true, message: 'Call availability saved!' });
+      setTimeout(() => setSubmitStatus({ success: null, message: '' }), 4000);
+    } catch (err) {
+      setSubmitStatus({ success: false, message: err.message });
+      setTimeout(() => setSubmitStatus({ success: null, message: '' }), 4000);
+    }
+  };
+
+  const handleToggleCall = () => {
+    if (!callEnabled) {
+      setCallEnabled(true);
+      setShowCallForm(true);
+    } else {
+      setCallEnabled(false);
+      setShowCallForm(false);
+      setCallSaved(false);
+    }
+  };
+
   useEffect(() => {
     const load = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { navigate('/login'); return; }
       const user = session.user;
       setCurrentUser(user);
-
-      // Fetch existing profile row
-      const { data } = await supabase
-        .from('user_profiles')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
-
+      const { data } = await supabase.from('user_profiles').select('*').eq('user_id', user.id).single();
       if (data) {
         setProfileId(data.id);
-        setFormData({
-          name:       data.name       || '',
-          email:      data.email      || user.email || '',
-          address:    data.address    || '',
-          github:     data.github     || '',
-          linkedin:   data.linkedin   || '',
-          tech_stack: data.tech_stack || '',
-          year:       data.year       || '1',
-        });
+        const loaded = {
+          name: data.name || '', email: data.email || user.email || '',
+          address: data.address || '', github: data.github || '',
+          linkedin: data.linkedin || '', tech_stack: data.tech_stack || '', year: data.year || '2',
+        };
+        setFormData(loaded);
+        setProfileComplete(Object.values(loaded).every(v => v && String(v).trim()));
       } else {
         setFormData(prev => ({ ...prev, email: user.email || '' }));
       }
@@ -82,7 +136,6 @@ const User = () => {
     load();
   }, []);
 
-  /* ── Click outside dropdown ── */
   useEffect(() => {
     const handler = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target))
@@ -116,24 +169,20 @@ const User = () => {
       setTimeout(() => setSubmitStatus({ success: null, message: '' }), 4000);
       return;
     }
-
     setIsSubmitting(true);
     try {
       const payload = { ...formData, user_id: currentUser.id, updated_at: new Date().toISOString() };
-
       if (profileId) {
-        // Update existing row
         const { error } = await supabase.from('user_profiles').update(payload).eq('id', profileId);
         if (error) throw error;
       } else {
-        // Insert new row
-        const { data, error } = await supabase.from('user_profiles').insert({
-          ...payload, created_at: new Date().toISOString()
-        }).select().single();
+        const { data, error } = await supabase.from('user_profiles').insert({ ...payload, created_at: new Date().toISOString() }).select().single();
         if (error) throw error;
         setProfileId(data.id);
       }
-      setSubmitStatus({ success: true, message: 'Profile Updated!' });
+      setProfileComplete(true);
+      setSubmitStatus({ success: true, message: 'Profile saved! Redirecting...' });
+      setTimeout(() => navigate('/profiles'), 1800);
     } catch (err) {
       setSubmitStatus({ success: false, message: err.message });
     } finally {
@@ -142,188 +191,519 @@ const User = () => {
     }
   };
 
+  useEffect(() => {
+    if (profileComplete) return;
+    window.history.pushState(null, '', window.location.href);
+    const handlePopState = () => window.history.pushState(null, '', window.location.href);
+    const handleBeforeUnload = (e) => { e.preventDefault(); e.returnValue = ''; };
+    window.addEventListener('popstate', handlePopState);
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [profileComplete]);
+
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     navigate('/login');
   };
 
+  const selectedTechs = formData.tech_stack ? formData.tech_stack.split(',').filter(t => t.trim()) : [];
+
   return (
-    <div className="min-h-screen w-full bg-black text-white relative flex flex-col items-center pt-32 pb-20 px-4">
-      {/* Background */}
-      <div className="fixed inset-0 z-0 opacity-20 pointer-events-none">
-        <img src="/User.jpg" className="w-full h-full object-cover" alt="bg" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
+    <div className="min-h-screen w-full bg-[#080808] text-white relative overflow-x-hidden">
+
+      {/* ── Ambient background orbs ── */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <Orb style={{ width: 600, height: 600, top: '-10%', left: '-5%', background: 'radial-gradient(circle, rgba(245,158,11,0.08) 0%, transparent 70%)' }} />
+        <Orb style={{ width: 500, height: 500, bottom: '5%', right: '-8%', background: 'radial-gradient(circle, rgba(245,158,11,0.06) 0%, transparent 70%)' }} />
+        <Orb style={{ width: 300, height: 300, top: '40%', left: '50%', background: 'radial-gradient(circle, rgba(245,158,11,0.04) 0%, transparent 70%)' }} />
+        {/* Fine grid */}
+        <div className="absolute inset-0" style={{
+          backgroundImage: 'linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px)',
+          backgroundSize: '48px 48px'
+        }} />
       </div>
 
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-5xl relative z-10">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-          <div className="flex items-center gap-6">
-            <div className="w-20 h-20 md:w-24 md:h-24 rounded-3xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-4xl shadow-lg">
-              <FiUser className="text-amber-500" />
-            </div>
-            <div>
-              <h1 className="text-3xl md:text-5xl font-serif italic">Profile <span className="text-amber-500">Settings</span></h1>
-              <p className="text-gray-500 text-[10px] uppercase tracking-[0.4em] font-black mt-2">Manage Your Information</p>
-            </div>
-          </div>
-          <button type="button" onClick={handleSignOut}
-            className="flex items-center gap-3 px-6 py-3 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 text-[10px] font-bold uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all">
-            <FiLogOut /> Sign Out
-          </button>
-        </div>
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-28 pb-24">
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-6 md:p-10 space-y-8 shadow-2xl">
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <InputField label="Name"  icon={<FiUser />}  name="name"  value={formData.name}  onChange={handleChange} required />
-                <InputField label="Email" icon={<FiMail />}  name="email" value={formData.email} onChange={handleChange} required />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-3">
-                  <label className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-gray-500 font-black ml-1">
-                    <FiCalendar className="text-amber-500" /> Year <span className="text-amber-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <select name="year" value={formData.year} onChange={handleChange} required
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-sm focus:border-amber-500/50 transition-all text-white outline-none appearance-none cursor-pointer uppercase tracking-widest">
-                      <option value="1" className="bg-neutral-900">Year 01</option>
-                      <option value="2" className="bg-neutral-900">Year 02</option>
-                      <option value="3" className="bg-neutral-900">Year 03</option>
-                      <option value="4" className="bg-neutral-900">Year 04</option>
-                    </select>
-                    <FiChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 text-amber-500 pointer-events-none" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Tech Stack */}
-              <div className="space-y-3 relative" ref={dropdownRef}>
-                <label className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-gray-500 font-black ml-1">
-                  <FiCpu className="text-amber-500" /> Skills <span className="text-amber-500">*</span>
-                </label>
-                <div
-                  onClick={() => setShowTechDropdown(!showTechDropdown)}
-                  className={`min-h-[60px] w-full bg-white/5 border rounded-2xl p-3 flex flex-wrap gap-2 cursor-pointer transition-all ${!formData.tech_stack ? 'border-white/10' : 'border-amber-500/30'}`}>
-                  {formData.tech_stack ? formData.tech_stack.split(',').filter(t => t.trim()).map(tech => (
-                    <span key={tech} className="bg-amber-500 text-black text-[9px] font-black uppercase px-3 py-1.5 rounded-lg flex items-center gap-2 hover:bg-white transition-colors">
-                      {tech.trim()}
-                      <FiX className="cursor-pointer" onClick={(e) => { e.stopPropagation(); toggleTech(tech.trim()); }} />
-                    </span>
-                  )) : <span className="text-gray-500 text-xs py-2 px-2 uppercase tracking-widest">Select Skills (Required)...</span>}
-                  <FiChevronDown className={`ml-auto self-center text-gray-500 transition-transform ${showTechDropdown ? 'rotate-180' : ''}`} />
-                </div>
-
-                <AnimatePresence>
-                  {showTechDropdown && (
-                    <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
-                      className="absolute z-50 w-full mt-2 bg-[#0A0A0A] border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
-                      <div className="p-3 border-b border-white/5 flex items-center gap-3 bg-white/5">
-                        <FiSearch className="text-amber-500" />
-                        <input className="bg-transparent border-none outline-none text-xs w-full uppercase tracking-widest text-white"
-                          placeholder="Filter Skills..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} autoFocus />
-                      </div>
-                      <div className="max-h-64 overflow-y-auto p-2 grid grid-cols-1 md:grid-cols-2 gap-1">
-                        {TECH_DOMAINS.filter(o => o.toLowerCase().includes(searchTerm.toLowerCase())).map(option => (
-                          <div key={option} onClick={() => toggleTech(option)}
-                            className={`px-4 py-3 text-[10px] uppercase font-bold tracking-widest rounded-xl cursor-pointer transition-all ${formData.tech_stack.includes(option) ? 'bg-amber-500 text-black' : 'hover:bg-white/5 text-gray-500 hover:text-white'}`}>
-                            {option}
-                          </div>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                <AnimatePresence>
-                  {showCustomInput && (
-                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} className="mt-4 flex gap-2">
-                      <input
-                        className="flex-1 bg-white/5 border border-amber-500/30 rounded-xl px-4 py-3 text-xs uppercase tracking-widest text-white focus:outline-none focus:border-amber-500"
-                        placeholder="Type specific skill (e.g. Python, Rust)..."
-                        value={customTech} onChange={e => setCustomTech(e.target.value)}
-                        onKeyPress={e => e.key === 'Enter' && (e.preventDefault(), handleAddCustomTech())}
-                      />
-                      <button type="button" onClick={handleAddCustomTech}
-                        className="bg-amber-500 text-black px-6 rounded-xl font-black text-[10px] uppercase hover:bg-white transition-all flex items-center gap-2">
-                        <FiPlus /> Add
-                      </button>
-                      <button type="button" onClick={() => setShowCustomInput(false)} className="text-gray-500 hover:text-white px-2"><FiX /></button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
-              <div className="space-y-3">
-                <label className="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-black ml-1">Location <span className="text-amber-500">*</span></label>
-                <textarea name="address" value={formData.address} onChange={handleChange} required rows="3"
-                  className="w-full bg-white/5 border border-white/10 rounded-3xl py-4 px-6 text-sm focus:border-amber-500/50 transition-all resize-none text-white uppercase outline-none"
-                  placeholder="City, Country" />
-              </div>
-            </div>
-          </div>
-
-          {/* Sidebar */}
-          <div className="space-y-6">
-            <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-8 shadow-2xl">
-              <h3 className="text-[10px] uppercase tracking-[0.3em] text-amber-500 font-black mb-8">Social Links <span className="text-amber-500">*</span></h3>
-              <SocialInput label="GitHub"   icon={<FiGithub />}   prefix="github.com/" name="github"   value={formData.github}   onChange={handleChange} required />
-              <div className="h-6" />
-              <SocialInput label="LinkedIn" icon={<FiLinkedin />} prefix="in/"         name="linkedin" value={formData.linkedin} onChange={handleChange} required />
-            </div>
-
-            <div className="bg-amber-500 rounded-[2.5rem] p-8 text-black shadow-xl">
-              <h4 className="font-serif italic text-2xl mb-2">Save</h4>
-              <p className="text-[9px] font-black uppercase tracking-widest opacity-70 mb-6">Update your profile information.</p>
-              <button type="submit" disabled={isSubmitting}
-                className="w-full bg-black text-white py-4 rounded-2xl flex items-center justify-center gap-3 font-black text-xs uppercase tracking-widest hover:bg-neutral-900 transition-all">
-                {isSubmitting ? 'Saving...' : <><FiSave /> Save Profile</>}
-              </button>
-            </div>
-          </div>
-        </form>
-
-        {/* Status Toast */}
+        {/* ── Incomplete banner ── */}
         <AnimatePresence>
-          {submitStatus.message && (
-            <motion.div initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 50 }}
-              className={`fixed bottom-8 right-8 z-[100] px-8 py-5 rounded-3xl border backdrop-blur-3xl shadow-2xl flex items-center gap-4 ${
-                submitStatus.success
-                  ? 'bg-green-500/10 border-green-500/20 text-green-400'
-                  : 'bg-red-500/10 border-red-500/20 text-red-400'
-              }`}>
-              {submitStatus.success ? <FiCheckCircle className="text-xl" /> : <FiAlertCircle className="text-xl" />}
-              <span className="text-[10px] font-black uppercase tracking-widest">{submitStatus.message}</span>
+          {!profileComplete && (
+            <motion.div
+              initial={{ opacity: 0, y: -16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -16 }}
+              className="mb-8 flex items-center gap-4 px-6 py-4 rounded-2xl border"
+              style={{ background: 'rgba(245,158,11,0.06)', borderColor: 'rgba(245,158,11,0.25)' }}
+            >
+              <FiAlertCircle className="text-amber-400 text-lg shrink-0" />
+              <p className="text-amber-400 text-[10px] font-black uppercase tracking-[0.25em]">
+                Complete all fields to unlock the full Linkaura experience.
+              </p>
             </motion.div>
           )}
         </AnimatePresence>
-      </motion.div>
+
+        {/* ── Page header ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-14"
+        >
+          <div className="flex items-center gap-5">
+            {/* Avatar ring */}
+            <div className="relative shrink-0">
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center"
+                style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.25)' }}>
+                <FiUser className="text-amber-400 text-2xl" />
+              </div>
+              {profileComplete && (
+                <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 border-2 border-[#080808] flex items-center justify-center">
+                  <FiCheckCircle className="text-white text-[9px]" />
+                </span>
+              )}
+            </div>
+            <div>
+              <p className="text-[9px] uppercase tracking-[0.4em] font-black mb-1" style={{ color: 'rgba(245,158,11,0.7)' }}>Linkaura</p>
+              <h1 className="text-3xl sm:text-4xl font-serif italic leading-none">
+                Profile <span className="text-amber-400">Settings</span>
+              </h1>
+            </div>
+          </div>
+
+          <button type="button" onClick={handleSignOut}
+            className="group flex items-center gap-2.5 px-5 py-3 rounded-xl border text-[10px] font-black uppercase tracking-widest transition-all duration-200"
+            style={{ background: 'rgba(239,68,68,0.06)', borderColor: 'rgba(239,68,68,0.2)', color: 'rgba(252,165,165,0.9)' }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.15)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.4)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.06)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)'; }}
+          >
+            <FiLogOut className="text-sm" /> Sign Out
+          </button>
+        </motion.div>
+
+        {/* ── Main grid ── */}
+        <form onSubmit={handleSubmit}>
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+
+            {/* Left: main fields — spans 3 cols */}
+            <motion.div
+              initial={{ opacity: 0, y: 32 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="lg:col-span-3 space-y-5"
+            >
+              {/* Identity card */}
+              <SectionCard label="Identity">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <InputField label="Full Name" icon={<FiUser />} name="name" value={formData.name} onChange={handleChange} required placeholder="Your name" />
+                  <InputField label="Email" icon={<FiMail />} name="email" value={formData.email} onChange={handleChange} required placeholder="you@example.com" />
+                </div>
+
+                {/* Year of study */}
+                <div className="space-y-2 mt-1">
+                  <FieldLabel icon={<FiCalendar />} label="Year of Study" required />
+                  <div className="grid grid-cols-4 gap-2">
+                    {['2','3','4'].map(y => (
+                      <button
+                        key={y} type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, year: y }))}
+                        className="py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-200"
+                        style={formData.year === y
+                          ? { background: '#f59e0b', color: '#000', border: '1px solid #f59e0b' }
+                          : { background: 'rgba(255,255,255,0.03)', color: 'rgba(255,255,255,0.4)', border: '1px solid rgba(255,255,255,0.08)' }
+                        }
+                      >
+                        Year {y}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Location */}
+                <div className="space-y-2 mt-1">
+                  <FieldLabel icon={<FiMapPin />} label="Location" required />
+                  <div className="relative">
+                    <input
+                      ref={locationInputRef}
+                      name="address"
+                      type="text"
+                      value={formData.address}
+                      onChange={handleChange}
+                      required
+                      placeholder="Start typing your city…"
+                      className="w-full rounded-xl py-3.5 px-4 text-sm transition-all duration-200 outline-none"
+                      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#e5e7eb' }}
+                      onFocus={e => e.target.style.borderColor = 'rgba(245,158,11,0.4)'}
+                      onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
+                    />
+                  </div>
+                </div>
+              </SectionCard>
+
+              {/* Skills card */}
+              <SectionCard label="Skills & Domain">
+                <div className="space-y-3 relative" ref={dropdownRef}>
+                  {/* Selected chips */}
+                  <div
+                    onClick={() => setShowTechDropdown(!showTechDropdown)}
+                    className="min-h-[54px] w-full rounded-xl p-3 flex flex-wrap gap-2 cursor-pointer transition-all duration-200"
+                    style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${selectedTechs.length ? 'rgba(245,158,11,0.35)' : 'rgba(255,255,255,0.08)'}` }}
+                  >
+                    {selectedTechs.length ? selectedTechs.map(tech => (
+                      <span key={tech}
+                        className="inline-flex items-center gap-1.5 text-[9px] font-black uppercase px-3 py-1.5 rounded-lg transition-colors"
+                        style={{ background: 'rgba(245,158,11,0.15)', color: '#f59e0b', border: '1px solid rgba(245,158,11,0.25)' }}
+                      >
+                        {tech.trim()}
+                        <FiX className="cursor-pointer hover:text-white" onClick={e => { e.stopPropagation(); toggleTech(tech.trim()); }} />
+                      </span>
+                    )) : (
+                      <span className="text-[11px] py-1 px-1" style={{ color: 'rgba(255,255,255,0.2)' }}>Click to select skills…</span>
+                    )}
+                    <FiChevronDown className={`ml-auto self-center transition-transform duration-200 ${showTechDropdown ? 'rotate-180' : ''}`} style={{ color: 'rgba(255,255,255,0.3)' }} />
+                  </div>
+
+                  {/* Dropdown */}
+                  <AnimatePresence>
+                    {showTechDropdown && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -8, scale: 0.98 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -8, scale: 0.98 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute z-50 w-full mt-1 rounded-2xl overflow-hidden shadow-2xl"
+                        style={{ background: '#0f0f0f', border: '1px solid rgba(255,255,255,0.1)' }}
+                      >
+                        <div className="flex items-center gap-3 px-4 py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                          <FiSearch className="text-amber-400 shrink-0" />
+                          <input
+                            className="bg-transparent border-none outline-none text-xs w-full"
+                            style={{ color: '#e5e7eb' }}
+                            placeholder="Filter skills…"
+                            value={searchTerm}
+                            onChange={e => setSearchTerm(e.target.value)}
+                            autoFocus
+                          />
+                        </div>
+                        <div className="max-h-56 overflow-y-auto p-2 grid grid-cols-2 gap-1">
+                          {TECH_DOMAINS.filter(o => o.toLowerCase().includes(searchTerm.toLowerCase())).map(option => {
+                            const active = formData.tech_stack.includes(option);
+                            return (
+                              <div key={option} onClick={() => toggleTech(option)}
+                                className="px-3 py-2.5 text-[10px] uppercase font-bold tracking-wider rounded-xl cursor-pointer transition-all duration-150"
+                                style={active
+                                  ? { background: 'rgba(245,158,11,0.2)', color: '#f59e0b' }
+                                  : { color: 'rgba(255,255,255,0.4)' }}
+                                onMouseEnter={e => !active && (e.currentTarget.style.background = 'rgba(255,255,255,0.05)', e.currentTarget.style.color = '#fff')}
+                                onMouseLeave={e => !active && (e.currentTarget.style.background = 'transparent', e.currentTarget.style.color = 'rgba(255,255,255,0.4)')}
+                              >
+                                {option}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Custom tech input */}
+                  <AnimatePresence>
+                    {showCustomInput && (
+                      <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} className="flex gap-2 mt-2">
+                        <input
+                          className="flex-1 rounded-xl px-4 py-3 text-xs outline-none"
+                          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(245,158,11,0.3)', color: '#e5e7eb' }}
+                          placeholder="e.g. Python, Rust…"
+                          value={customTech}
+                          onChange={e => setCustomTech(e.target.value)}
+                          onKeyPress={e => e.key === 'Enter' && (e.preventDefault(), handleAddCustomTech())}
+                        />
+                        <button type="button" onClick={handleAddCustomTech}
+                          className="px-5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
+                          style={{ background: '#f59e0b', color: '#000' }}>
+                          <FiPlus />
+                        </button>
+                        <button type="button" onClick={() => setShowCustomInput(false)}
+                          className="px-3 rounded-xl text-sm transition-all"
+                          style={{ color: 'rgba(255,255,255,0.3)' }}>
+                          <FiX />
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </SectionCard>
+
+              {/* ── 1-on-1 Call card ── */}
+              <motion.div
+                initial={{ opacity: 0, y: 32 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.25 }}
+                className="rounded-2xl overflow-hidden"
+                style={{ border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.03)' }}
+              >
+                {/* Header row */}
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-xl flex items-center justify-center"
+                        style={{ background: callEnabled ? 'rgba(245,158,11,0.15)' : 'rgba(255,255,255,0.05)', border: `1px solid ${callEnabled ? 'rgba(245,158,11,0.3)' : 'rgba(255,255,255,0.08)'}`, transition: 'all 0.3s' }}>
+                        <FiVideo className="text-sm" style={{ color: callEnabled ? '#f59e0b' : 'rgba(255,255,255,0.3)' }} />
+                      </div>
+                      <div>
+                        <p className="text-[9px] uppercase tracking-[0.35em] font-black mb-0.5" style={{ color: 'rgba(245,158,11,0.7)' }}>For Juniors</p>
+                        <h3 className="text-sm font-black" style={{ color: '#e5e7eb' }}>1-on-1 Call</h3>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleToggleCall}
+                      className="flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300"
+                      style={callEnabled
+                        ? { background: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.35)', color: '#f59e0b' }
+                        : { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.4)' }}
+                    >
+                      {callEnabled
+                        ? <><FiToggleRight className="text-base" /> Enabled</>
+                        : <><FiToggleLeft className="text-base" /> Enable</>}
+                    </button>
+                  </div>
+                  <p className="text-[10px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.3)' }}>
+                    Let juniors book a direct call with you. Share your number and availability.
+                  </p>
+                  {callSaved && (
+                    <div className="mt-3 flex items-center gap-2 text-[9px] font-black uppercase tracking-wider" style={{ color: '#6ee7b7' }}>
+                      <FiCheckCircle /> Availability saved
+                    </div>
+                  )}
+                </div>
+                <AnimatePresence>
+                  {showCallForm && (
+                    <motion.div
+                      key="call-form"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: 'easeInOut' }}
+                      style={{ overflow: 'hidden', borderTop: '1px solid rgba(245,158,11,0.15)' }}
+                    >
+                      <div className="p-6 space-y-5">
+                        <div className="space-y-2">
+                          <FieldLabel icon={<FiPhone />} label="Your Phone Number" required />
+                          <div className="flex rounded-xl overflow-hidden"
+                            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                            onFocusCapture={e => e.currentTarget.style.borderColor = 'rgba(245,158,11,0.4)'}
+                            onBlurCapture={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'}
+                          >
+                            <span className="px-3 flex items-center text-[10px] font-black shrink-0"
+                              style={{ background: 'rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.25)', borderRight: '1px solid rgba(255,255,255,0.06)' }}>+91</span>
+                            <input name="phone" type="tel" maxLength={10} value={callData.phone} onChange={handleCallChange}
+                              placeholder="9876543210"
+                              className="bg-transparent w-full py-3.5 px-4 text-xs outline-none font-bold"
+                              style={{ color: '#e5e7eb' }} />
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <FieldLabel icon={<FiClock />} label="Available Time Slot" required />
+                          <div className="grid grid-cols-2 gap-3">
+                            <div className="space-y-1">
+                              <p className="text-[9px] uppercase tracking-widest font-black" style={{ color: 'rgba(255,255,255,0.25)' }}>From</p>
+                              <input name="timeFrom" type="time" value={callData.timeFrom} onChange={handleCallChange}
+                                className="w-full rounded-xl py-3 px-4 text-xs outline-none font-bold"
+                                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#e5e7eb', colorScheme: 'dark' }}
+                                onFocus={e => e.target.style.borderColor = 'rgba(245,158,11,0.4)'}
+                                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'} />
+                            </div>
+                            <div className="space-y-1">
+                              <p className="text-[9px] uppercase tracking-widest font-black" style={{ color: 'rgba(255,255,255,0.25)' }}>To</p>
+                              <input name="timeTo" type="time" value={callData.timeTo} onChange={handleCallChange}
+                                className="w-full rounded-xl py-3 px-4 text-xs outline-none font-bold"
+                                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#e5e7eb', colorScheme: 'dark' }}
+                                onFocus={e => e.target.style.borderColor = 'rgba(245,158,11,0.4)'}
+                                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'} />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <FieldLabel icon={<FiCalendar />} label="Available Days" required />
+                          <div className="grid grid-cols-4 gap-2">
+                            {WORKING_DAYS.map(day => (
+                              <button key={day} type="button" onClick={() => toggleCallDay(day)}
+                                className="py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all duration-200"
+                                style={callData.days.includes(day)
+                                  ? { background: '#f59e0b', color: '#000', border: '1px solid #f59e0b' }
+                                  : { background: 'rgba(255,255,255,0.03)', color: 'rgba(255,255,255,0.35)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                                {day}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                        <button type="button" onClick={handleCallSubmit}
+                          className="w-full py-3.5 rounded-xl flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest transition-all duration-200"
+                          style={{ background: 'linear-gradient(135deg,#f59e0b,#d97706)', color: '#000' }}
+                          onMouseEnter={e => e.currentTarget.style.opacity = '0.85'}
+                          onMouseLeave={e => e.currentTarget.style.opacity = '1'}>
+                          <FiSave /> Save Availability
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+
+            </motion.div>
+
+            {/* Right: socials + save — spans 2 cols */}
+            <div className="lg:col-span-2 space-y-5">
+
+              {/* Socials card */}
+              <motion.div
+                initial={{ opacity: 0, y: 32 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                <SectionCard label="Social Links">
+                  <SocialInput label="GitHub" icon={<FiGithub />} prefix="github.com/" name="github" value={formData.github} onChange={handleChange} required />
+                  <div className="h-4" />
+                  <SocialInput label="LinkedIn" icon={<FiLinkedin />} prefix="in/" name="linkedin" value={formData.linkedin} onChange={handleChange} required />
+                </SectionCard>
+              </motion.div>
+
+              {/* Save card */}
+              <motion.div
+                initial={{ opacity: 0, y: 32 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="rounded-2xl overflow-hidden"
+                style={{ background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' }}
+              >
+                <div className="p-7">
+                  {/* Progress dots */}
+                  <div className="flex gap-1.5 mb-5">
+                    {['name','email','address','github','linkedin','tech_stack','year'].map(f => (
+                      <div key={f} className="h-1 flex-1 rounded-full transition-all duration-300"
+                        style={{ background: formData[f] && String(formData[f]).trim() ? 'rgba(0,0,0,0.6)' : 'rgba(0,0,0,0.15)' }} />
+                    ))}
+                  </div>
+
+                  <p className="text-[9px] font-black uppercase tracking-[0.3em] mb-1" style={{ color: 'rgba(0,0,0,0.5)' }}>
+                    {selectedTechs.length === 0 ? 'Not started' : profileComplete ? 'All done!' : 'In progress'}
+                  </p>
+                  <h3 className="text-2xl font-serif italic text-black mb-1">Save Profile</h3>
+                  <p className="text-[10px] font-bold mb-6" style={{ color: 'rgba(0,0,0,0.5)' }}>
+                    All 7 fields are required.
+                  </p>
+
+                  <button type="submit" disabled={isSubmitting}
+                    className="w-full py-4 rounded-xl flex items-center justify-center gap-2.5 font-black text-xs uppercase tracking-widest transition-all duration-200"
+                    style={{ background: '#000', color: '#fff' }}
+                    onMouseEnter={e => !isSubmitting && (e.currentTarget.style.background = '#111')}
+                    onMouseLeave={e => (e.currentTarget.style.background = '#000')}
+                  >
+                    {isSubmitting
+                      ? <><span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" /> Saving…</>
+                      : <><FiSave /> Save &amp; Continue</>
+                    }
+                  </button>
+                </div>
+              </motion.div>
+
+              {/* Tip card */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="rounded-2xl p-5"
+                style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
+              >
+                <p className="text-[9px] uppercase tracking-[0.3em] font-black mb-2" style={{ color: 'rgba(245,158,11,0.6)' }}>Tip</p>
+                <p className="text-[11px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                  A complete profile increases your chances of being discovered by peers and educators on Linkaura.
+                </p>
+              </motion.div>
+
+            </div>
+          </div>
+        </form>
+      </div>
+
+      {/* ── Toast notification ── */}
+      <AnimatePresence>
+        {submitStatus.message && (
+          <motion.div
+            initial={{ opacity: 0, y: 16, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 16, scale: 0.95 }}
+            className="fixed bottom-8 right-6 z-[100] flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl backdrop-blur-xl"
+            style={submitStatus.success
+              ? { background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.3)', color: '#6ee7b7' }
+              : { background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.3)', color: '#fca5a5' }
+            }
+          >
+            {submitStatus.success
+              ? <FiCheckCircle className="text-lg shrink-0" />
+              : <FiAlertCircle className="text-lg shrink-0" />
+            }
+            <span className="text-[10px] font-black uppercase tracking-widest">{submitStatus.message}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
 
-const InputField = ({ label, icon, name, value, onChange, required }) => (
-  <div className="space-y-3">
-    <label className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-gray-500 font-black ml-1">
-      <span className="text-amber-500">{icon}</span> {label} {required && <span className="text-amber-500">*</span>}
-    </label>
-    <input name={name} type="text" value={value} onChange={onChange} required={required}
-      className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-sm focus:border-amber-500/50 transition-all text-white outline-none"
-      placeholder="Enter..." />
+/* ── Sub-components ── */
+
+const SectionCard = ({ label, children }) => (
+  <div className="rounded-2xl p-6 space-y-5"
+    style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+    <p className="text-[9px] uppercase tracking-[0.35em] font-black" style={{ color: 'rgba(245,158,11,0.7)' }}>{label}</p>
+    {children}
+  </div>
+);
+
+const FieldLabel = ({ icon, label, required }) => (
+  <label className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-black ml-0.5" style={{ color: 'rgba(255,255,255,0.35)' }}>
+    <span className="text-amber-400">{icon}</span>
+    {label}
+    {required && <span className="text-amber-500">*</span>}
+  </label>
+);
+
+const InputField = ({ label, icon, name, value, onChange, required, placeholder }) => (
+  <div className="space-y-2">
+    <FieldLabel icon={icon} label={label} required={required} />
+    <input
+      name={name} type="text" value={value} onChange={onChange} required={required}
+      placeholder={placeholder}
+      className="w-full rounded-xl py-3.5 px-4 text-sm transition-all duration-200 outline-none"
+      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#e5e7eb' }}
+      onFocus={e => e.target.style.borderColor = 'rgba(245,158,11,0.4)'}
+      onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
+    />
   </div>
 );
 
 const SocialInput = ({ label, icon, prefix, name, value, onChange, required }) => (
-  <div className="space-y-3">
-    <label className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-gray-400 font-black ml-1">
-      {icon} {label} {required && <span className="text-amber-500">*</span>}
-    </label>
-    <div className="flex bg-white/5 border border-white/10 rounded-2xl overflow-hidden focus-within:border-amber-500/50">
-      <span className="bg-white/5 px-4 flex items-center text-[9px] text-gray-600 border-r border-white/5 font-black uppercase">{prefix}</span>
+  <div className="space-y-2">
+    <FieldLabel icon={icon} label={label} required={required} />
+    <div className="flex rounded-xl overflow-hidden transition-all duration-200"
+      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+      onFocusCapture={e => e.currentTarget.style.borderColor = 'rgba(245,158,11,0.4)'}
+      onBlurCapture={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'}
+    >
+      <span className="px-3 flex items-center text-[9px] font-black uppercase shrink-0"
+        style={{ background: 'rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.25)', borderRight: '1px solid rgba(255,255,255,0.06)' }}>
+        {prefix}
+      </span>
       <input name={name} value={value} onChange={onChange} required={required}
-        className="bg-transparent w-full py-4 px-4 text-xs focus:outline-none text-white font-bold" placeholder="ID" />
+        className="bg-transparent w-full py-3.5 px-4 text-xs outline-none font-bold"
+        style={{ color: '#e5e7eb' }}
+        placeholder="username"
+      />
     </div>
   </div>
 );

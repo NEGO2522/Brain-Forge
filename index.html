@@ -41,6 +41,40 @@
     <!-- Canonical URL -->
     <link rel="canonical" href="https://linkaura.in/" />
 
+    <!-- Google Places autocomplete dark theme -->
+    <style>
+      .pac-container {
+        background: #0f0f0f;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 14px;
+        margin-top: 6px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+        font-family: inherit;
+        overflow: hidden;
+      }
+      .pac-item {
+        background: transparent;
+        color: rgba(255,255,255,0.6);
+        border-top: 1px solid rgba(255,255,255,0.05);
+        padding: 10px 14px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: background 0.15s;
+      }
+      .pac-item:first-child { border-top: none; }
+      .pac-item:hover, .pac-item-selected {
+        background: rgba(245,158,11,0.08);
+        color: #f59e0b;
+      }
+      .pac-item-query {
+        color: #f59e0b;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .pac-icon { display: none; }
+      .pac-logo::after { display: none; }
+    </style>
+
     <!-- Structured JSON-LD Data for SEO -->
     <script type="application/ld+json">
     {

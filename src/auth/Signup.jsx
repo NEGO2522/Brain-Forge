@@ -74,9 +74,9 @@ const Signup = () => {
     }
 
     setSuccess(true);
-    // You can redirect after a delay or let user check email
+    // Redirect to profile setup after signup
     setTimeout(() => {
-      navigate('/login');
+      navigate('/user');
     }, 2500);
   };
 

@@ -57,16 +57,8 @@ function App() {
             <Profiles />
           </Layout>
         } />
-        <Route path="/chat/:id" element={
-          <Layout>
-            <Chat />
-          </Layout>
-        } />
-        <Route path="/chats" element={
-          <Layout>
-            <Chats />
-          </Layout>
-        } />
+        <Route path="/chat/:id" element={<Chat />} />
+        <Route path="/chats" element={<Chats />} />
         <Route path="/notification" element={
           <Layout>
             <Notification />

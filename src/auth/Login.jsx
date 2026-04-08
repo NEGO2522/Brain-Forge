@@ -41,8 +41,8 @@ const Login = () => {
       return;
     }
 
-    // Login successful → redirect
-    navigate('/profiles');
+    // Login successful → redirect to profile setup
+    navigate('/user');
   };
 
   return (
