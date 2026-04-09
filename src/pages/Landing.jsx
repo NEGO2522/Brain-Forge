@@ -142,8 +142,8 @@ const Landing = () => {
             >
               <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-black/10">
                 <img
-                  src="/Hero_Image.png"
-                  alt="College students collaborating and learning together"
+                  src="/login.jpg"
+                  alt="College students collaborating and learning together on Linkaura"
                   className="w-full h-auto object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-br from-black/20 via-transparent to-black/10" />
