@@ -3,12 +3,17 @@
 User-agent: *
 Allow: /
 
-# Block sensitive crawler paths
+# Block sensitive crawler paths but allow important pages
 Disallow: /adminpannel
-Disallow: /user
-Disallow: /chat
-Disallow: /notification
+Disallow: /chat/
+Disallow: /notification/
 Disallow: /login
+Allow: /user
+Allow: /student
+Allow: /educators
+Allow: /connect
+Allow: /about
+Allow: /chats
 
 # Tell search engines where the official sitemap is
 Sitemap: https://linkaura.in/sitemap.xml

@@ -4,25 +4,60 @@
     <loc>https://linkaura.in/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
+    <lastmod>2026-04-09</lastmod>
   </url>
   <url>
-    <loc>https://linkaura.in/about</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://linkaura.in/roadmap</loc>
-    <changefreq>weekly</changefreq>
+    <loc>https://linkaura.in/student</loc>
+    <changefreq>daily</changefreq>
     <priority>0.9</priority>
+    <lastmod>2026-04-09</lastmod>
+  </url>
+  <url>
+    <loc>https://linkaura.in/educators</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <lastmod>2026-04-09</lastmod>
   </url>
   <url>
     <loc>https://linkaura.in/connect</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+    <lastmod>2026-04-09</lastmod>
   </url>
   <url>
-    <loc>https://linkaura.in/profiles</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
+    <loc>https://linkaura.in/about</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-04-09</lastmod>
+  </url>
+  <url>
+    <loc>https://linkaura.in/login</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <lastmod>2026-04-09</lastmod>
+  </url>
+  <url>
+    <loc>https://linkaura.in/signup</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <lastmod>2026-04-09</lastmod>
+  </url>
+  <url>
+    <loc>https://linkaura.in/user</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-04-09</lastmod>
+  </url>
+  <url>
+    <loc>https://linkaura.in/chats</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <lastmod>2026-04-09</lastmod>
+  </url>
+  <url>
+    <loc>https://linkaura.in/notification</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+    <lastmod>2026-04-09</lastmod>
   </url>
 </urlset>

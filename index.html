@@ -6,12 +6,21 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
     <!-- Primary Meta Tags -->
-    <title>Linkaura | All Your Important Links in One Place</title>
-    <meta name="title" content="Linkaura | Your Personal Link Hub" />
-    <meta name="description" content="Linkaura helps you organize, manage, and share your digital presence with a single, beautiful link. Perfect for creators, influencers, and businesses." />
-    <meta name="keywords" content="link in bio, link management, digital business card, social media links, Linkaura, creator tools, portfolio, bio link, link tree alternative" />
+    <title>Linkaura.in | Connect with Students & Educators - Digital Platform</title>
+    <meta name="title" content="Linkaura.in | Student & Educator Connection Platform" />
+    <meta name="description" content="Connect with students and educators on Linkaura.in. Find mentors, share knowledge, and build your educational network. Join the learning community today." />
+    <meta name="keywords" content="linkaura, students, educators, learning platform, educational network, mentorship, student connect, teacher directory, online education, skill sharing, linkaura.in" />
     <meta name="author" content="Linkaura" />
     <meta name="generator" content="Linkaura" />
+    
+    <!-- Additional SEO Meta Tags -->
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <meta name="language" content="English" />
+    <meta name="revisit-after" content="7 days" />
+    <meta name="distribution" content="global" />
+    <meta name="rating" content="general" />
+    <meta name="geo.region" content="IN" />
+    <meta name="geo.placename" content="India" />
     
     <!-- Google Search Console Verification -->
     <meta name="google-site-verification" content="g6DKn6Nzdcj_m3xo8I54oWQ2ARW0TIzp-gq89GlLEOA" />
@@ -40,6 +49,9 @@
 
     <!-- Canonical URL -->
     <link rel="canonical" href="https://linkaura.in/" />
+    
+    <!-- Sitemap Reference -->
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
 
     <!-- Google Places autocomplete dark theme -->
     <style>
@@ -80,12 +92,136 @@
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
-      "name": "Linkaura",
+      "@id": "https://linkaura.in/",
       "url": "https://linkaura.in/",
+      "name": "Linkaura",
+      "alternateName": "Linkaura.in",
+      "description": "Connect with students and educators on Linkaura.in. Find mentors, share knowledge, and build your educational network.",
       "potentialAction": {
         "@type": "SearchAction",
         "target": "https://linkaura.in/?q={search_term_string}",
         "query-input": "required name=search_term_string"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "@id": "https://linkaura.in/#organization",
+        "name": "Linkaura",
+        "url": "https://linkaura.in/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://linkaura.in/logo.png",
+          "width": 512,
+          "height": 512
+        }
+      }
+    }
+    </script>
+    
+    <!-- BreadcrumbList Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://linkaura.in/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Students",
+          "item": "https://linkaura.in/student"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Educators",
+          "item": "https://linkaura.in/educators"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "About",
+          "item": "https://linkaura.in/about"
+        },
+        {
+          "@type": "ListItem",
+          "position": 5,
+          "name": "Connect",
+          "item": "https://linkaura.in/connect"
+        }
+      ]
+    }
+    </script>
+    
+    <!-- Organization Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "@id": "https://linkaura.in/#organization",
+      "name": "Linkaura",
+      "url": "https://linkaura.in/",
+      "sameAs": [
+        "https://www.facebook.com/linkaura",
+        "https://www.twitter.com/linkaura",
+        "https://www.instagram.com/linkaura",
+        "https://www.linkedin.com/company/linkaura"
+      ],
+      "description": "Educational platform connecting students and educators for mentorship and knowledge sharing.",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "url": "https://linkaura.in/connect"
+      },
+      "mainEntity": {
+        "@type": "WebSite",
+        "@id": "https://linkaura.in/"
+      }
+    }
+    </script>
+    
+    <!-- EducationalOrganization Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "@id": "https://linkaura.in/#educational",
+      "name": "Linkaura Educational Platform",
+      "url": "https://linkaura.in/",
+      "description": "Platform connecting students with educators for mentorship, skill development, and knowledge sharing.",
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Educational Services",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Course",
+              "name": "Student Mentorship",
+              "description": "Connect with experienced educators for guidance",
+              "provider": {
+                "@type": "EducationalOrganization",
+                "@id": "https://linkaura.in/#educational"
+              }
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Course",
+              "name": "Skill Development",
+              "description": "Learn new skills from industry experts",
+              "provider": {
+                "@type": "EducationalOrganization",
+                "@id": "https://linkaura.in/#educational"
+              }
+            }
+          }
+        ]
       }
     }
     </script>
