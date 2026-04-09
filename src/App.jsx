@@ -6,11 +6,12 @@ import Connect from './pages/Connect';
 import About from './pages/About';
 import Login from './auth/Login';
 import Signup from './auth/Signup';
-import Profiles from './pages/Profiles';
+import Student from './pages/Student';
 import User from './pages/User';
 import Chat from './pages/Chat';
 import Notification from './pages/Notification';
 import Educators from './pages/Educators';
+import Teacher from './pages/Teacher';
 import Chats from './pages/Chats';
 
 
@@ -52,9 +53,9 @@ function App() {
           </Layout>
         } />
         <Route path="/profile" element={<Navigate to="/user" replace />} />
-        <Route path="/profiles" element={
+        <Route path="/student" element={
           <Layout>
-            <Profiles />
+            <Student />
           </Layout>
         } />
         <Route path="/chat/:id" element={<Chat />} />
@@ -67,6 +68,11 @@ function App() {
         <Route path="/educators" element={
           <Layout>
             <Educators />
+          </Layout>
+        } />
+        <Route path="/teacher" element={
+          <Layout>
+            <Teacher />
           </Layout>
         } />
       </Routes>

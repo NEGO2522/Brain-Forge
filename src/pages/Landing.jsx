@@ -476,7 +476,7 @@ const Landing = () => {
               Join with College Email
               <FiArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
             </button>
-            <button onClick={() => navigate('/profiles')}
+            <button onClick={() => navigate('/student')}
               className="px-10 py-5 border-2 border-black/15 text-[11px] font-black uppercase tracking-widest text-black/55 hover:border-black hover:text-black transition-all">
               Browse Seniors
             </button>

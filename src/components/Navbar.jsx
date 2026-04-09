@@ -130,9 +130,9 @@ const Navbar = () => {
 
   const navLinks = [
     { to: '/',          text: 'Home'      },
-    { to: '/profiles',  text: 'Profiles'  },
+    { to: '/student',  text: 'Students'  },
+    { to: '/teacher',  text: 'Teachers'  },
     { to: '/educators', text: 'Educators' },
-    { to: '/teachers',  text: 'Teachers'  },
   ];
 
   const scrolledBg = 'bg-white/95 backdrop-blur-md shadow-[0_1px_0_0_rgba(0,0,0,0.08)]';

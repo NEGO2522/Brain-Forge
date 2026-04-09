@@ -155,7 +155,7 @@ const User = () => {
       }
       setProfileComplete(true);
       setSubmitStatus({ success: true, message: 'Profile saved! Redirecting...' });
-      setTimeout(() => navigate('/profiles'), 1800);
+      setTimeout(() => navigate('/student'), 1800);
     } catch (err) { setSubmitStatus({ success: false, message: err.message }); }
     finally { setIsSubmitting(false); setTimeout(() => setSubmitStatus({ success: null, message: '' }), 4000); }
   };
@@ -182,7 +182,7 @@ const User = () => {
     <div className="min-h-screen bg-white text-black" style={{ fontFamily: "'Georgia', serif" }}>
       <div className="fixed inset-0 pointer-events-none z-0 opacity-[0.025]" style={noiseBg} />
 
-      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 pt-20 pb-24">
+      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 pt-32 pb-24">
 
         {/* Incomplete banner */}
         <AnimatePresence>
