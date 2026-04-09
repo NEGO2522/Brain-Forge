@@ -54,8 +54,8 @@ const Login = () => {
         <div className="hidden lg:flex lg:w-1/2 p-8 relative">
           <div className="relative w-full h-full overflow-hidden rounded-3xl shadow-2xl border border-black/10">
             <img
-              src="https://picsum.photos/id/1015/1200/1600"
-              alt="Freshers connecting with seniors in tech community"
+              src="/login.jpg"
+              alt="College students login to Linkaura mentorship platform"
               className="absolute inset-0 w-full h-full object-cover"
             />
             
