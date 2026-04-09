@@ -131,7 +131,7 @@ const Navbar = () => {
   const navLinks = [
     { to: '/',          text: 'Home'      },
     { to: '/student',  text: 'Students'  },
-    { to: '/teacher',  text: 'Teachers'  },
+    // { to: '/teacher',  text: 'Teachers'  },
     { to: '/educators', text: 'Educators' },
   ];
 

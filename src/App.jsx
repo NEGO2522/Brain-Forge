@@ -11,7 +11,7 @@ import User from './pages/User';
 import Chat from './pages/Chat';
 import Notification from './pages/Notification';
 import Educators from './pages/Educators';
-import Teacher from './pages/Teacher';
+// import Teacher from './pages/Teacher';
 import Chats from './pages/Chats';
 
 
@@ -70,11 +70,11 @@ function App() {
             <Educators />
           </Layout>
         } />
-        <Route path="/teacher" element={
+        {/* <Route path="/teacher" element={
           <Layout>
             <Teacher />
           </Layout>
-        } />
+        } /> */}
       </Routes>
       </MenuProvider>
     </div>
