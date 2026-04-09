@@ -81,20 +81,20 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-hidden">
+    <div className="min-h-screen bg-white text-black overflow-hidden" style={{ fontFamily: "'Georgia', serif" }}>
       <Navbar />
 
       <div className="flex min-h-screen pt-16">
         {/* LEFT SIDE - Same beautiful image as Login */}
         <div className="hidden lg:flex lg:w-1/2 p-8 relative">
-          <div className="relative w-full h-full overflow-hidden rounded-3xl shadow-2xl">
+          <div className="relative w-full h-full overflow-hidden rounded-3xl shadow-2xl border border-black/10">
             <img
               src="https://picsum.photos/id/1015/1200/1600"
               alt="Freshers connecting with seniors in tech community"
               className="absolute inset-0 w-full h-full object-cover"
             />
             
-            <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/65 to-transparent rounded-3xl" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent rounded-3xl" />
 
             <div className="absolute inset-0 flex flex-col justify-center px-12 text-white">
               <div className="max-w-md">
@@ -103,30 +103,30 @@ const Signup = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8 }}
                 >
-                  <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 backdrop-blur-md rounded-full mb-6">
-                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                    <span className="text-xs font-mono tracking-widest">JOIN THE COMMUNITY</span>
+                  <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/20 backdrop-blur-md rounded-full mb-6">
+                    <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                    <span className="text-xs font-black uppercase tracking-[0.4em] text-white/80">JOIN THE COMMUNITY</span>
                   </div>
 
-                  <h2 className="text-5xl font-serif tracking-tighter leading-tight mb-6">
+                  <h2 className="text-5xl font-serif font-bold leading-tight mb-6">
                     Start your journey with<br />
-                    <span className="text-amber-500">Linkaura</span>
+                    <span className="text-black">Linkaura</span>
                   </h2>
-                  <p className="text-xl text-zinc-300 leading-relaxed">
+                  <p className="text-xl text-white/80 leading-relaxed" style={{ fontFamily: 'sans-serif' }}>
                     Connect with seniors, participate in events, and grow together with thousands of Indian tech students.
                   </p>
                 </motion.div>
               </div>
             </div>
 
-            <div className="absolute bottom-10 left-12 text-sm text-amber-400/80 font-mono tracking-[0.1em]">
+            <div className="absolute bottom-10 left-12 text-sm text-white/60 font-black uppercase tracking-[0.35em]">
               GROW TOGETHER • LINKAURA
             </div>
           </div>
         </div>
 
         {/* RIGHT SIDE - Signup Form */}
-        <div className="flex-1 flex items-center justify-center p-6 lg:p-12 bg-zinc-950">
+        <div className="flex-1 flex items-center justify-center p-6 lg:p-12 bg-white">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -134,18 +134,18 @@ const Signup = () => {
             className="w-full max-w-md"
           >
             <div className="mb-10 text-center lg:text-left">
-              <h1 className="text-4xl font-serif tracking-tight mb-3">Create your account</h1>
-              <p className="text-zinc-400">Join the Linkaura community today</p>
+              <h1 className="text-4xl font-serif font-bold text-black mb-3">Create your account</h1>
+              <p className="text-black/50">Join the Linkaura community today</p>
             </div>
 
             {error && (
-              <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-2xl text-red-400 text-sm">
+              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-600 text-sm">
                 {error}
               </div>
             )}
 
             {success && (
-              <div className="mb-6 p-4 bg-green-500/10 border border-green-500/30 rounded-2xl text-green-400 text-sm">
+              <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-2xl text-green-600 text-sm">
                 Account created successfully! Please check your email to verify.
               </div>
             )}
@@ -153,9 +153,9 @@ const Signup = () => {
             <form onSubmit={handleSignup} className="space-y-6">
               {/* Full Name */}
               <div>
-                <label className="block text-sm text-zinc-400 mb-2">Full Name</label>
+                <label className="block text-sm text-black/50 mb-2">Full Name</label>
                 <div className="relative">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-black/40">
                     <FiUser size={20} />
                   </div>
                   <input
@@ -164,7 +164,7 @@ const Signup = () => {
                     value={formData.fullName}
                     onChange={handleChange}
                     required
-                    className="w-full bg-zinc-900 border border-zinc-700 focus:border-amber-500 rounded-2xl py-4 pl-12 pr-4 text-white placeholder-zinc-500 focus:outline-none transition"
+                    className="w-full bg-white border border-black/15 focus:border-black rounded-2xl py-4 pl-12 pr-4 text-black placeholder-black/30 focus:outline-none transition"
                     placeholder="John Doe"
                   />
                 </div>
@@ -172,9 +172,9 @@ const Signup = () => {
 
               {/* Email */}
               <div>
-                <label className="block text-sm text-zinc-400 mb-2">Email Address</label>
+                <label className="block text-sm text-black/50 mb-2">Email Address</label>
                 <div className="relative">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-black/40">
                     <FiMail size={20} />
                   </div>
                   <input
@@ -183,7 +183,7 @@ const Signup = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full bg-zinc-900 border border-zinc-700 focus:border-amber-500 rounded-2xl py-4 pl-12 pr-4 text-white placeholder-zinc-500 focus:outline-none transition"
+                    className="w-full bg-white border border-black/15 focus:border-black rounded-2xl py-4 pl-12 pr-4 text-black placeholder-black/30 focus:outline-none transition"
                     placeholder="you@college.edu.in"
                   />
                 </div>
@@ -191,9 +191,9 @@ const Signup = () => {
 
               {/* Password */}
               <div>
-                <label className="block text-sm text-zinc-400 mb-2">Password</label>
+                <label className="block text-sm text-black/50 mb-2">Password</label>
                 <div className="relative">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-black/40">
                     <FiLock size={20} />
                   </div>
                   <input
@@ -202,13 +202,13 @@ const Signup = () => {
                     value={formData.password}
                     onChange={handleChange}
                     required
-                    className="w-full bg-zinc-900 border border-zinc-700 focus:border-amber-500 rounded-2xl py-4 pl-12 pr-12 text-white placeholder-zinc-500 focus:outline-none transition"
+                    className="w-full bg-white border border-black/15 focus:border-black rounded-2xl py-4 pl-12 pr-12 text-black placeholder-black/30 focus:outline-none transition"
                     placeholder="••••••••"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-black/40 hover:text-black/60 transition"
                   >
                     {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
                   </button>
@@ -217,9 +217,9 @@ const Signup = () => {
 
               {/* Confirm Password */}
               <div>
-                <label className="block text-sm text-zinc-400 mb-2">Confirm Password</label>
+                <label className="block text-sm text-black/50 mb-2">Confirm Password</label>
                 <div className="relative">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-black/40">
                     <FiLock size={20} />
                   </div>
                   <input
@@ -228,13 +228,13 @@ const Signup = () => {
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     required
-                    className="w-full bg-zinc-900 border border-zinc-700 focus:border-amber-500 rounded-2xl py-4 pl-12 pr-12 text-white placeholder-zinc-500 focus:outline-none transition"
+                    className="w-full bg-white border border-black/15 focus:border-black rounded-2xl py-4 pl-12 pr-12 text-black placeholder-black/30 focus:outline-none transition"
                     placeholder="••••••••"
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-black/40 hover:text-black/60 transition"
                   >
                     {showConfirmPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
                   </button>
@@ -246,23 +246,23 @@ const Signup = () => {
                 whileTap={{ scale: 0.98 }}
                 type="submit"
                 disabled={loading}
-                className="w-full bg-amber-500 hover:bg-amber-400 disabled:bg-amber-600 disabled:cursor-not-allowed text-black font-bold py-4 rounded-2xl text-lg tracking-wider transition-all duration-200 flex items-center justify-center"
+                className="w-full bg-black hover:bg-black/80 disabled:bg-black/50 disabled:cursor-not-allowed text-white text-[11px] font-black uppercase tracking-widest py-4 rounded-2xl transition-all duration-200 flex items-center justify-center"
               >
                 {loading ? "Creating account..." : "Create Account"}
               </motion.button>
             </form>
 
-            <p className="text-center mt-8 text-zinc-400">
+            <p className="text-center mt-8 text-black/50">
               Already have an account?{' '}
               <button
                 onClick={() => navigate('/login')}
-                className="text-amber-500 hover:text-amber-400 font-medium transition"
+                className="text-black hover:text-black/80 font-black uppercase tracking-widest text-[11px] transition"
               >
                 Sign in
               </button>
             </p>
 
-            <p className="text-center text-[10px] text-zinc-500 mt-10">
+            <p className="text-center text-[10px] text-black/25 mt-10 font-black uppercase tracking-[0.35em]">
               Your data is safe with us • Trusted by Indian tech students
             </p>
           </motion.div>

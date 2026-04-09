@@ -1,171 +1,118 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FaTwitter, FaLinkedin, FaEnvelope } from 'react-icons/fa';
+import { FiTwitter, FiLinkedin, FiMail, FiGithub } from 'react-icons/fi';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const footerLinks = [
     {
-      title: 'Navigation',
+      title: 'Platform',
       links: [
         { to: '/', text: 'Home' },
-        { to: '/profiles', text: 'Profiles' },
+        { to: '/profiles', text: 'Browse Seniors' },
         { to: '/educators', text: 'Educators' },
-        { to: '/user', text: 'My Account' },
+        { to: '/connect', text: 'Connect' },
       ],
     },
     {
       title: 'Features',
       links: [
-        { to: '/chat', text: 'Chat' },
+        { to: '/chat', text: 'Direct Chat' },
         { to: '/notification', text: 'Notifications' },
+        { to: '/user', text: 'My Profile' },
       ],
     },
     {
-      title: 'Account',
+      title: 'Company',
       links: [
-        { to: '/user', text: 'Profile' },
-        { to: '/connect', text: 'Connect' },
         { to: '/about', text: 'About' },
+        { to: '/signup', text: 'Join Free' },
+        { to: '/login', text: 'Sign In' },
       ],
     },
   ];
 
   const socialLinks = [
-    { icon: <FaTwitter />,  href: 'https://twitter.com',            label: 'Twitter'  },
-    { icon: <FaLinkedin />, href: 'https://linkedin.com',           label: 'LinkedIn' },
-    { icon: <FaEnvelope />, href: 'mailto:contact@linkaura.com',    label: 'Email'    },
+    { icon: <FiTwitter size={14} />,  href: 'https://twitter.com',         label: 'Twitter'  },
+    { icon: <FiLinkedin size={14} />, href: 'https://linkedin.com',         label: 'LinkedIn' },
+    { icon: <FiGithub size={14} />,   href: 'https://github.com',           label: 'GitHub'   },
+    { icon: <FiMail size={14} />,     href: 'mailto:contact@linkaura.com',  label: 'Email'    },
   ];
 
-  /* ── theme tokens ── */
-  const outerBg  = '#000000';          // page bg behind card
-  const cardBg   = '#111111';          // card fill — clearly visible
-  const cardBd   = 'rgba(255,255,255,0.08)'; // card border
-  const shadow   = '0 0 0 1px rgba(255,255,255,0.06), 0 24px 64px rgba(0,0,0,0.6)';
-  const textPri  = '#ffffff';
-  const textMut  = '#6b7280';
-  const divider  = 'rgba(255,255,255,0.07)';
-  const iconBg   = 'rgba(255,255,255,0.06)';
-  const iconBd   = 'rgba(255,255,255,0.10)';
-
   return (
-    <div
-      className="w-full px-4 md:px-8 pb-8"
-      style={{ backgroundColor: outerBg }}
-    >
-      <footer
-        className="max-w-7xl mx-auto rounded-3xl overflow-hidden"
-        style={{
-          backgroundColor: cardBg,
-          border: `1px solid ${cardBd}`,
-          boxShadow: shadow,
-        }}
-      >
-        <div className="px-8 md:px-12 py-12 md:py-16">
+    <footer className="bg-white border-t border-black/8" style={{ fontFamily: "'Georgia', serif" }}>
 
-          {/* ── MAIN GRID ── */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12">
+      {/* ── MAIN GRID ── */}
+      <div className="max-w-5xl mx-auto px-6 md:px-12 py-20">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8">
 
-            {/* Brand */}
-            <div className="lg:col-span-1">
-              <div className="flex items-center gap-2 mb-5">
-                <div
-                  className="p-1.5 rounded-lg"
-                  style={{
-                    backgroundColor: 'rgba(245,158,11,0.10)',
-                    border: '1px solid rgba(245,158,11,0.22)',
-                  }}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M10.827 16.379a6.082 6.082 0 0 1-8.618-7.002l5.412 1.45a6.082 6.082 0 0 1 7.002-8.618l-1.45 5.412a6.082 6.082 0 0 1 8.618 7.002l-5.412-1.45a6.082 6.082 0 0 1-7.002 8.618l1.45-5.412Z"/>
-                    <path d="M12 12v.01"/>
-                  </svg>
-                </div>
-                <span
-                  className="text-lg font-serif tracking-tighter uppercase italic"
-                  style={{ color: textPri }}
-                >
-                  LINK<span className="font-light text-amber-500 not-italic">AURA</span>
-                </span>
+          {/* Brand column */}
+          <div className="md:col-span-1">
+            <div className="flex items-center gap-2 mb-5">
+              <div className="w-7 h-7 bg-black flex items-center justify-center">
+                <span className="text-white text-[10px] font-black">L</span>
               </div>
-
-              <p className="text-sm leading-relaxed mb-7" style={{ color: textMut }}>
-                Connect with educators and expand your learning network. Discover profiles, engage in meaningful conversations, and grow together.
-              </p>
-
-              {/* Social icons */}
-              <div className="flex gap-2.5">
-                {socialLinks.map((s, i) => (
-                  <a
-                    key={i}
-                    href={s.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={s.label}
-                    className="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300"
-                    style={{ backgroundColor: iconBg, border: `1px solid ${iconBd}`, color: textMut }}
-                    onMouseEnter={e => {
-                      e.currentTarget.style.color = '#f59e0b';
-                      e.currentTarget.style.borderColor = 'rgba(245,158,11,0.40)';
-                      e.currentTarget.style.backgroundColor = 'rgba(245,158,11,0.08)';
-                    }}
-                    onMouseLeave={e => {
-                      e.currentTarget.style.color = textMut;
-                      e.currentTarget.style.borderColor = iconBd;
-                      e.currentTarget.style.backgroundColor = iconBg;
-                    }}
-                  >
-                    {s.icon}
-                  </a>
-                ))}
-              </div>
+              <span className="text-sm font-black uppercase tracking-[0.3em]" style={{ fontFamily: 'sans-serif' }}>Linkaura</span>
             </div>
+            <p className="text-sm text-black/45 leading-relaxed mb-8" style={{ fontFamily: 'sans-serif', fontWeight: 400 }}>
+              The college-exclusive platform where juniors find seniors in the same domain — and seniors earn by sharing what they know.
+            </p>
 
-            {/* Nav columns */}
-            {footerLinks.map((section, i) => (
-              <div key={i}>
-                <h3
-                  className="text-[10px] font-black uppercase tracking-[0.28em] mb-5"
-                  style={{ color: '#f59e0b' }}
+            {/* Social icons */}
+            <div className="flex gap-2">
+              {socialLinks.map((s, i) => (
+                <a
+                  key={i}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={s.label}
+                  className="w-8 h-8 border border-black/15 flex items-center justify-center text-black/35 hover:bg-black hover:text-white hover:border-black transition-all duration-200"
                 >
-                  {section.title}
-                </h3>
-                <ul className="space-y-3">
-                  {section.links.map((link, j) => (
-                    <li key={j}>
-                      <Link
-                        to={link.to}
-                        className="text-sm transition-colors duration-200"
-                        style={{ color: textMut }}
-                        onMouseEnter={e => e.currentTarget.style.color = '#f59e0b'}
-                        onMouseLeave={e => e.currentTarget.style.color = textMut}
-                      >
-                        {link.text}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+                  {s.icon}
+                </a>
+              ))}
+            </div>
           </div>
 
-          {/* ── BOTTOM BAR ── */}
-          <div
-            className="mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4"
-            style={{ borderTop: `1px solid ${divider}` }}
-          >
-            <p className="text-xs" style={{ color: textMut }}>
-              © {currentYear} LinkAura. All rights reserved.
-            </p>
-            <p className="text-[10px] uppercase tracking-[0.3em] font-bold" style={{ color: textMut }}>
-              Built with <span className="text-amber-500">♥</span> for builders
-            </p>
-          </div>
-
+          {/* Nav columns */}
+          {footerLinks.map((section, i) => (
+            <div key={i}>
+              <h3 className="text-[9px] font-black uppercase tracking-[0.4em] text-black/30 mb-5" style={{ fontFamily: 'sans-serif' }}>
+                {section.title}
+              </h3>
+              <ul className="space-y-3">
+                {section.links.map((link, j) => (
+                  <li key={j}>
+                    <Link
+                      to={link.to}
+                      className="text-sm text-black/45 hover:text-black transition-colors duration-150"
+                      style={{ fontFamily: 'sans-serif', fontWeight: 400 }}
+                    >
+                      {link.text}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
-      </footer>
-    </div>
+      </div>
+
+      {/* ── BOTTOM BAR ── */}
+      <div className="border-t border-black/8">
+        <div className="max-w-5xl mx-auto px-6 md:px-12 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-[10px] font-black uppercase tracking-[0.35em] text-black/25" style={{ fontFamily: 'sans-serif' }}>
+            © {currentYear} Linkaura · All rights reserved
+          </p>
+          <p className="text-[10px] font-black uppercase tracking-[0.35em] text-black/25" style={{ fontFamily: 'sans-serif' }}>
+            Accessible only with your college email
+          </p>
+        </div>
+      </div>
+
+    </footer>
   );
 };
 

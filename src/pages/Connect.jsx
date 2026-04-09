@@ -1,31 +1,10 @@
 import React from 'react';
 import useSEO from '../hooks/useSEO';
 import { motion } from 'framer-motion';
-import { FaInstagram, FaLinkedin, FaEnvelope, FaMapMarkerAlt, FaPhone, FaChevronRight, FaUsers, FaLayerGroup } from 'react-icons/fa';
-import { FiMessageSquare, FiUsers, FiSearch } from 'react-icons/fi';
-import { RotatingFanIcon } from '../components/RotatingFanIcon';
+import { FaInstagram, FaLinkedin } from 'react-icons/fa';
+import { FiMail, FiMapPin, FiPhone, FiArrowRight, FiUsers, FiMessageSquare, FiSearch } from 'react-icons/fi';
 import Navbar from '../components/Navbar';
-
-const ContactItem = ({ icon: Icon, title, content, link }) => (
-  <motion.div
-    whileHover={{ x: 5 }}
-    className="flex items-center space-x-3 group p-2 rounded-xl hover:bg-white/5 transition-all duration-300"
-  >
-    <div className="flex-shrink-0 bg-amber-500/10 p-2.5 rounded-lg group-hover:bg-amber-500/20 transition-colors">
-      <Icon className="h-4 w-4 text-amber-500" />
-    </div>
-    <div className="min-w-0">
-      <h3 className="text-[8px] uppercase tracking-[0.3em] text-gray-500 font-bold leading-tight">{title}</h3>
-      {link ? (
-        <a href={link} className="text-white hover:text-amber-400 transition-colors font-serif text-sm truncate block">
-          {content}
-        </a>
-      ) : (
-        <p className="text-white font-serif text-sm tracking-wide leading-tight truncate">{content}</p>
-      )}
-    </div>
-  </motion.div>
-);
+import Footer from './Footer';
 
 const Connect = () => {
   useSEO({
@@ -35,192 +14,172 @@ const Connect = () => {
   });
 
   const INSTAGRAM_LINK = "https://instagram.com/brainforge";
-  const LINKEDIN_LINK = "https://www.linkedin.com/company/brainforge16";
+  const LINKEDIN_LINK  = "https://www.linkedin.com/company/brainforge16";
+
+  const noiseBg = {
+    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+    backgroundRepeat: 'repeat', backgroundSize: '128px',
+  };
 
   return (
-    <div className="h-screen w-full bg-black text-white relative overflow-hidden flex flex-col pt-20 pb-4 px-4 md:px-6">
+    <div className="min-h-screen bg-white text-black" style={{ fontFamily: "'Georgia', serif" }}>
+      <div className="fixed inset-0 pointer-events-none z-0 opacity-[0.025]" style={noiseBg} />
+
       <Navbar />
 
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-5%] right-[-10%] w-[60%] md:w-[40%] h-[40%] bg-amber-500/5 rounded-full blur-[80px] md:blur-[120px]" />
-        <div className="absolute bottom-[-5%] left-[-10%] w-[60%] md:w-[40%] h-[40%] bg-amber-500/5 rounded-full blur-[80px] md:blur-[120px]" />
-      </div>
-
-      <div className="max-w-7xl mx-auto w-full flex-grow flex flex-col relative z-10 overflow-hidden">
-
-        {/* Header */}
-        <div className="mb-4 md:mb-6 flex-shrink-0 text-center lg:text-left pt-2">
-          <motion.h1
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-3xl md:text-5xl lg:text-6xl font-serif leading-tight"
-          >
-            Connect With <span className="text-amber-500 italic">Us</span>
-          </motion.h1>
-        </div>
-
-        <div className="grid lg:grid-cols-12 gap-6 mb-4 flex-grow overflow-hidden">
-
-          {/* LEFT — Contact info + map */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="lg:col-span-7 flex flex-col min-h-0"
-          >
-            <div className="bg-white/5 backdrop-blur-xl rounded-[2.5rem] border border-white/10 p-5 md:p-6 flex flex-col h-full overflow-hidden">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
-
-                <div className="flex flex-col space-y-4 md:space-y-6">
-                  <div className="space-y-3">
-                    <h2 className="text-lg font-serif text-white mb-2 tracking-tight flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse" />
-                      Get in Touch
-                    </h2>
-                    <ContactItem icon={FaMapMarkerAlt} title="Physical Coordinates" content="Jaipur, Rajasthan" />
-                    <ContactItem icon={FaEnvelope} title="Network Node" content="nextgenova28@gmail.com" link="mailto:nextgenova28@gmail.com" />
-                    <ContactItem icon={FaPhone} title="Phone" content="+91 94139 73399" link="tel:+919413973399" />
-                  </div>
-
-                  <div>
-                    <h3 className="text-[9px] uppercase tracking-[0.4em] text-gray-500 font-bold mb-3">Follow Us</h3>
-                    <div className="flex space-x-2">
-                      {[
-                        { icon: FaInstagram, link: INSTAGRAM_LINK, color: "hover:border-pink-500 hover:text-pink-400" },
-                        { icon: FaLinkedin, link: LINKEDIN_LINK, color: "hover:border-[#0077b5] hover:text-[#0077b5]" },
-                      ].map((social, i) => (
-                        <a
-                          key={i}
-                          href={social.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={`w-10 h-10 rounded-lg border border-white/10 flex items-center justify-center text-gray-400 transition-all duration-300 bg-white/5 ${social.color}`}
-                        >
-                          <social.icon className="text-lg" />
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="relative rounded-[1.5rem] overflow-hidden border border-white/10 h-full bg-black/40 hidden md:block">
-                  <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d227748.3825624311!2d75.65047033534571!3d26.88544791845112!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396c4adb4ad85659%3A0x139059bc57d0ad61!2sJaipur%2C%20Rajasthan!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
-                    width="100%" height="100%"
-                    style={{ border: 0, filter: 'grayscale(1) invert(0.9) contrast(1.2) brightness(0.8)' }}
-                    allowFullScreen="" loading="lazy" title="Jaipur Map"
-                  />
-                  <div className="absolute inset-0 pointer-events-none border-[4px] border-black/20 rounded-[1.5rem]" />
-                </div>
-              </div>
-            </div>
+      {/* HERO */}
+      <section className="relative border-b border-black/10 overflow-hidden pt-28">
+        <div className="absolute inset-0 pointer-events-none" style={{
+          backgroundImage: 'linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px)',
+          backgroundSize: '80px 80px',
+        }} />
+        <div className="relative z-10 px-6 md:px-12 py-16 max-w-5xl mx-auto">
+          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 border border-black/15 text-[10px] font-black uppercase tracking-[0.4em] text-black/50 mb-8" style={{ fontFamily: 'sans-serif' }}>
+              Get in Touch
+            </span>
           </motion.div>
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
+            className="text-5xl sm:text-7xl md:text-[5.5rem] font-serif font-bold leading-[0.92] tracking-tight text-black mb-6">
+            Connect<br />With Us.
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}
+            className="text-base text-black/50 max-w-md leading-relaxed" style={{ fontFamily: 'sans-serif', fontWeight: 400 }}>
+            A community platform for students, developers, and creators to find each other, chat, and build together.
+          </motion.p>
+        </div>
+      </section>
 
-          {/* RIGHT — Linkaura info card */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="lg:col-span-5 flex flex-col min-h-0"
-          >
-            <div className="bg-gradient-to-br from-amber-500/10 to-transparent backdrop-blur-xl rounded-[2.5rem] border border-amber-500/20 p-6 md:p-8 flex flex-col h-full overflow-hidden">
+      {/* CONTENT */}
+      <section className="border-b border-black/8 py-24 px-6 md:px-12">
+        <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-px bg-black/8">
 
-              <div className="flex-shrink-0 flex items-center justify-between mb-4">
-                <div className="flex items-center space-x-4">
-                  <RotatingFanIcon>
-                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-amber-500/5 flex items-center justify-center border border-amber-500/20">
-                      <svg className="h-5 w-5 md:h-6 md:w-6 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                      </svg>
-                    </div>
-                  </RotatingFanIcon>
-                  <div>
-                    <h2 className="text-xl md:text-2xl font-serif text-white leading-none italic uppercase tracking-tighter">Linkaura</h2>
-                    <span className="text-[9px] uppercase tracking-[0.3em] text-amber-500 font-black">Community Platform</span>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-2 px-3 py-1 bg-white/5 rounded-full border border-white/10">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="text-[10px] font-mono text-emerald-500 uppercase">Live</span>
-                </div>
-              </div>
-
-              {/* About blurb */}
-              <div className="flex-shrink-0 mb-4 space-y-2">
-                <p className="text-[10px] uppercase tracking-widest font-bold text-gray-400">About</p>
-                <p className="text-gray-400 text-xs md:text-sm leading-relaxed font-light border-l-2 border-amber-500/30 pl-4">
-                  A community platform for students, developers, and creators to find each other, chat, and build together.
-                </p>
-              </div>
-
-              {/* Stats */}
-              <div className="grid grid-cols-2 gap-4 mb-4 flex-shrink-0">
-                <div className="bg-black/40 p-3 md:p-4 rounded-2xl border border-white/5">
-                  <div className="flex items-center justify-between mb-1">
-                    <FaUsers className="text-amber-500 text-sm" />
-                    <span className="text-[9px] text-gray-500 uppercase">Members</span>
-                  </div>
-                  <p className="text-xl md:text-2xl font-serif text-white tracking-tighter">200+</p>
-                </div>
-                <div className="bg-black/40 p-3 md:p-4 rounded-2xl border border-white/5">
-                  <div className="flex items-center justify-between mb-1">
-                    <div className="w-2 h-2 rounded-full border-2 border-amber-500" />
-                    <span className="text-[9px] text-gray-500 uppercase">Uptime</span>
-                  </div>
-                  <p className="text-xl md:text-2xl font-serif text-white tracking-tighter">99.9%</p>
-                </div>
-              </div>
-
-              {/* Features */}
-              <div className="w-full space-y-2 mb-4 overflow-hidden">
+          {/* LEFT — contact info */}
+          <div className="bg-white p-10 flex flex-col gap-8" style={{ fontFamily: 'sans-serif' }}>
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-black/30 mb-6">Contact</p>
+              <div className="flex flex-col gap-5">
                 {[
-                  { icon: FiSearch, label: "Browse Profiles" },
-                  { icon: FiMessageSquare, label: "Real-time Chat" },
-                  { icon: FiUsers, label: "Community Events" },
-                ].map((item, i) => (
-                  <div key={i} className="flex items-center space-x-3 bg-white/5 p-2 md:p-3 rounded-xl border border-white/5">
-                    <item.icon className="text-amber-500 text-xs flex-shrink-0" />
-                    <span className="text-[9px] md:text-[10px] uppercase tracking-widest text-gray-300 font-medium">{item.label}</span>
+                  { icon: FiMapPin, label: 'Location',     value: 'Jaipur, Rajasthan', href: null },
+                  { icon: FiMail,   label: 'Email',        value: 'nextgenova28@gmail.com', href: 'mailto:nextgenova28@gmail.com' },
+                  { icon: FiPhone,  label: 'Phone',        value: '+91 94139 73399', href: 'tel:+919413973399' },
+                ].map(({ icon: Icon, label, value, href }) => (
+                  <div key={label} className="flex items-start gap-4">
+                    <div className="w-9 h-9 border border-black/15 flex items-center justify-center flex-shrink-0">
+                      <Icon size={13} className="text-black/40" />
+                    </div>
+                    <div>
+                      <p className="text-[9px] uppercase tracking-[0.3em] font-black text-black/30 mb-0.5">{label}</p>
+                      {href
+                        ? <a href={href} className="text-sm text-black hover:text-black/60 transition-colors">{value}</a>
+                        : <p className="text-sm text-black/70">{value}</p>
+                      }
+                    </div>
                   </div>
                 ))}
               </div>
+            </div>
 
-              <div className="mt-auto space-y-4">
-                {/* Roadmap progress */}
-                <div className="w-full p-3 bg-white/5 rounded-[1.5rem] border border-white/5 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <FaLayerGroup className="text-amber-500 text-xs" />
-                      <span className="text-[9px] uppercase tracking-[0.2em] text-gray-400 font-bold">Roadmap</span>
-                    </div>
-                    <span className="text-[9px] text-amber-500 font-mono">PHASE 02</span>
-                  </div>
-                  <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      whileInView={{ width: "65%" }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 1.5, ease: "easeOut" }}
-                      className="h-full bg-amber-500"
-                    />
-                  </div>
-                </div>
-
-                <a href={LINKEDIN_LINK} target="_blank" rel="noopener noreferrer" className="w-full block">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full py-4 bg-amber-500 text-black font-black text-xs rounded-2xl flex items-center justify-center space-x-3 shadow-[0_10px_30px_rgba(251,191,36,0.3)] group"
-                  >
-                    <span className="uppercase tracking-[0.2em]">JOIN LINKAURA</span>
-                    <FaChevronRight className="text-[10px] group-hover:translate-x-1 transition-transform" />
-                  </motion.button>
+            <div>
+              <p className="text-[9px] uppercase tracking-[0.4em] font-black text-black/30 mb-4">Follow Us</p>
+              <div className="flex gap-2">
+                <a href={INSTAGRAM_LINK} target="_blank" rel="noopener noreferrer"
+                  className="w-9 h-9 border border-black/15 flex items-center justify-center text-black/40 hover:bg-black hover:text-white hover:border-black transition-all duration-200">
+                  <FaInstagram size={14} />
+                </a>
+                <a href={LINKEDIN_LINK} target="_blank" rel="noopener noreferrer"
+                  className="w-9 h-9 border border-black/15 flex items-center justify-center text-black/40 hover:bg-black hover:text-white hover:border-black transition-all duration-200">
+                  <FaLinkedin size={14} />
                 </a>
               </div>
             </div>
-          </motion.div>
+
+            {/* Map */}
+            <div className="border border-black/10 overflow-hidden h-48">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d227748.3825624311!2d75.65047033534571!3d26.88544791845112!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396c4adb4ad85659%3A0x139059bc57d0ad61!2sJaipur%2C%20Rajasthan!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+                width="100%" height="100%"
+                style={{ border: 0, filter: 'grayscale(1) contrast(1.1)' }}
+                allowFullScreen="" loading="lazy" title="Jaipur Map"
+              />
+            </div>
+          </div>
+
+          {/* RIGHT — platform info */}
+          <div className="bg-white p-10 flex flex-col gap-8" style={{ fontFamily: 'sans-serif' }}>
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-black/30 mb-3">Platform</p>
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-9 h-9 bg-black flex items-center justify-center">
+                  <span className="text-white text-[10px] font-black">L</span>
+                </div>
+                <div>
+                  <h2 className="text-lg font-black uppercase tracking-[0.2em] text-black leading-none">Linkaura</h2>
+                  <span className="text-[9px] uppercase tracking-[0.3em] font-black text-black/35">Community Platform</span>
+                </div>
+                <div className="ml-auto flex items-center gap-1.5 border border-black/15 px-3 py-1">
+                  <span className="w-1.5 h-1.5 bg-black rounded-full animate-pulse" />
+                  <span className="text-[9px] font-black uppercase tracking-widest text-black/50">Live</span>
+                </div>
+              </div>
+              <p className="text-sm text-black/50 leading-relaxed border-l-4 border-black/10 pl-4">
+                A community platform for students, developers, and creators to find each other, chat, and build together.
+              </p>
+            </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-2 gap-px bg-black/8">
+              {[{ value: '200+', label: 'Members' }, { value: '99.9%', label: 'Uptime' }].map(({ value, label }) => (
+                <div key={label} className="bg-white px-5 py-4">
+                  <p className="text-3xl font-serif font-bold text-black leading-none">{value}</p>
+                  <p className="text-[9px] uppercase tracking-[0.3em] font-black text-black/30 mt-1">{label}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Features */}
+            <div className="flex flex-col gap-px bg-black/8">
+              {[
+                { icon: FiSearch,       label: 'Browse Profiles'   },
+                { icon: FiMessageSquare,label: 'Real-time Chat'     },
+                { icon: FiUsers,        label: 'Community Events'   },
+              ].map(({ icon: Icon, label }) => (
+                <div key={label} className="bg-white flex items-center gap-4 px-5 py-3 group hover:bg-black transition-all duration-200">
+                  <div className="w-7 h-7 border border-black/15 group-hover:border-white flex items-center justify-center flex-shrink-0 transition-colors">
+                    <Icon size={12} className="text-black/40 group-hover:text-white transition-colors" />
+                  </div>
+                  <span className="text-[10px] uppercase tracking-widest font-black text-black/50 group-hover:text-white transition-colors">{label}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Roadmap */}
+            <div className="border border-black/10 p-5">
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-[9px] uppercase tracking-[0.3em] font-black text-black/40">Roadmap</p>
+                <span className="text-[9px] font-black uppercase tracking-widest text-black/40 border border-black/15 px-2 py-0.5">Phase 02</span>
+              </div>
+              <div className="w-full h-1 bg-black/8 overflow-hidden">
+                <motion.div
+                  initial={{ width: 0 }} whileInView={{ width: '65%' }} viewport={{ once: true }}
+                  transition={{ duration: 1.5, ease: 'easeOut' }}
+                  className="h-full bg-black"
+                />
+              </div>
+            </div>
+
+            <a href={LINKEDIN_LINK} target="_blank" rel="noopener noreferrer"
+              className="group flex items-center justify-center gap-3 px-8 py-4 bg-black text-white text-[11px] font-black uppercase tracking-widest hover:bg-black/80 transition-all">
+              Join Linkaura
+              <FiArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
+            </a>
+          </div>
         </div>
+      </section>
 
-
-      </div>
+      <Footer />
     </div>
   );
 };
